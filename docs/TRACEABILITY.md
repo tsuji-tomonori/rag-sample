@@ -7,3 +7,4 @@
 | REQ-003 | ARC-001 | `app.services.retrieval.HybridRetriever` | `tests/test_retrieval.py` |
 | REQ-004 | ARC-001, DES-001 | `app.services.rag.RagService.ingest` | `tests/test_api.py::test_ingest_and_search` |
 | REQ-005 | ARC-002, DES-002 | `app.evaluation.evaluate` | `tests/test_evaluation.py` |
+| REQ-006 | ARC-003, DES-003 | `app.adapters.aws` | `tests/test_aws_adapters.py` |

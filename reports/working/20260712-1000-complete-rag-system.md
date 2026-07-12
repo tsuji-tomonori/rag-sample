@@ -58,3 +58,12 @@
 - 評価後 gate: Python 8 tests、contract 2 tests、Web 1 test、CDK assertion suite、Ruff、
   Pyright、ESLint、全 TypeScript typecheck が pass。
 - `app-eval` の2 case smoke artifact で全 metric、schema version、latency percentile を確認。
+
+## 2026-07-12 AWS runtime adapter
+
+- AWS 公式 Retrieve/metadata filter 仕様を確認。Bedrock ACL awareness は認証境界ではないため、
+  API 認証、pre-retrieval filter、post-retrieval ACL 再検査の三層とした。
+- S3 source/metadata upload、ingestion job、Knowledge Base Retrieve、Converse generation を
+  port/adapter として追加。AWS 設定不足時の local fallback は禁止。
+- AWS adapter 後 gate: Python 13 tests、Ruff、format、Pyright pass。実 AWS 呼出しと deploy は
+  意図的に未実施。
