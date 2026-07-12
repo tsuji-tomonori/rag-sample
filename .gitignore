@@ -14,5 +14,7 @@ build/
 .env
 .local-data/
 node_modules/
+apps/web/test-results/
+apps/web/playwright-report/
 cdk.out/
 infra/lambda-dist/
