@@ -43,3 +43,18 @@
 - 実 listener は startup 完了するが sandbox 内 loopback 接続が遮断される。HTTP contract は
   lazunex と同じ `ASGITransport + AsyncClient` integration tests で検証した。
 - 認可レビューで所有者偽装と actor が属さない group への共有を拒否する 403 policy を追加。
+
+## 2026-07-12 GitHub 公開状態
+
+- root commit `e269e00` (`✨ feat(core): 根拠駆動RAGの縦切り基盤を実装`) を作成。
+- `gh auth status` は account `tsuji-tomonori` の token invalid。既存 repository の上書きや
+  別 credential の推測はせず、public repository 作成/push は認証復旧まで未実施。
+
+## 2026-07-12 評価 harness
+
+- PDF 第7章と ARC-002 に基づき Recall@k、MRR、answer status accuracy、abstention recall、
+  citation precision、p50/p95 latency を artifact から集約する `app-eval` を実装。
+- dataset 固有の文書名、期待語句、正解分岐は production code に入れない。
+- 評価後 gate: Python 8 tests、contract 2 tests、Web 1 test、CDK assertion suite、Ruff、
+  Pyright、ESLint、全 TypeScript typecheck が pass。
+- `app-eval` の2 case smoke artifact で全 metric、schema version、latency percentile を確認。

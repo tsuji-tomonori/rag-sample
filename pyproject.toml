@@ -13,6 +13,7 @@ dependencies = [
 
 [project.scripts]
 app-docs = "app_tool.docs:main"
+app-eval = "app_tool.evaluate:main"
 
 [dependency-groups]
 dev = [
