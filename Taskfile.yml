@@ -1,0 +1,76 @@
+version: "3"
+
+vars:
+  UV_CACHE_DIR: '{{default "/tmp/uv-cache" .UV_CACHE_DIR}}'
+
+tasks:
+  setup:
+    desc: Install locked Python and Node dependencies.
+    cmds:
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv sync --locked --all-groups
+      - npm ci
+
+  format:
+    desc: Format Python source and tests.
+    cmds:
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run ruff format src tests tools
+
+  lint:
+    desc: Run Python and TypeScript lint/format checks.
+    cmds:
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run ruff check .
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run ruff format --check .
+      - npm run lint
+
+  typecheck:
+    desc: Run strict Python and TypeScript type checks.
+    cmds:
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run pyright
+      - npm run typecheck
+
+  test:
+    desc: Run Python, contract, Web, and CDK unit/contract tests.
+    cmds:
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run pytest
+      - npm test
+
+  build:
+    desc: Build contract, Web production assets, infra, and Lambda bundle.
+    cmds:
+      - npm run build
+
+  docs:generate:
+    desc: Generate implementation-derived design artifacts.
+    cmds:
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run app-docs
+      - npm run docs:web
+      - npm run docs:infra
+
+  docs:check:
+    desc: Check generated designs and repository skills.
+    cmds:
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run app-docs --check
+      - npm run docs:web:check
+      - npm run docs:infra:check
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run python tools/validate_skills.py
+
+  synth:
+    desc: Synthesize CloudFormation locally; never deploy.
+    cmds:
+      - npm run synth -w @rag-engineering/infra -- --quiet
+
+  e2e:
+    desc: Run desktop and mobile browser flows with local Vite only.
+    cmds:
+      - npm run test:e2e -w @rag-engineering/web
+
+  verify:
+    desc: Run every non-browser local gate without deployment.
+    cmds:
+      - task: lint
+      - task: typecheck
+      - task: test
+      - task: build
+      - task: docs:check
+      - task: synth
+

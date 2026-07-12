@@ -25,6 +25,19 @@
 - Do not deploy. Synthesis and local emulation are allowed; deployment commands
   require explicit user approval.
 
+## Repository skills
+
+- Use `skills/implementation-docs-maintainer/SKILL.md` for behavior or config changes.
+- Use `skills/implementation-test-selector/SKILL.md` before completion and
+  `skills/taskfile-command-runner/SKILL.md` for Taskfile targets.
+- Use `skills/security-access-control-reviewer/SKILL.md` for routes, auth, ACL, or IaC.
+- Use `skills/no-mock-product-ui/SKILL.md` for production UI paths.
+- Use `skills/architecture-review-literature-based/SKILL.md` for architecture changes.
+- Use `skills/post-task-fit-report/SKILL.md` before final reporting and
+  `skills/japanese-git-commit-gitmoji/SKILL.md` for commits.
+- Do not recreate dreaming memory, completion-status state, or milestone orchestration;
+  GPT-5.6 `/goal` owns continuation and completion accounting.
+
 ## Coding conventions
 
 - Python 3.12, strict typing, Ruff, Pyright, pytest, and Pydantic v2.
@@ -43,4 +56,3 @@
   the same change as behavior.
 - Use Japanese Git commit messages in the form
   `<emoji> <type>(<scope>): <日本語の要約>`.
-

@@ -98,3 +98,13 @@
   回避に E2E command のみ権限委譲した。
 - Infra: dependency bundle、TypeScript typecheck/build、4 CDK assertions、inventory drift、
   CloudFormation synth pass。deploy は未実施。
+
+## 2026-07-12 Skills / automation
+
+- rag-assist から8つの恒久的 engineering control を repository skills として採用。
+- GPT-5.6 `/goal` と重複する dreaming memory、completion JSON、milestone/recovery orchestration は
+  意図的に除外し `skills/README.md` と `AGENTS.md` に判断を記録。
+- Taskfile、skill validator、非deploy CI、local/runtime operation docs を追加。
+- `task verify`: pass。lint/typecheck、Python 17 tests、contract 2 tests、Web 3 tests、infra
+  assertions、build、design drift、8 skills、CDK synth を実行。
+- `task e2e`: pass、desktop/mobile 2件。loopback EPERM のため target のみ権限委譲。
