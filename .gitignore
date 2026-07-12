@@ -1,0 +1,17 @@
+.workspace/
+.git-data/
+*:Zone.Identifier
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+.env
+.local-data/
+node_modules/
+cdk.out/

@@ -1,0 +1,25 @@
+{
+  "name": "rag-engineering-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["packages/contract", "apps/web", "infra"],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm test --workspaces --if-present",
+    "lint": "eslint . --max-warnings=0",
+    "ci": "npm run lint && npm run typecheck && npm test && npm run build",
+    "docs:web": "node tools/web-inventory.mjs",
+    "docs:web:check": "node tools/web-inventory.mjs --check",
+    "docs:infra": "npm run docs -w @rag-engineering/infra",
+    "docs:infra:check": "npm run docs:check -w @rag-engineering/infra"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.3.0",
+    "globals": "^17.6.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.59.1"
+  }
+}
+
