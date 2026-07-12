@@ -27,6 +27,7 @@ h2 { margin:.1rem 0 0; font-size:1.35rem; letter-spacing:-.035em; }
 .help { color:var(--muted); font-size:.82rem; line-height:1.7; }
 form { display:grid; gap:.85rem; } .field-row { display:grid; grid-template-columns:2fr 1fr; gap:.7rem; }
 .receipt { display:grid; gap:.2rem; margin-top:1rem; padding:1rem; border-left:5px solid var(--acid); background:#fff; }
+.permission-state { margin-top:1rem; border:1px dashed var(--line); padding:1.2rem; color:var(--muted); background:rgba(255,255,255,.55); }
 .receipt span,.receipt small,.answer-card small { color:var(--muted); font-family:"DM Mono"; }
 .question-form { grid-template-columns:1fr auto; align-items:stretch; margin:2rem 0; }
 .question-form button { min-width:160px; }

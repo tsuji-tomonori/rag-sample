@@ -1,15 +1,17 @@
 import path from "node:path"
 import { readFileSync } from "node:fs"
-import * as apigatewayv2 from "aws-cdk-lib/aws-apigatewayv2"
-import * as authorizers from "aws-cdk-lib/aws-apigatewayv2-authorizers"
-import * as integrations from "aws-cdk-lib/aws-apigatewayv2-integrations"
+import * as apigateway from "aws-cdk-lib/aws-apigateway"
+import * as appsync from "aws-cdk-lib/aws-appsync"
 import * as bedrock from "aws-cdk-lib/aws-bedrock"
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
+import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
 import * as cognito from "aws-cdk-lib/aws-cognito"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as kms from "aws-cdk-lib/aws-kms"
 import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as logs from "aws-cdk-lib/aws-logs"
 import * as s3 from "aws-cdk-lib/aws-s3"
+import * as s3deploy from "aws-cdk-lib/aws-s3-deployment"
 import * as cdk from "aws-cdk-lib"
 import type { Construct } from "constructs"
 
@@ -23,6 +25,13 @@ export class RagEngineeringStack extends cdk.Stack {
     const source = new s3.Bucket(this,"SourceBucket", {
       encryption:s3.BucketEncryption.KMS,
       encryptionKey:key,
+      blockPublicAccess:s3.BlockPublicAccess.BLOCK_ALL,
+      enforceSSL:true,
+      versioned:true,
+      removalPolicy:cdk.RemovalPolicy.RETAIN
+    })
+    const webBucket = new s3.Bucket(this,"WebBucket", {
+      encryption:s3.BucketEncryption.S3_MANAGED,
       blockPublicAccess:s3.BlockPublicAccess.BLOCK_ALL,
       enforceSSL:true,
       versioned:true,
@@ -68,6 +77,11 @@ export class RagEngineeringStack extends cdk.Stack {
         logoutUrls:[logoutUrl.valueAsString]
       },
       preventUserExistenceErrors:true
+    })
+    new cognito.CfnUserPoolGroup(this,"AdminGroup",{
+      userPoolId:userPool.userPoolId,
+      groupName:"admin",
+      description:"May ingest and manage authorized knowledge documents"
     })
     const userPoolDomain = userPool.addDomain("HostedDomain", {
       cognitoDomain:{ domainPrefix:domainPrefix.valueAsString }
@@ -139,33 +153,134 @@ export class RagEngineeringStack extends cdk.Stack {
       actions:["bedrock:InvokeModel"],
       resources:[cdk.Stack.of(this).formatArn({ service:"bedrock", account:"", resource:"foundation-model", resourceName:"anthropic.claude-haiku-4-5-20251001-v1:0" })]
     }))
-    const httpApi = new apigatewayv2.HttpApi(this,"HttpApi", {
-      createDefaultStage:true,
-      corsPreflight:{
-        allowHeaders:["authorization","content-type"],
-        allowMethods:[apigatewayv2.CorsHttpMethod.GET,apigatewayv2.CorsHttpMethod.POST,apigatewayv2.CorsHttpMethod.OPTIONS],
+    const restApi = new apigateway.RestApi(this,"RestApi", {
+      endpointConfiguration:{ types:[apigateway.EndpointType.REGIONAL] },
+      deployOptions:{
+        stageName:"api",
+        tracingEnabled:true,
+        metricsEnabled:true,
+        loggingLevel:apigateway.MethodLoggingLevel.INFO,
+        dataTraceEnabled:false
+      },
+      defaultCorsPreflightOptions:{
         allowOrigins:[webOrigin.valueAsString],
+        allowHeaders:["Authorization","Content-Type"],
+        allowMethods:["GET","POST","OPTIONS"],
         maxAge:cdk.Duration.hours(1)
       }
     })
-    const integration = new integrations.HttpLambdaIntegration("ApiIntegration",apiFunction)
-    const jwtAuthorizer = new authorizers.HttpJwtAuthorizer(
-      "CognitoAuthorizer",
-      `https://cognito-idp.${cdk.Aws.REGION}.amazonaws.com/${userPool.userPoolId}`,
-      { jwtAudience:[userPoolClient.userPoolClientId] }
+    const integration = new apigateway.LambdaIntegration(apiFunction,{ proxy:true })
+    const cognitoAuthorizer = new apigateway.CognitoUserPoolsAuthorizer(
+      this,"CognitoAuthorizer",{ cognitoUserPools:[userPool] }
     )
-    for (const pathPattern of ["/v1/documents","/v1/search","/v1/answers"]) {
-      httpApi.addRoutes({
-        path:pathPattern,
-        methods:[apigatewayv2.HttpMethod.POST],
-        integration,
-        authorizer:jwtAuthorizer
+    const v1 = restApi.root.addResource("v1")
+    for (const resourceName of ["documents","search","answers"]) {
+      v1.addResource(resourceName).addMethod("POST",integration,{
+        authorizationType:apigateway.AuthorizationType.COGNITO,
+        authorizer:cognitoAuthorizer
       })
     }
-    httpApi.addRoutes({ path:"/health", methods:[apigatewayv2.HttpMethod.GET], integration })
+    restApi.root.addResource("health").addMethod("GET",integration,{
+      authorizationType:apigateway.AuthorizationType.NONE
+    })
+
+    const eventApi = new appsync.GraphqlApi(this,"EventApi", {
+      name:"rag-engineering-events",
+      definition:appsync.Definition.fromFile(path.resolve(__dirname,"appsync-events.graphql")),
+      authorizationConfig:{
+        defaultAuthorization:{
+          authorizationType:appsync.AuthorizationType.USER_POOL,
+          userPoolConfig:{ userPool }
+        },
+        additionalAuthorizationModes:[{ authorizationType:appsync.AuthorizationType.IAM }]
+      },
+      logConfig:{ fieldLogLevel:appsync.FieldLogLevel.ERROR, retention:logs.RetentionDays.ONE_YEAR },
+      xrayEnabled:true
+    })
+    const eventSource = eventApi.addNoneDataSource("EventSource")
+    eventSource.createResolver("PublishEventResolver",{
+      typeName:"Mutation",
+      fieldName:"publishEvent",
+      requestMappingTemplate:appsync.MappingTemplate.fromString(
+        '{"version":"2017-02-28","payload":$util.toJson($context.arguments)}'
+      ),
+      responseMappingTemplate:appsync.MappingTemplate.fromString("$util.toJson($context.result)")
+    })
+    eventSource.createResolver("HealthResolver",{
+      typeName:"Query",
+      fieldName:"health",
+      requestMappingTemplate:appsync.MappingTemplate.fromString(
+        '{"version":"2017-02-28","payload":true}'
+      ),
+      responseMappingTemplate:appsync.MappingTemplate.fromString("$util.toJson($context.result)")
+    })
+    eventSource.createResolver("SubscriptionAuthorizationResolver",{
+      typeName:"Subscription",
+      fieldName:"onEvent",
+      requestMappingTemplate:appsync.MappingTemplate.fromString(`
+        #if($context.identity.sub != $context.arguments.channel)
+          $util.unauthorized()
+        #end
+        {"version":"2017-02-28","payload":{}}
+      `),
+      responseMappingTemplate:appsync.MappingTemplate.fromString("$util.toJson($context.result)")
+    })
+    eventApi.grantMutation(apiFunction,"publishEvent")
+    apiFunction.addEnvironment("RAG_APPSYNC_GRAPHQL_URL",eventApi.graphqlUrl)
+
+    const spaRewrite = new cloudfront.Function(this,"SpaRewrite",{
+      runtime:cloudfront.FunctionRuntime.JS_2_0,
+      code:cloudfront.FunctionCode.fromInline(`
+        function handler(event) {
+          var request = event.request;
+          if (request.uri.indexOf('.') === -1) request.uri = '/index.html';
+          return request;
+        }
+      `)
+    })
+    const distribution = new cloudfront.Distribution(this,"Distribution",{
+      defaultRootObject:"index.html",
+      minimumProtocolVersion:cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
+      defaultBehavior:{
+        origin:origins.S3BucketOrigin.withOriginAccessControl(webBucket),
+        viewerProtocolPolicy:cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        compress:true,
+        functionAssociations:[{
+          function:spaRewrite,
+          eventType:cloudfront.FunctionEventType.VIEWER_REQUEST
+        }]
+      },
+      additionalBehaviors:{
+        "/v1/*":{
+          origin:new origins.RestApiOrigin(restApi),
+          viewerProtocolPolicy:cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
+          allowedMethods:cloudfront.AllowedMethods.ALLOW_ALL,
+          cachePolicy:cloudfront.CachePolicy.CACHING_DISABLED,
+          originRequestPolicy:cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER
+        },
+        "/health":{
+          origin:new origins.RestApiOrigin(restApi),
+          viewerProtocolPolicy:cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
+          allowedMethods:cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+          cachePolicy:cloudfront.CachePolicy.CACHING_DISABLED,
+          originRequestPolicy:cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER
+        }
+      }
+    })
+    new s3deploy.BucketDeployment(this,"WebDeployment",{
+      sources:[s3deploy.Source.asset(path.resolve(__dirname,"../../apps/web/dist"))],
+      destinationBucket:webBucket,
+      distribution,
+      distributionPaths:["/*"],
+      prune:true
+    })
     new cdk.CfnOutput(this,"SourceBucketName", { value:source.bucketName })
     new cdk.CfnOutput(this,"KnowledgeBaseId", { value:knowledgeBase.attrKnowledgeBaseId })
-    new cdk.CfnOutput(this,"ApiUrl", { value:httpApi.apiEndpoint })
+    new cdk.CfnOutput(this,"ApiUrl", { value:`https://${distribution.distributionDomainName}` })
+    new cdk.CfnOutput(this,"RestApiUrl", { value:restApi.url })
+    new cdk.CfnOutput(this,"WebUrl", { value:`https://${distribution.distributionDomainName}` })
+    new cdk.CfnOutput(this,"AppSyncGraphqlUrl", { value:eventApi.graphqlUrl })
+    new cdk.CfnOutput(this,"AppSyncRealtimeUrl", { value:eventApi.graphqlUrl.replace("appsync-api","appsync-realtime-api").replace("https://","wss://") })
     new cdk.CfnOutput(this,"CognitoUserPoolId", { value:userPool.userPoolId })
     new cdk.CfnOutput(this,"CognitoClientId", { value:userPoolClient.userPoolClientId })
     new cdk.CfnOutput(this,"CognitoHostedUiBaseUrl", { value:userPoolDomain.baseUrl() })

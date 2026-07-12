@@ -25,16 +25,16 @@ test("retains encrypted private data and uses a constrained identity boundary", 
 
 test("protects every product route with Cognito JWT authorization", () => {
   const json = template().toJSON() as { Resources: Record<string, { Type:string; Properties?:Record<string,unknown> }> }
-  const routes = Object.values(json.Resources).filter(resource => resource.Type === "AWS::ApiGatewayV2::Route")
-  const protectedRoutes = routes.filter(resource => String(resource.Properties?.RouteKey).startsWith("POST /v1/"))
-  assert.equal(protectedRoutes.length,3)
-  for (const route of protectedRoutes) {
-    assert.equal(route.Properties?.AuthorizationType,"JWT")
-    assert.ok(route.Properties?.AuthorizerId)
+  const methods = Object.values(json.Resources).filter(resource => resource.Type === "AWS::ApiGateway::Method")
+  const protectedMethods = methods.filter(resource => resource.Properties?.HttpMethod === "POST")
+  assert.equal(protectedMethods.length,3)
+  for (const method of protectedMethods) {
+    assert.equal(method.Properties?.AuthorizationType,"COGNITO_USER_POOLS")
+    assert.ok(method.Properties?.AuthorizerId)
   }
-  const health = routes.find(resource => resource.Properties?.RouteKey === "GET /health")
+  const health = methods.find(resource => resource.Properties?.HttpMethod === "GET")
   assert.ok(health)
-  assert.notEqual(health.Properties?.AuthorizationType,"JWT")
+  assert.equal(health.Properties?.AuthorizationType,"NONE")
 })
 
 test("configures the Lambda API for Cognito and AWS adapters without wildcard model access", () => {
@@ -48,4 +48,21 @@ test("configures the Lambda API for Cognito and AWS adapters without wildcard mo
   const serialized=JSON.stringify(value.toJSON())
   assert.match(serialized,/anthropic\.claude-haiku-4-5-20251001-v1:0/)
   assert.doesNotMatch(serialized,/foundation-model\/\*/)
+})
+
+test("matches the architecture drawing with private SPA, routing function, REST API, and AppSync", () => {
+  const value=template()
+  value.resourceCountIs("AWS::CloudFront::Distribution",1)
+  value.resourceCountIs("AWS::CloudFront::Function",1)
+  value.resourceCountIs("AWS::ApiGateway::RestApi",1)
+  value.resourceCountIs("AWS::AppSync::GraphQLApi",1)
+  value.hasResourceProperties("AWS::S3::Bucket",{
+    PublicAccessBlockConfiguration:{ BlockPublicAcls:true,BlockPublicPolicy:true,IgnorePublicAcls:true,RestrictPublicBuckets:true }
+  })
+  value.hasResourceProperties("AWS::AppSync::GraphQLApi",{
+    AuthenticationType:"AMAZON_COGNITO_USER_POOLS",
+    XrayEnabled:true
+  })
+  value.hasResourceProperties("AWS::Cognito::UserPoolGroup",{ GroupName:"admin" })
+  value.hasResourceProperties("AWS::AppSync::Resolver",{ TypeName:"Subscription",FieldName:"onEvent" })
 })

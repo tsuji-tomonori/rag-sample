@@ -1,7 +1,10 @@
 import importlib
 import json
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Protocol, cast
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 from app.domain import Chunk, Principal, RankedChunk
 
@@ -46,6 +49,81 @@ class AwsKnowledgeBaseConfig:
     knowledge_base_id: str
     data_source_id: str
     generation_model_id: str
+    appsync_graphql_url: str | None = None
+
+
+class AppSyncEventPublisher:
+    def __init__(
+        self,
+        *,
+        endpoint: str,
+        region: str,
+        post: Callable[[bytes], None] | None = None,
+    ) -> None:
+        parsed = urlparse(endpoint)
+        expected_suffix = f".appsync-api.{region}.amazonaws.com"
+        if (
+            parsed.scheme != "https"
+            or parsed.path != "/graphql"
+            or not parsed.hostname
+            or not parsed.hostname.endswith(expected_suffix)
+        ):
+            raise ValueError("AppSync endpoint is not an AWS regional GraphQL endpoint")
+        self._endpoint = endpoint
+        self._region = region
+        self._post = post or self._signed_post
+
+    def publish(
+        self, *, channel: str, resource_id: str, kind: str, status: str, request_id: str
+    ) -> None:
+        body = json.dumps(
+            {
+                "query": (
+                    "mutation Publish($channel:String!,$resourceId:String!,$kind:String!,"
+                    "$status:String!,$requestId:String!){publishEvent(channel:$channel,"
+                    "resourceId:$resourceId,kind:$kind,status:$status,requestId:$requestId)"
+                    "{channel resourceId kind status requestId}}"
+                ),
+                "variables": {
+                    "channel": channel,
+                    "resourceId": resource_id,
+                    "kind": kind,
+                    "status": status,
+                    "requestId": request_id,
+                },
+            },
+            ensure_ascii=True,
+            separators=(",", ":"),
+        ).encode()
+        self._post(body)
+
+    def _signed_post(self, body: bytes) -> None:
+        boto3: Any = importlib.import_module("boto3")
+        auth: Any = importlib.import_module("botocore.auth")
+        awsrequest: Any = importlib.import_module("botocore.awsrequest")
+        credentials = boto3.Session().get_credentials()
+        if credentials is None:
+            raise ValueError("AWS credentials are unavailable for AppSync publish")
+        request = awsrequest.AWSRequest(
+            method="POST",
+            url=self._endpoint,
+            data=body,
+            headers={"content-type": "application/json"},
+        )
+        auth.SigV4Auth(credentials.get_frozen_credentials(), "appsync", self._region).add_auth(
+            request
+        )
+        http_request = Request(
+            self._endpoint,
+            data=body,
+            headers=dict(request.headers.items()),
+            method="POST",
+        )
+        with urlopen(http_request, timeout=5) as response:
+            result: object = json.load(response)
+        result_map = _string_map(result, "AppSync response")
+        if result_map.get("errors"):
+            raise ValueError("AppSync rejected the event publication")
 
 
 class AwsKnowledgeBaseStore:
@@ -58,11 +136,13 @@ class AwsKnowledgeBaseStore:
         s3: S3Client,
         bedrock_agent: BedrockAgentClient,
         bedrock_runtime: BedrockAgentRuntimeClient,
+        event_publisher: AppSyncEventPublisher | None = None,
     ) -> None:
         self._config = config
         self._s3 = s3
         self._bedrock_agent = bedrock_agent
         self._bedrock_runtime = bedrock_runtime
+        self._event_publisher = event_publisher
 
     def replace_document(self, document_id: str, chunks: tuple[Chunk, ...]) -> None:
         if not chunks:
@@ -96,11 +176,20 @@ class AwsKnowledgeBaseStore:
             Body=metadata_body,
             ContentType="application/json",
         )
-        self._bedrock_agent.start_ingestion_job(
+        ingestion = self._bedrock_agent.start_ingestion_job(
             knowledgeBaseId=self._config.knowledge_base_id,
             dataSourceId=self._config.data_source_id,
             description=f"document update: {document_id}",
         )
+        if self._event_publisher is not None:
+            job = _string_map(ingestion.get("ingestionJob", {}), "ingestion job")
+            self._event_publisher.publish(
+                channel=first.owner_subject,
+                resource_id=document_id,
+                kind="INGESTION",
+                status="STARTED",
+                request_id=_required_string(job, "ingestionJobId"),
+            )
 
     def search(
         self,
@@ -219,8 +308,17 @@ def create_aws_adapters(
     runtime = cast(
         "BedrockRuntimeClient", boto3.client("bedrock-runtime", region_name=config.region)
     )
+    publisher = (
+        AppSyncEventPublisher(endpoint=config.appsync_graphql_url, region=config.region)
+        if config.appsync_graphql_url
+        else None
+    )
     store = AwsKnowledgeBaseStore(
-        config=config, s3=s3, bedrock_agent=agent, bedrock_runtime=agent_runtime
+        config=config,
+        s3=s3,
+        bedrock_agent=agent,
+        bedrock_runtime=agent_runtime,
+        event_publisher=publisher,
     )
     return store, BedrockConverseGenerator(model_id=config.generation_model_id, client=runtime)
 

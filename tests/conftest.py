@@ -23,4 +23,4 @@ async def client() -> AsyncIterator[AsyncClient]:
 
 @pytest.fixture
 def auth() -> dict[str, str]:
-    return {"Authorization": "Bearer alice", "X-Principal-Groups": "support"}
+    return {"Authorization": "Bearer alice", "X-Principal-Groups": "support,admin"}

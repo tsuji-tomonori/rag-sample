@@ -43,7 +43,7 @@ async def test_ingest_and_search(client: AsyncClient, auth: dict[str, str]) -> N
 async def test_acl_is_applied_before_search(client: AsyncClient, auth: dict[str, str]) -> None:
     created = await client.post(
         "/v1/documents",
-        headers={"Authorization": "Bearer bob"},
+        headers={"Authorization": "Bearer bob", "X-Principal-Groups": "admin"},
         json=_document("secret", "Project Phoenix launch code is ORANGE.", owner="bob"),
     )
     assert created.status_code == 201
@@ -61,6 +61,16 @@ async def test_ingest_cannot_impersonate_an_owner(
         "/v1/documents",
         headers=auth,
         json=_document("forged", "Sensitive content", owner="bob"),
+    )
+    assert response.status_code == 403
+    assert response.json()["error"]["code"] == "access_denied"
+
+
+async def test_ingest_requires_admin_group(client: AsyncClient) -> None:
+    response = await client.post(
+        "/v1/documents",
+        headers={"Authorization": "Bearer alice", "X-Principal-Groups": "support"},
+        json=_document("unauthorized", "Sensitive content"),
     )
     assert response.status_code == 403
     assert response.json()["error"]["code"] == "access_denied"

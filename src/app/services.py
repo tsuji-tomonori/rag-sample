@@ -23,6 +23,8 @@ class RagService:
         self._generator = generator
 
     def ingest(self, document: DocumentIn, actor: Principal, request_id: str) -> IngestOut:
+        if "admin" not in actor.groups:
+            raise PermissionError("document ingestion requires the admin group")
         if document.owner_subject != actor.subject:
             raise PermissionError("document owner must match the authenticated subject")
         unknown_groups = set(document.allowed_groups).difference(actor.groups)

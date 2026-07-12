@@ -25,6 +25,7 @@ def get_cached_service() -> RagService:
             "source_bucket": settings.source_bucket,
             "knowledge_base_id": settings.knowledge_base_id,
             "data_source_id": settings.data_source_id,
+            "appsync_graphql_url": settings.appsync_graphql_url,
         }
         missing = [name for name, value in required.items() if not value]
         if missing:
@@ -36,6 +37,7 @@ def get_cached_service() -> RagService:
                 knowledge_base_id=cast(str, settings.knowledge_base_id),
                 data_source_id=cast(str, settings.data_source_id),
                 generation_model_id=settings.generation_model_id,
+                appsync_graphql_url=cast(str, settings.appsync_graphql_url),
             )
         )
         return RagService(

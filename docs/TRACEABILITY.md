@@ -11,3 +11,4 @@
 | REQ-007 | ARC-003, DES-004 | `app.auth.CognitoAuthenticator` | `tests/test_auth.py` |
 | REQ-008 | ARC-003 | `infra/lib/rag-engineering-stack.ts` | `infra/test/stack.test.ts` |
 | REQ-009 | DES-004 | `apps/web/src/authClient.ts` | `apps/web/src/runtimeConfig.test.ts`, `apps/web/e2e/evidence-flow.spec.ts` |
+| REQ-010 | ARC-003 | `infra/lib/rag-engineering-stack.ts`, `apps/web/src/realtimeClient.ts` | `infra/test/stack.test.ts`, `apps/web/src/realtimeClient.test.ts`, `tests/test_api.py::test_ingest_requires_admin_group` |

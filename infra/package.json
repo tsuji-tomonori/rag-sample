@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc -p tsconfig.json && npm run bundle",
-    "bundle": "node scripts/bundle-api.mjs",
+    "bundle": "npm run build -w @rag-engineering/web && node scripts/bundle-api.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "npm run bundle && node --test -r ts-node/register test/*.test.ts",
     "synth": "npm run bundle && cdk synth",

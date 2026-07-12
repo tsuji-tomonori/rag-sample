@@ -5,6 +5,7 @@ export type RuntimeConfig = {
   cognitoClientId?: string
   redirectUri?: string
   logoutUri?: string
+  appsyncGraphqlUrl?: string
 }
 
 export function runtimeConfig(environment: ImportMetaEnv = import.meta.env): RuntimeConfig {
@@ -19,6 +20,7 @@ export function runtimeConfig(environment: ImportMetaEnv = import.meta.env): Run
       cognitoClientId: environment.VITE_COGNITO_CLIENT_ID,
       redirectUri: environment.VITE_COGNITO_REDIRECT_URI,
       logoutUri: environment.VITE_COGNITO_LOGOUT_URI
+      ,appsyncGraphqlUrl: environment.VITE_APPSYNC_GRAPHQL_URL
     }
     const missing = Object.entries(required).filter(([, value]) => !value).map(([key]) => key)
     if (missing.length) throw new Error(`Cognito runtime configuration is missing: ${missing.join(", ")}`)

@@ -1,0 +1,33 @@
+type AsyncEvent @aws_iam @aws_cognito_user_pools {
+  channel: String!
+  resourceId: String!
+  kind: String!
+  status: String!
+  requestId: String!
+}
+
+type Query {
+  health: Boolean!
+}
+
+type Mutation {
+  publishEvent(
+    channel: String!
+    resourceId: String!
+    kind: String!
+    status: String!
+    requestId: String!
+  ): AsyncEvent! @aws_iam
+}
+
+type Subscription {
+  onEvent(channel: String!): AsyncEvent
+    @aws_subscribe(mutations: ["publishEvent"])
+    @aws_cognito_user_pools
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}

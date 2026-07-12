@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     source_bucket: str | None = None
     knowledge_base_id: str | None = None
     data_source_id: str | None = None
+    appsync_graphql_url: str | None = None
     generation_model_id: str = "anthropic.claude-haiku-4-5-20251001-v1:0"
     cognito_user_pool_id: str | None = None
     cognito_client_id: str | None = None

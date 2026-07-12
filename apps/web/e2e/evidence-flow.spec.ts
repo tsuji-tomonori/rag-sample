@@ -29,6 +29,7 @@ test("ingests evidence and renders a grounded answer with its citation", async (
 
   await page.goto("/")
   await page.getByLabel("利用者 ID").fill("e2e-user")
+  await page.getByLabel("グループ").fill("admin")
   await page.getByLabel("文書 ID").fill("policy")
   await page.getByLabel("版").fill("1")
   await page.getByLabel("タイトル").fill("サポート規程")

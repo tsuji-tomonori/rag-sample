@@ -3,7 +3,12 @@ from typing import Any
 
 import pytest
 
-from app.adapters.aws import AwsKnowledgeBaseConfig, AwsKnowledgeBaseStore, BedrockConverseGenerator
+from app.adapters.aws import (
+    AppSyncEventPublisher,
+    AwsKnowledgeBaseConfig,
+    AwsKnowledgeBaseStore,
+    BedrockConverseGenerator,
+)
 from app.domain import Chunk, Principal, RankedChunk
 
 
@@ -137,3 +142,36 @@ def test_bedrock_generator_sends_only_supplied_evidence() -> None:
     assert generator.generate("question", (ranked,)) == "根拠に基づく回答"
     payload = client.calls[0][1]
     assert "authorized text" in payload["messages"][0]["content"][0]["text"]
+
+
+def test_appsync_publisher_sends_typed_ingestion_event() -> None:
+    bodies: list[bytes] = []
+    publisher = AppSyncEventPublisher(
+        endpoint="https://example.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+        region="ap-northeast-1",
+        post=bodies.append,
+    )
+    publisher.publish(
+        channel="user-1",
+        resource_id="document-1",
+        kind="INGESTION",
+        status="STARTED",
+        request_id="job-1",
+    )
+    payload = json.loads(bodies[0])
+    assert payload["variables"] == {
+        "channel": "user-1",
+        "resourceId": "document-1",
+        "kind": "INGESTION",
+        "status": "STARTED",
+        "requestId": "job-1",
+    }
+
+
+def test_appsync_publisher_rejects_non_aws_endpoint() -> None:
+    with pytest.raises(ValueError, match="AWS regional"):
+        AppSyncEventPublisher(
+            endpoint="https://attacker.invalid/graphql",
+            region="ap-northeast-1",
+            post=lambda _body: None,
+        )

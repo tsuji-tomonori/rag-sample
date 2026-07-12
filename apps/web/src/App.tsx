@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react"
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react"
 import type { AnswerResponse, IngestRequest, IngestResponse } from "@rag-engineering/contract"
 import { ApiClient, type Session } from "./api.js"
 import { CognitoAuthClient, type AuthClient, type WebSession } from "./authClient.js"
 import { runtimeConfig, type RuntimeConfig } from "./runtimeConfig.js"
+import { AppSyncRealtimeClient, type RealtimeClient, type RealtimeEvent } from "./realtimeClient.js"
 
 type Busy = "idle" | "ingesting" | "answering"
 
@@ -11,11 +12,13 @@ const defaultConfig = runtimeConfig()
 export function App({
   client = new ApiClient(defaultConfig.apiBaseUrl),
   config = defaultConfig,
-  authClient
+  authClient,
+  realtimeClient
 }: {
   client?: ApiClient
   config?: RuntimeConfig
   authClient?: AuthClient | null
+  realtimeClient?: RealtimeClient | null
 }) {
   const [subject, setSubject] = useState("")
   const [groups, setGroups] = useState("")
@@ -34,9 +37,17 @@ export function App({
   const [error, setError] = useState<string | null>(null)
   const [webSession, setWebSession] = useState<WebSession | null>(null)
   const [authLoading, setAuthLoading] = useState(config.authMode === "cognito")
+  const [realtimeEvent, setRealtimeEvent] = useState<RealtimeEvent | null>(null)
+  const unsubscribeRef = useRef<(() => void) | null>(null)
   const resolvedAuthClient = useMemo(
     () => authClient ?? (config.authMode === "cognito" ? new CognitoAuthClient(config) : null),
     [authClient, config]
+  )
+  const resolvedRealtimeClient = useMemo(
+    () => realtimeClient ?? (config.authMode === "cognito" && config.appsyncGraphqlUrl
+      ? new AppSyncRealtimeClient(config.appsyncGraphqlUrl)
+      : null),
+    [config.appsyncGraphqlUrl, config.authMode, realtimeClient]
   )
   const localSession = useMemo<Session>(
     () => ({
@@ -51,6 +62,7 @@ export function App({
     ? localSession
     : { subject: webSession?.subject ?? "", groups: webSession?.groups ?? [], accessToken: webSession?.accessToken ?? "", local: false }
   const authenticated = session.subject.length > 0
+  const canManageDocuments = session.groups.includes("admin")
 
   useEffect(() => {
     if (config.authMode !== "cognito" || !resolvedAuthClient) return
@@ -74,6 +86,8 @@ export function App({
     return () => { active = false }
   }, [config.authMode, resolvedAuthClient])
 
+  useEffect(() => () => unsubscribeRef.current?.(), [])
+
   function beginSignIn() {
     if (resolvedAuthClient) void resolvedAuthClient.signIn().catch(caught => setError(errorMessage(caught)))
   }
@@ -89,6 +103,17 @@ export function App({
     setError(null)
     try {
       const request = { ...document, owner_subject: document.owner_subject || session.subject }
+      unsubscribeRef.current?.()
+      unsubscribeRef.current = null
+      setRealtimeEvent(null)
+      if (!session.local && resolvedRealtimeClient) {
+        unsubscribeRef.current = await resolvedRealtimeClient.subscribe(
+          session.subject,
+          session.accessToken,
+          setRealtimeEvent,
+          setError
+        )
+      }
       setIngested(await client.ingest(request, session))
     } catch (caught) {
       setError(errorMessage(caught))
@@ -130,7 +155,7 @@ export function App({
         <aside className="ingest-panel">
           <div className="section-heading"><span>01</span><div><p>KNOWLEDGE</p><h2>根拠を登録する</h2></div></div>
           <p className="help">文書の識別子、版、ACL と原文をそのまま索引へ送ります。</p>
-          <form onSubmit={event => void ingest(event)}>
+          {canManageDocuments ? <form onSubmit={event => void ingest(event)}>
             <div className="field-row">
               <label>文書 ID<input required value={document.document_id} onChange={event => setDocument({ ...document, document_id: event.target.value })} /></label>
               <label>版<input required value={document.version} onChange={event => setDocument({ ...document, version: event.target.value })} /></label>
@@ -140,8 +165,9 @@ export function App({
             <label>許可グループ<input value={document.allowed_groups.join(",")} onChange={event => setDocument({ ...document, allowed_groups: event.target.value.split(",").map(item => item.trim()).filter(Boolean) })} /></label>
             <label>本文<textarea required rows={11} value={document.text} onChange={event => setDocument({ ...document, text: event.target.value })} /></label>
             <button disabled={busy !== "idle"}>{busy === "ingesting" ? "索引を構築中..." : "文書を取り込む"}</button>
-          </form>
+          </form> : <div className="permission-state">文書取込には管理者権限が必要です。</div>}
           {ingested && <div className="receipt" role="status"><strong>{ingested.document_id}</strong><span>version {ingested.version} / {ingested.chunk_count} chunks</span><small>request {ingested.request_id}</small></div>}
+          {realtimeEvent && <div className="receipt realtime-receipt" role="status"><strong>{realtimeEvent.kind}</strong><span>{realtimeEvent.resourceId} / {realtimeEvent.status}</span><small>job {realtimeEvent.requestId}</small></div>}
         </aside>
 
         <section className="answer-panel">

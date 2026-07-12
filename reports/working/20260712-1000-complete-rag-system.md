@@ -108,3 +108,18 @@
 - `task verify`: pass。lint/typecheck、Python 17 tests、contract 2 tests、Web 3 tests、infra
   assertions、build、design drift、8 skills、CDK synth を実行。
 - `task e2e`: pass、desktop/mobile 2件。loopback EPERM のため target のみ権限委譲。
+
+## 2026-07-12 Reference architecture audit
+
+- `docs/あーき.drawio.png` を確認し、CloudFront、private S3 SPA、CloudFront Functions、REST API、
+  AppSync WebSocket/PubSub が未実装と判定。
+- OAC SPA配信、path rewrite、REST Cognito methods、AppSync Cognito subscription/IAM mutation、
+  Web asset deploymentをCDKへ追加。
+- AWS adapterはingestion開始後、SigV4署名したAppSync mutationでdocument channelへjob IDをpublish。
+- Cognito Webはingestion前にAppSync WebSocketを確立し、document channelのjob statusを表示。
+- 管理者/利用者を分離し、adminだけが取込可能。AppSync subscription resolverはsubject channel
+  以外をunauthorizedとし、resource IDをevent fieldへ分離。
+- Reference architecture gate: Python 20 tests、Web 4 tests、infra assertions、TypeScript/Python
+  lint/typecheck、Web build、Lambda bundle、CDK synth、infra inventory drift、desktop/mobile E2E pass。
+- CloudFrontのglobal custom error responseはAPI 403を200へ変換するため不採用。SPA routeはviewer
+  request functionだけでrewriteする。

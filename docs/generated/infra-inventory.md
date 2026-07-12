@@ -4,23 +4,36 @@
 
 | CloudFormation type | Count |
 |---|---:|
-| `AWS::ApiGatewayV2::Api` | 1 |
-| `AWS::ApiGatewayV2::Authorizer` | 1 |
-| `AWS::ApiGatewayV2::Integration` | 1 |
-| `AWS::ApiGatewayV2::Route` | 4 |
-| `AWS::ApiGatewayV2::Stage` | 1 |
+| `AWS::ApiGateway::Account` | 1 |
+| `AWS::ApiGateway::Authorizer` | 1 |
+| `AWS::ApiGateway::Deployment` | 1 |
+| `AWS::ApiGateway::Method` | 10 |
+| `AWS::ApiGateway::Resource` | 5 |
+| `AWS::ApiGateway::RestApi` | 1 |
+| `AWS::ApiGateway::Stage` | 1 |
+| `AWS::AppSync::DataSource` | 1 |
+| `AWS::AppSync::GraphQLApi` | 1 |
+| `AWS::AppSync::GraphQLSchema` | 1 |
+| `AWS::AppSync::Resolver` | 3 |
 | `AWS::Bedrock::DataSource` | 1 |
 | `AWS::Bedrock::KnowledgeBase` | 1 |
+| `AWS::CloudFront::Distribution` | 1 |
+| `AWS::CloudFront::Function` | 1 |
+| `AWS::CloudFront::OriginAccessControl` | 1 |
 | `AWS::Cognito::UserPool` | 1 |
 | `AWS::Cognito::UserPoolClient` | 1 |
 | `AWS::Cognito::UserPoolDomain` | 1 |
-| `AWS::IAM::Policy` | 2 |
-| `AWS::IAM::Role` | 3 |
+| `AWS::Cognito::UserPoolGroup` | 1 |
+| `AWS::IAM::Policy` | 4 |
+| `AWS::IAM::Role` | 7 |
 | `AWS::KMS::Key` | 1 |
-| `AWS::Lambda::Function` | 1 |
-| `AWS::Lambda::Permission` | 4 |
+| `AWS::Lambda::Function` | 3 |
+| `AWS::Lambda::LayerVersion` | 1 |
+| `AWS::Lambda::Permission` | 8 |
 | `AWS::Logs::LogGroup` | 1 |
-| `AWS::S3::Bucket` | 1 |
-| `AWS::S3::BucketPolicy` | 1 |
+| `AWS::S3::Bucket` | 2 |
+| `AWS::S3::BucketPolicy` | 2 |
 | `AWS::S3Vectors::Index` | 1 |
 | `AWS::S3Vectors::VectorBucket` | 1 |
+| `Custom::CDKBucketDeployment` | 1 |
+| `Custom::LogRetention` | 1 |
