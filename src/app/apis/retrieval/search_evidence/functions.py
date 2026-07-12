@@ -1,7 +1,8 @@
 from app.apis.retrieval.search_evidence.schemas import SearchHit, SearchOut
 from app.core.logging import audit
 from app.domain import Principal, RankedChunk
-from app.integrations.rag_runtime import RagRuntime
+from app.integrations.chunk_store.port import ChunkStorePort
+from app.integrations.embedder.port import EmbedderPort
 
 
 async def normalize_query(query: str) -> str:
@@ -9,11 +10,25 @@ async def normalize_query(query: str) -> str:
     return " ".join(query.split())
 
 
+async def embed_query(query: str, embedder: EmbedderPort) -> tuple[float, ...]:
+    """疎密hybrid retrieval用のquery embeddingを生成する。"""
+    return embedder.embed(query)
+
+
 async def retrieve_authorized_evidence(
-    query: str, top_k: int, actor: Principal, runtime: RagRuntime
+    query: str,
+    query_embedding: tuple[float, ...],
+    top_k: int,
+    actor: Principal,
+    chunk_store: ChunkStorePort,
 ) -> tuple[RankedChunk, ...]:
     """ACL hard filter後に疎密検索とRRFを行う。"""
-    return runtime.retrieve(query=query, top_k=top_k, actor=actor)
+    return chunk_store.search(
+        principal=actor,
+        query=query,
+        query_embedding=query_embedding,
+        limit=top_k,
+    )
 
 
 async def build_search_response(
@@ -21,7 +36,7 @@ async def build_search_response(
 ) -> SearchOut:
     """検索診断scoreを含む認可済み根拠一覧を組み立てる。"""
     audit(
-        "search.completed",
+        "searchEvidence.completed",
         {"request_id": request_id, "actor": actor.subject, "result_count": len(ranked)},
     )
     return SearchOut(

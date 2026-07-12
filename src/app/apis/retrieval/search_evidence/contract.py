@@ -10,22 +10,9 @@ CONTRACT = ApiContract(
     auth_mode="management-bearer",
     business_summary="認証主体が参照できる根拠だけを疎密検索し、RRF順位で返す。",
     permissions=("authenticated",),
-    sequence=("normalize_query", "retrieve_authorized_evidence", "build_search_response"),
-    prerequisites=("Bearer access tokenが検証済みである。", "ACL filterを検索前に適用する。"),
-    resource_changes=(),
     response_sources=(
         ("hits", "ChunkStore hybrid retrieval result"),
-        ("requestId", "Application generated UUID"),
-    ),
-    test_factors=(
-        "認証",
-        "query正規化",
-        "ACL hard filter",
-        "疎検索",
-        "密検索",
-        "RRF",
-        "重複排除",
-        "topK境界",
+        ("request_id", "Application generated UUID"),
     ),
     messages=(
         MessageContract(
@@ -38,17 +25,5 @@ CONTRACT = ApiContract(
             "RUNBOOK-retrieval-quality",
             ("traceId", "actorPrincipalId", "resultCount", "durationMs"),
         ),
-        MessageContract(
-            "M002",
-            "searchEvidence.failed",
-            "ERROR",
-            "根拠検索に失敗した。",
-            "検索providerまたは入力処理で例外が発生した場合。",
-            "provider状態とtraceIdを確認する。",
-            "RUNBOOK-retrieval-failure",
-            ("traceId", "actorPrincipalId", "errorCode", "exceptionType"),
-        ),
     ),
-    sql_summary="ACL適用済みhybrid retrieval境界を仕様化する。",
-    sql_tables=("s3_vectors", "bedrock_knowledge_base"),
 )

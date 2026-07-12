@@ -17,7 +17,6 @@
 | ID | Message ID | Level | Summary |
 | --- | --- | --- | --- |
 | `M001` | `generateGroundedAnswer.completed` | `INFO` | 根拠限定回答処理を完了した。 |
-| `M002` | `generateGroundedAnswer.failed` | `ERROR` | 回答生成に失敗した。 |
 
 ## ログ詳細
 
@@ -29,15 +28,6 @@
 - Operator action: statusとcitationCountを確認する。
 - Runbook: `RUNBOOK-answer-grounding`
 - Output fields: `traceId`, `actorPrincipalId`, `status`, `citationCount`
-
-### `M002` `generateGroundedAnswer.failed`
-
-- Level: `ERROR`
-- Summary: 回答生成に失敗した。
-- When: retrievalまたはmodel providerで例外が発生した場合。
-- Operator action: provider状態とtraceIdを確認する。
-- Runbook: `RUNBOOK-generation-failure`
-- Output fields: `traceId`, `actorPrincipalId`, `errorCode`, `exceptionType`
 
 ## strict検証で要求する項目
 

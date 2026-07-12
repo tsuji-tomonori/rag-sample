@@ -1,32 +1,56 @@
 from app.apis.answers.generate_grounded_answer.schemas import AnswerOut, Citation
+from app.core.config import Settings
 from app.core.logging import audit
 from app.domain import Principal, RankedChunk
-from app.integrations.rag_runtime import RagRuntime
+from app.integrations.answer_generator.port import AnswerGeneratorPort
+from app.integrations.chunk_store.port import ChunkStorePort
+from app.integrations.embedder.port import EmbedderPort
+
+
+async def normalize_question(question: str) -> str:
+    """質問文の空白を正規化する。"""
+    return " ".join(question.split())
+
+
+async def embed_question(question: str, embedder: EmbedderPort) -> tuple[float, ...]:
+    """回答根拠retrieval用のquestion embeddingを生成する。"""
+    return embedder.embed(question)
 
 
 async def retrieve_answer_evidence(
-    question: str, top_k: int, actor: Principal, runtime: RagRuntime
+    question: str,
+    question_embedding: tuple[float, ...],
+    top_k: int,
+    actor: Principal,
+    chunk_store: ChunkStorePort,
 ) -> tuple[RankedChunk, ...]:
     """回答生成前にACL適用済み根拠を取得する。"""
-    return runtime.retrieve(query=" ".join(question.split()), top_k=top_k, actor=actor)
+    return chunk_store.search(
+        principal=actor,
+        query=question,
+        query_embedding=question_embedding,
+        limit=top_k,
+    )
 
 
 async def select_sufficient_evidence(
-    ranked: tuple[RankedChunk, ...], runtime: RagRuntime
+    ranked: tuple[RankedChunk, ...], settings: Settings
 ) -> tuple[RankedChunk, ...]:
     """疎または密scoreが根拠閾値以上の候補だけを選ぶ。"""
     return tuple(
         item
         for item in ranked
-        if max(item.sparse_score, item.dense_score) >= runtime.evidence_threshold
+        if max(item.sparse_score, item.dense_score) >= settings.evidence_threshold
     )
 
 
 async def generate_answer(
-    question: str, evidence: tuple[RankedChunk, ...], runtime: RagRuntime
+    question: str,
+    evidence: tuple[RankedChunk, ...],
+    answer_generator: AnswerGeneratorPort,
 ) -> str:
     """認可・閾値検証済み根拠だけをgeneratorへ渡す。"""
-    return runtime.generate(question, evidence)
+    return answer_generator.generate(question, evidence)
 
 
 async def build_answer_response(
@@ -61,7 +85,7 @@ async def build_answer_response(
             request_id=request_id,
         )
     audit(
-        "answer.completed",
+        "generateGroundedAnswer.completed",
         {
             "request_id": request_id,
             "actor": actor.subject,

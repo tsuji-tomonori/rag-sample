@@ -12,13 +12,16 @@ from app.auth import (
     CognitoAuthenticatorConfig,
     LocalAuthenticator,
 )
-from app.core.config import get_settings
+from app.core.config import Settings, get_settings
 from app.domain import Principal
-from app.integrations.rag_runtime import RagRuntime
+from app.integrations.answer_generator.port import AnswerGeneratorPort
+from app.integrations.chunk_store.port import ChunkStorePort
+from app.integrations.embedder.port import EmbedderPort
+from app.integrations.rag_runtime import RagResources
 
 
 @lru_cache
-def get_cached_service() -> RagRuntime:
+def get_cached_service() -> RagResources:
     settings = get_settings()
     if settings.storage_backend == "aws":
         required = {
@@ -40,22 +43,38 @@ def get_cached_service() -> RagRuntime:
                 appsync_graphql_url=cast(str, settings.appsync_graphql_url),
             )
         )
-        return RagRuntime(
+        return RagResources(
             settings=settings,
-            store=store,
+            chunk_store=store,
             embedder=HashingEmbedder(),
-            generator=generator,
+            answer_generator=generator,
         )
-    return RagRuntime(
+    return RagResources(
         settings=settings,
-        store=InMemoryChunkStore(),
+        chunk_store=InMemoryChunkStore(),
         embedder=HashingEmbedder(),
-        generator=ExtractiveAnswerGenerator(),
+        answer_generator=ExtractiveAnswerGenerator(),
     )
 
 
-async def get_service() -> RagRuntime:
+async def get_service() -> RagResources:
     return get_cached_service()
+
+
+async def get_chunk_store() -> ChunkStorePort:
+    return get_cached_service().chunk_store
+
+
+async def get_embedder() -> EmbedderPort:
+    return get_cached_service().embedder
+
+
+async def get_answer_generator() -> AnswerGeneratorPort:
+    return get_cached_service().answer_generator
+
+
+async def get_runtime_settings() -> Settings:
+    return get_cached_service().settings
 
 
 @lru_cache
@@ -93,5 +112,9 @@ async def get_principal(
         raise HTTPException(status_code=401, detail="Bearer credential is invalid") from exc
 
 
-ServiceDependency = Annotated[RagRuntime, Depends(get_service)]
+ServiceDependency = Annotated[RagResources, Depends(get_service)]
 PrincipalDependency = Annotated[Principal, Depends(get_principal)]
+ChunkStoreDependency = Annotated[ChunkStorePort, Depends(get_chunk_store)]
+EmbedderDependency = Annotated[EmbedderPort, Depends(get_embedder)]
+AnswerGeneratorDependency = Annotated[AnswerGeneratorPort, Depends(get_answer_generator)]
+SettingsDependency = Annotated[Settings, Depends(get_runtime_settings)]

@@ -1,3 +1,2 @@
--- summary: 認可済み根拠による回答生成境界を仕様化する。
--- tables: bedrock_knowledge_base, bedrock_runtime
-SELECT 'generate_grounded_answer' AS operation_name;
+-- Relational SQL is not used by this operation.
+-- Data access is implemented by ChunkStorePort.search in functions.py.

@@ -10,11 +10,7 @@ CONTRACT = ApiContract(
     auth_mode="public",
     business_summary="機微情報を含まないprocess死活状態を返す。",
     permissions=(),
-    sequence=("build_health_response",),
-    prerequisites=(),
-    resource_changes=(),
     response_sources=(("status", "Application constant"),),
-    test_factors=("正常応答",),
     messages=(
         MessageContract(
             "M001",
@@ -27,6 +23,4 @@ CONTRACT = ApiContract(
             ("traceId", "statusCode"),
         ),
     ),
-    sql_summary="API processの死活確認境界を仕様化する。",
-    sql_tables=("api_process",),
 )

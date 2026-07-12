@@ -2,29 +2,33 @@
 
 # ingest_document query
 
-## 001_operation_boundary.sql
+## ChunkStorePort.replace_document
 
-### SQL種別
+### Query種別
 
-- `SELECT`
+`WRITE`
 
-### SQLの概要
+### Queryの概要
 
-- RAG sourceへの文書登録境界を仕様化する。
+版置換の単位で認可metadata付きチャンクを保存する。
 
-### 利用するテーブル
+### 利用するデータストア
 
-- `s3_source`
-- `bedrock_knowledge_base`
+- Local: `InMemoryChunkStore`
+- AWS: `Bedrock Knowledge Base` + `S3 Vectors`
 
 ### 引数
 
-_引数はありません。_
+| 項目 | 型 |
+| --- | --- |
+| `document` | `DocumentIn` |
+| `chunks` | `tuple[Chunk, ...]` |
+| `chunk_store` | `ChunkStorePort` |
 
 ### 戻り値
 
-- `operation_name`: operation境界名。
+`None`
 
 ### 条件
 
-_検索条件はありません。_
+_追加条件はありません。_

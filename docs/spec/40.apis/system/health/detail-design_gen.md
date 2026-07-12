@@ -18,7 +18,11 @@ _Request body はありません。_
 
 ## 3. 正常系リソース変更
 
-_正常系で作成/更新/削除するリソースはありません。_
+### 外部リソース `audit_log.emit`
+
+- 目的: 機微情報を含まないprocess死活応答を組み立てる。
+- 実装: Structured application audit logger
+
 
 ## 4. 正常系レスポンス
 

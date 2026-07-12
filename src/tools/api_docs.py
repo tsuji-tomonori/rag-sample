@@ -9,6 +9,7 @@ from typing import Any, cast
 from app.apis.contract import ApiContract
 from app.apis.contracts import OPERATIONS
 from app.main import app
+from tools.api_analysis import analyze_operation, integration_implementation, participant
 
 ROOT = Path(__file__).resolve().parents[2]
 DOCS_ROOT = ROOT / "docs/spec/40.apis"
@@ -235,6 +236,7 @@ def render_if(schema: JsonObject, contract: ApiContract) -> str:
 
 
 def render_detail(schema: JsonObject, contract: ApiContract) -> str:
+    analysis = analyze_operation(contract)
     operation = _operation(schema, contract)
     request_name, request_model = _request_schema(schema, operation)
     response_name, response_model = _response_schema(schema, operation)
@@ -281,15 +283,38 @@ def render_detail(schema: JsonObject, contract: ApiContract) -> str:
             for name, type_name, description in _fields(request_model)
         )
     lines.extend(["", "## 2. 正常系前提", ""])
+    prerequisites = (
+        [] if contract.auth_mode == "public" else ["Bearer access tokenが検証済みである。"]
+    )
+    prerequisites.extend(
+        f"条件分岐: {condition}: 不成立"
+        for step in analysis.steps
+        for condition in step.function.conditions
+    )
     lines.extend(
-        [f"- {item}" for item in contract.prerequisites]
+        [f"- {item}" for item in prerequisites]
         or ["- 条件分岐または例外処理の正常系前提はありません。"]
     )
     lines.extend(["", "## 3. 正常系リソース変更", ""])
-    lines.extend(
-        [f"- {item}" for item in contract.resource_changes]
-        or ["_正常系で作成/更新/削除するリソースはありません。_"]
-    )
+    changes = [
+        (step.function.description, call)
+        for step in analysis.steps
+        for call in step.function.integrations
+        if call.method in {"replace_document", "emit"}
+        and not (call.event or "").endswith("permission_denied")
+    ]
+    if not changes:
+        lines.append("_正常系で作成/更新/削除するリソースはありません。_")
+    for description, call in changes:
+        lines.extend(
+            [
+                f"### 外部リソース `{call.resource}.{call.method}`",
+                "",
+                f"- 目的: {description}",
+                f"- 実装: {integration_implementation(call.resource)}",
+                "",
+            ]
+        )
     lines.extend(["", "## 4. 正常系レスポンス", ""])
     if response_name is None:
         lines.append("_Response model はありません。_")
@@ -310,7 +335,25 @@ def render_detail(schema: JsonObject, contract: ApiContract) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def _port_name(resource: str) -> str:
+    return {
+        "chunk_store": "ChunkStorePort",
+        "embedder": "EmbedderPort",
+        "answer_generator": "AnswerGeneratorPort",
+        "audit_log": "audit",
+    }.get(resource, resource)
+
+
+def _error_response(error: str) -> str:
+    if error.startswith("PermissionError"):
+        return "HTTP 403 Forbidden"
+    if error.startswith("ValueError"):
+        return "HTTP 400 Bad Request"
+    return "HTTP 500 Internal Server Error"
+
+
 def render_sequence(contract: ApiContract) -> str:
+    analysis = analyze_operation(contract)
     lines = [
         COMMENTS["sequence"],
         "",
@@ -321,16 +364,68 @@ def render_sequence(contract: ApiContract) -> str:
         "  autonumber",
         "  participant User as User",
         "  participant API as API",
-        "  participant RAG as Resource: RagRuntime",
-        f"  User->>API: {contract.method} {contract.path}",
     ]
-    for step in contract.sequence:
-        lines.append(f"  API->>RAG: {step.replace('_', ' ')}")
+    resources = tuple(dict.fromkeys(call.resource for call in analysis.integrations))
+    for resource in resources:
+        identifier, label = participant(resource)
+        lines.append(f"  participant {identifier} as {label}")
+    lines.append(f"  User->>API: {contract.method} {contract.path}")
+    if contract.auth_mode != "public":
+        lines.extend(
+            [
+                "  alt Bearer access tokenが未指定または検証できない場合。",
+                "    API-->>User: HTTP 401 Unauthorized<br/>Bearer authentication is required",
+                "  end",
+                "  alt Request bodyが型または制約に一致しない場合。",
+                "    API-->>User: HTTP 422 Unprocessable Content<br/>request validation failed",
+                "  end",
+            ]
+        )
+    for step in analysis.steps:
+        indent = "  "
+        if step.condition:
+            lines.append(f"  alt {step.condition}")
+            indent = "    "
+        conditional_audits = [
+            call
+            for call in step.function.integrations
+            if (call.event or "").endswith("permission_denied")
+        ]
+        for index, condition in enumerate(step.function.conditions):
+            lines.append(f"{indent}alt {condition}")
+            for call in conditional_audits:
+                identifier, _label = participant(call.resource)
+                lines.append(f"{indent}  API->>{identifier}: {call.event}<br/>Port audit.emit")
+            error = (
+                step.function.raised_errors[index]
+                if index < len(step.function.raised_errors)
+                else "operation error"
+            )
+            lines.append(f"{indent}  API-->>User: {_error_response(error)}<br/>{error}")
+            lines.append(f"{indent}end")
+        regular_calls = [
+            call
+            for call in step.function.integrations
+            if not (call.event or "").endswith("permission_denied")
+        ]
+        if not regular_calls:
+            lines.append(f"{indent}API->>API: {step.function.description}")
+        for call in regular_calls:
+            identifier, _label = participant(call.resource)
+            operation = call.event or f"{_port_name(call.resource)}.{call.method}"
+            lines.append(
+                f"{indent}API->>{identifier}: {step.function.description}"
+                f"<br/>Port {operation}"
+                f"<br/>実装 {integration_implementation(call.resource)}"
+            )
+        if step.condition:
+            lines.append("  end")
     lines.extend(["  API-->>User: HTTP success response", "```", ""])
     return "\n".join(lines)
 
 
 def render_unit_test(contract: ApiContract) -> str:
+    factors = analyze_operation(contract).factors
     lines = [
         COMMENTS["unit-test"],
         "",
@@ -349,7 +444,7 @@ def render_unit_test(contract: ApiContract) -> str:
         "## 1. 要因ごとの要素",
         "",
     ]
-    for index, factor in enumerate(contract.test_factors, start=1):
+    for index, factor in enumerate(factors, start=1):
         lines.extend(
             [
                 f"### F{index:02d} {factor}",
@@ -370,10 +465,10 @@ def render_unit_test(contract: ApiContract) -> str:
             "| `TC001` | 全要因正常 | API正常応答 |",
         ]
     )
-    for index, factor in enumerate(contract.test_factors, start=2):
+    for index, factor in enumerate(factors, start=2):
         lines.append(f"| `TC{index:03d}` | {factor}: 異常 | 契約済みerror response |")
     lines.extend(["", "## 3. テスト詳細", ""])
-    for index, factor in enumerate(("正常系", *contract.test_factors), start=1):
+    for index, factor in enumerate(("正常系", *factors), start=1):
         expected = "HTTP success response" if index == 1 else "副作用を中断しerror responseを返す。"
         lines.extend(
             [
@@ -442,43 +537,63 @@ def render_messages(contract: ApiContract) -> str:
 
 
 def render_query(contract: ApiContract) -> str:
-    sql_name = "001_operation_boundary.sql"
+    analysis = analyze_operation(contract)
+    queries = [
+        (step.function, call)
+        for step in analysis.steps
+        for call in step.function.integrations
+        if call.resource == "chunk_store"
+    ]
     lines = [
         COMMENTS["query"],
         "",
         f"# {contract.api} query",
-        "",
-        f"## {sql_name}",
-        "",
-        "### SQL種別",
-        "",
-        "- `SELECT`",
-        "",
-        "### SQLの概要",
-        "",
-        f"- {contract.sql_summary}",
-        "",
-        "### 利用するテーブル",
-        "",
     ]
-    lines.extend(f"- `{table}`" for table in contract.sql_tables)
-    lines.extend(
-        [
-            "",
-            "### 引数",
-            "",
-            "_引数はありません。_",
-            "",
-            "### 戻り値",
-            "",
-            "- `operation_name`: operation境界名。",
-            "",
-            "### 条件",
-            "",
-            "_検索条件はありません。_",
-            "",
+    if not queries:
+        lines.extend(["", "_DB queryはありません。_", ""])
+        return "\n".join(lines)
+    for function, call in queries:
+        query_type = "WRITE" if call.method == "replace_document" else "HYBRID READ"
+        argument_rows = [
+            f"| `{argument.split(':', maxsplit=1)[0]}` | "
+            f"`{argument.split(':', maxsplit=1)[1].strip()}` |"
+            for argument in function.arguments
         ]
-    )
+        conditions = [f"- {condition}" for condition in function.conditions]
+        lines.extend(
+            [
+                "",
+                f"## ChunkStorePort.{call.method}",
+                "",
+                "### Query種別",
+                "",
+                f"`{query_type}`",
+                "",
+                "### Queryの概要",
+                "",
+                function.description,
+                "",
+                "### 利用するデータストア",
+                "",
+                "- Local: `InMemoryChunkStore`",
+                "- AWS: `Bedrock Knowledge Base` + `S3 Vectors`",
+                "",
+                "### 引数",
+                "",
+                "| 項目 | 型 |",
+                "| --- | --- |",
+                *argument_rows,
+                "",
+                "### 戻り値",
+                "",
+                f"`{function.return_type}`",
+                "",
+                "### 条件",
+                "",
+                *(conditions or ["_追加条件はありません。_"]),
+                "",
+            ]
+        )
     return "\n".join(lines)
 
 

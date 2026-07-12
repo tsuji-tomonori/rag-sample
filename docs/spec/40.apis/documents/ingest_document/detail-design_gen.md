@@ -25,15 +25,26 @@
 
 ## 2. 正常系前提
 
-- 呼び出し元がadmin groupに所属する。
-- ownerSubjectが認証主体と一致する。
-- allowedGroupsが認証主体のgroupに含まれる。
+- Bearer access tokenが検証済みである。
+- 条件分岐: 呼び出し元がadmin groupに所属しない場合。: 不成立
+- 条件分岐: 文書所有者が認証主体と一致しない場合。: 不成立
+- 条件分岐: 許可groupに認証主体が所属しないgroupを含む場合。: 不成立
+- 条件分岐: 正規化後の本文が空の場合。: 不成立
+- 条件分岐: 処理中のチャンクが存在する場合。: 不成立
+- 条件分岐: `current and len(current) + len(paragraph) + 2 > size` が成立する場合。: 不成立
 
 ## 3. 正常系リソース変更
 
-- S3 source objectを版置換する。
-- Bedrock Knowledge Base ingestion jobを開始する。
-- AppSyncへingestion eventを発行する。
+### 外部リソース `chunk_store.replace_document`
+
+- 目的: 版置換の単位で認可metadata付きチャンクを保存する。
+- 実装: Local InMemoryChunkStore / AWS Bedrock Knowledge Base + S3 Vectors
+
+### 外部リソース `audit_log.emit`
+
+- 目的: 監査イベントを記録し登録結果を組み立てる。
+- 実装: Structured application audit logger
+
 
 ## 4. 正常系レスポンス
 
@@ -41,7 +52,7 @@
 
 | 項目 | 説明 | 値の取得元 |
 | --- | --- | --- |
-| `document_id` | 取り込んだ文書IDです。 | Operation function |
+| `document_id` | 取り込んだ文書IDです。 | Request: document_id |
 | `version` | 取り込んだ文書の版です。 | Request: version |
-| `chunk_count` | 生成して索引化したチャンク数です。 | Operation function |
-| `request_id` | 処理を追跡するリクエストIDです。 | Operation function |
+| `chunk_count` | 生成して索引化したチャンク数です。 | 生成したchunk数 |
+| `request_id` | 処理を追跡するリクエストIDです。 | Application generated UUID |

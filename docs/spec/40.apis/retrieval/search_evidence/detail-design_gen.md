@@ -22,11 +22,14 @@
 ## 2. 正常系前提
 
 - Bearer access tokenが検証済みである。
-- ACL filterを検索前に適用する。
 
 ## 3. 正常系リソース変更
 
-_正常系で作成/更新/削除するリソースはありません。_
+### 外部リソース `audit_log.emit`
+
+- 目的: 検索診断scoreを含む認可済み根拠一覧を組み立てる。
+- 実装: Structured application audit logger
+
 
 ## 4. 正常系レスポンス
 
@@ -35,4 +38,4 @@ _正常系で作成/更新/削除するリソースはありません。_
 | 項目 | 説明 | 値の取得元 |
 | --- | --- | --- |
 | `hits` | ACL検証済みの根拠候補です。 | ChunkStore hybrid retrieval result |
-| `request_id` | 処理を追跡するリクエストIDです。 | Operation function |
+| `request_id` | 処理を追跡するリクエストIDです。 | Application generated UUID |

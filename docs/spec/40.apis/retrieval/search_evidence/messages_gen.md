@@ -17,7 +17,6 @@
 | ID | Message ID | Level | Summary |
 | --- | --- | --- | --- |
 | `M001` | `searchEvidence.completed` | `INFO` | 認可済み根拠の検索を完了した。 |
-| `M002` | `searchEvidence.failed` | `ERROR` | 根拠検索に失敗した。 |
 
 ## ログ詳細
 
@@ -29,15 +28,6 @@
 - Operator action: resultCountと検索遅延を確認する。
 - Runbook: `RUNBOOK-retrieval-quality`
 - Output fields: `traceId`, `actorPrincipalId`, `resultCount`, `durationMs`
-
-### `M002` `searchEvidence.failed`
-
-- Level: `ERROR`
-- Summary: 根拠検索に失敗した。
-- When: 検索providerまたは入力処理で例外が発生した場合。
-- Operator action: provider状態とtraceIdを確認する。
-- Runbook: `RUNBOOK-retrieval-failure`
-- Output fields: `traceId`, `actorPrincipalId`, `errorCode`, `exceptionType`
 
 ## strict検証で要求する項目
 

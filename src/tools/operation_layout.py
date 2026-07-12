@@ -34,8 +34,8 @@ def layout_errors() -> list[str]:
         generated = directory / "generated/queries.py"
         if generated.is_file():
             content = generated.read_text(encoding="utf-8")
-            if "generated from SQL files in the sibling sql directory" not in content:
-                errors.append(f"{contract.markdown_slug}: generated query marker is missing")
+            if "typed integration ports in functions.py" not in content:
+                errors.append(f"{contract.markdown_slug}: data-access marker is missing")
             if 'SQL_DIR = Path(__file__).parents[1] / "sql"' not in content:
                 errors.append(f"{contract.markdown_slug}: SQL_DIR contract is missing")
     return errors

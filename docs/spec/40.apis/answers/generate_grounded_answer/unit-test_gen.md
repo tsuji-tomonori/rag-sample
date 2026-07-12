@@ -14,49 +14,56 @@
 
 ## 1. 要因ごとの要素
 
-### F01 認証
+### F01 Bearer認証
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F02 ACL hard filter
+### F02 OpenAPI入力検証
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F03 根拠閾値
+### F03 embedder.embed
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F04 回答生成
+### F04 chunk_store.search
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F05 回答拒否
+### F05 閾値以上の認可済み根拠が存在する場合。
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F06 引用整合性
+### F06 answer_generator.generate
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F07 model例外
+### F07 生成回答が存在しない場合。
+
+| 要素 | 期待観点 |
+| --- | --- |
+| 成立 | 対象処理または条件成立側を実行する。 |
+| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
+
+### F08 audit_log.emit
 
 | 要素 | 期待観点 |
 | --- | --- |
@@ -68,13 +75,14 @@
 | Test case | 主要素 | 期待結果 |
 | --- | --- | --- |
 | `TC001` | 全要因正常 | API正常応答 |
-| `TC002` | 認証: 異常 | 契約済みerror response |
-| `TC003` | ACL hard filter: 異常 | 契約済みerror response |
-| `TC004` | 根拠閾値: 異常 | 契約済みerror response |
-| `TC005` | 回答生成: 異常 | 契約済みerror response |
-| `TC006` | 回答拒否: 異常 | 契約済みerror response |
-| `TC007` | 引用整合性: 異常 | 契約済みerror response |
-| `TC008` | model例外: 異常 | 契約済みerror response |
+| `TC002` | Bearer認証: 異常 | 契約済みerror response |
+| `TC003` | OpenAPI入力検証: 異常 | 契約済みerror response |
+| `TC004` | embedder.embed: 異常 | 契約済みerror response |
+| `TC005` | chunk_store.search: 異常 | 契約済みerror response |
+| `TC006` | 閾値以上の認可済み根拠が存在する場合。: 異常 | 契約済みerror response |
+| `TC007` | answer_generator.generate: 異常 | 契約済みerror response |
+| `TC008` | 生成回答が存在しない場合。: 異常 | 契約済みerror response |
+| `TC009` | audit_log.emit: 異常 | 契約済みerror response |
 
 ## 3. テスト詳細
 
@@ -88,40 +96,46 @@
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 認証 | 副作用を中断しerror responseを返す。 |
+| 対象 | Bearer認証 | 副作用を中断しerror responseを返す。 |
 
 ### TC003
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | ACL hard filter | 副作用を中断しerror responseを返す。 |
+| 対象 | OpenAPI入力検証 | 副作用を中断しerror responseを返す。 |
 
 ### TC004
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 根拠閾値 | 副作用を中断しerror responseを返す。 |
+| 対象 | embedder.embed | 副作用を中断しerror responseを返す。 |
 
 ### TC005
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 回答生成 | 副作用を中断しerror responseを返す。 |
+| 対象 | chunk_store.search | 副作用を中断しerror responseを返す。 |
 
 ### TC006
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 回答拒否 | 副作用を中断しerror responseを返す。 |
+| 対象 | 閾値以上の認可済み根拠が存在する場合。 | 副作用を中断しerror responseを返す。 |
 
 ### TC007
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 引用整合性 | 副作用を中断しerror responseを返す。 |
+| 対象 | answer_generator.generate | 副作用を中断しerror responseを返す。 |
 
 ### TC008
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | model例外 | 副作用を中断しerror responseを返す。 |
+| 対象 | 生成回答が存在しない場合。 | 副作用を中断しerror responseを返す。 |
+
+### TC009
+
+| 要因 | 要素 | 期待観点 |
+| --- | --- | --- |
+| 対象 | audit_log.emit | 副作用を中断しerror responseを返す。 |

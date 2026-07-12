@@ -7,11 +7,27 @@ sequenceDiagram
   autonumber
   participant User as User
   participant API as API
-  participant RAG as Resource: RagRuntime
+  participant R_embedder as Resource: Embedder
+  participant DB as DB: Chunk Store
+  participant R_answer_generator as Resource: Answer Generator
+  participant R_audit_log as Resource: Audit Log
   User->>API: POST /v1/answers
-  API->>RAG: retrieve answer evidence
-  API->>RAG: select sufficient evidence
-  API->>RAG: generate answer
-  API->>RAG: build answer response
+  alt Bearer access tokenが未指定または検証できない場合。
+    API-->>User: HTTP 401 Unauthorized<br/>Bearer authentication is required
+  end
+  alt Request bodyが型または制約に一致しない場合。
+    API-->>User: HTTP 422 Unprocessable Content<br/>request validation failed
+  end
+  API->>API: 質問文の空白を正規化する。
+  API->>R_embedder: 回答根拠retrieval用のquestion embeddingを生成する。<br/>Port EmbedderPort.embed<br/>実装 Local HashingEmbedder / AWS Knowledge Base managed embedding
+  API->>DB: 回答生成前にACL適用済み根拠を取得する。<br/>Port ChunkStorePort.search<br/>実装 Local InMemoryChunkStore / AWS Bedrock Knowledge Base + S3 Vectors
+  API->>API: 疎または密scoreが根拠閾値以上の候補だけを選ぶ。
+  alt 閾値以上の認可済み根拠が存在する場合。
+    API->>R_answer_generator: 認可・閾値検証済み根拠だけをgeneratorへ渡す。<br/>Port AnswerGeneratorPort.generate<br/>実装 Local ExtractiveAnswerGenerator / AWS Bedrock Converse
+  end
+  alt 生成回答が存在しない場合。
+    API-->>User: HTTP 500 Internal Server Error<br/>operation error
+  end
+  API->>R_audit_log: 引用付き回答または明示的な根拠不足応答を組み立てる。<br/>Port generateGroundedAnswer.completed<br/>実装 Structured application audit logger
   API-->>User: HTTP success response
 ```

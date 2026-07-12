@@ -3,7 +3,9 @@
 `uv run app-docs` はFastAPI runtime OpenAPI、`app.apis.contracts`、operation-local `contract.py`、`schemas.py`、
 `samples.py`、`message_catalog.py`、`sql/`を結合する。Lazunexと同じ出力階層、生成ファイル名、
 見出し構成でinterface、detail design、Mermaid sequence、message catalog、query specification、
-unit test factorを生成する。operation IDまたは必須operationファイルが一致しない場合は失敗する。
+unit test factorを生成する。sequence、DB/resource線、query、条件、test factorは
+`tools.api_analysis` がrouter/functionsのASTから導出し、contractの手書き配列では補完しない。
+operation ID、必須operationファイル、runtime message、生成物が一致しない場合は失敗する。
 
 `npm run docs:web` は `apps/web/design-contract.json` とproduction `App.tsx` labelを照合する。
 `npm run docs:infra` はCDK synth templateをsnapshot化し、Rag-assistと同じ

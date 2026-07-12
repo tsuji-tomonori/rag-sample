@@ -2,6 +2,7 @@ from typing import cast
 
 from app.apis.contracts import OPERATIONS
 from app.main import app
+from tools.api_analysis import analyze_operation
 from tools.operation_layout import assert_layout
 
 
@@ -26,6 +27,10 @@ def main() -> int:
         runtime = sorted(runtime_ids)
         contracts = sorted(contract_ids)
         raise SystemExit(f"operation contract drift: runtime={runtime}, contract={contracts}")
+    for contract in OPERATIONS:
+        analysis = analyze_operation(contract)
+        if not analysis.steps:
+            raise SystemExit(f"{contract.markdown_slug}: implementation-derived sequence is empty")
     return 0
 
 

@@ -45,3 +45,15 @@
 - 現在のCDK synth templateをcommitted snapshotへ変換し、snapshotと生成Markdown/JSONをbyte-level検査する。
 - 参考元renderer移植後の `task verify` は、Lint、全型検査、24 Python test、2 contract test、6 Web test、6 Infra test、build、docs drift、skills、CDK synthを含めてpassした。
 - deployおよび実AWS API callは実施していない。
+
+## API sequence follow-up
+
+- sequenceが手書き `contract.sequence` 由来で、実際のdata store、embedding、LLM呼び出しを表現していなかった。
+- operation function引数へ `ChunkStorePort`、`EmbedderPort`、`AnswerGeneratorPort` を明示し、routerで処理stepを分離した。
+- `tools.api_analysis` でrouter await順、function docstring、port call、条件、raise、audit eventをAST解析する。
+- sequence、detail design、query specification、unit test factorを同じ解析結果から生成する。
+- runtime未使用のダミーSELECTをquery設計から除外した。
+- `task verify`: pass。Ruff、ESLint、Pyright、Mypy、全TypeScript型検査、25 Python test、2 contract test、6 Web test、6 Infra test、全build、docs drift、skills、CDK synthを含む。
+- `task e2e`: desktop/mobile 2 passed。
+- answer/search/ingestの生成sequenceに `participant DB as DB: Chunk Store`、`API->>DB:`、実port methodが存在することをtestで固定した。
+- deployおよび実AWS API callは実施していない。

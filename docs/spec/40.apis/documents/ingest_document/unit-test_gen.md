@@ -14,42 +14,105 @@
 
 ## 1. 要因ごとの要素
 
-### F01 認証
+### F01 Bearer認証
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F02 admin認可
+### F02 OpenAPI入力検証
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F03 所有者一致
+### F03 呼び出し元がadmin groupに所属しない場合。
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F04 共有group認可
+### F04 文書所有者が認証主体と一致しない場合。
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F05 本文正規化
+### F05 許可groupに認証主体が所属しないgroupを含む場合。
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F06 provider例外
+### F06 audit_log.emit
+
+| 要素 | 期待観点 |
+| --- | --- |
+| 成立 | 対象処理または条件成立側を実行する。 |
+| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
+
+### F07 PermissionError: document ingestion requires the admin group
+
+| 要素 | 期待観点 |
+| --- | --- |
+| 成立 | 対象処理または条件成立側を実行する。 |
+| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
+
+### F08 PermissionError: document owner must match the authenticated subject
+
+| 要素 | 期待観点 |
+| --- | --- |
+| 成立 | 対象処理または条件成立側を実行する。 |
+| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
+
+### F09 PermissionError: documents can only be shared with the actor's groups
+
+| 要素 | 期待観点 |
+| --- | --- |
+| 成立 | 対象処理または条件成立側を実行する。 |
+| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
+
+### F10 正規化後の本文が空の場合。
+
+| 要素 | 期待観点 |
+| --- | --- |
+| 成立 | 対象処理または条件成立側を実行する。 |
+| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
+
+### F11 処理中のチャンクが存在する場合。
+
+| 要素 | 期待観点 |
+| --- | --- |
+| 成立 | 対象処理または条件成立側を実行する。 |
+| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
+
+### F12 `current and len(current) + len(paragraph) + 2 > size` が成立する場合。
+
+| 要素 | 期待観点 |
+| --- | --- |
+| 成立 | 対象処理または条件成立側を実行する。 |
+| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
+
+### F13 ValueError: document text is empty after normalization
+
+| 要素 | 期待観点 |
+| --- | --- |
+| 成立 | 対象処理または条件成立側を実行する。 |
+| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
+
+### F14 embedder.embed
+
+| 要素 | 期待観点 |
+| --- | --- |
+| 成立 | 対象処理または条件成立側を実行する。 |
+| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
+
+### F15 chunk_store.replace_document
 
 | 要素 | 期待観点 |
 | --- | --- |
@@ -61,12 +124,21 @@
 | Test case | 主要素 | 期待結果 |
 | --- | --- | --- |
 | `TC001` | 全要因正常 | API正常応答 |
-| `TC002` | 認証: 異常 | 契約済みerror response |
-| `TC003` | admin認可: 異常 | 契約済みerror response |
-| `TC004` | 所有者一致: 異常 | 契約済みerror response |
-| `TC005` | 共有group認可: 異常 | 契約済みerror response |
-| `TC006` | 本文正規化: 異常 | 契約済みerror response |
-| `TC007` | provider例外: 異常 | 契約済みerror response |
+| `TC002` | Bearer認証: 異常 | 契約済みerror response |
+| `TC003` | OpenAPI入力検証: 異常 | 契約済みerror response |
+| `TC004` | 呼び出し元がadmin groupに所属しない場合。: 異常 | 契約済みerror response |
+| `TC005` | 文書所有者が認証主体と一致しない場合。: 異常 | 契約済みerror response |
+| `TC006` | 許可groupに認証主体が所属しないgroupを含む場合。: 異常 | 契約済みerror response |
+| `TC007` | audit_log.emit: 異常 | 契約済みerror response |
+| `TC008` | PermissionError: document ingestion requires the admin group: 異常 | 契約済みerror response |
+| `TC009` | PermissionError: document owner must match the authenticated subject: 異常 | 契約済みerror response |
+| `TC010` | PermissionError: documents can only be shared with the actor's groups: 異常 | 契約済みerror response |
+| `TC011` | 正規化後の本文が空の場合。: 異常 | 契約済みerror response |
+| `TC012` | 処理中のチャンクが存在する場合。: 異常 | 契約済みerror response |
+| `TC013` | `current and len(current) + len(paragraph) + 2 > size` が成立する場合。: 異常 | 契約済みerror response |
+| `TC014` | ValueError: document text is empty after normalization: 異常 | 契約済みerror response |
+| `TC015` | embedder.embed: 異常 | 契約済みerror response |
+| `TC016` | chunk_store.replace_document: 異常 | 契約済みerror response |
 
 ## 3. テスト詳細
 
@@ -80,34 +152,88 @@
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 認証 | 副作用を中断しerror responseを返す。 |
+| 対象 | Bearer認証 | 副作用を中断しerror responseを返す。 |
 
 ### TC003
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | admin認可 | 副作用を中断しerror responseを返す。 |
+| 対象 | OpenAPI入力検証 | 副作用を中断しerror responseを返す。 |
 
 ### TC004
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 所有者一致 | 副作用を中断しerror responseを返す。 |
+| 対象 | 呼び出し元がadmin groupに所属しない場合。 | 副作用を中断しerror responseを返す。 |
 
 ### TC005
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 共有group認可 | 副作用を中断しerror responseを返す。 |
+| 対象 | 文書所有者が認証主体と一致しない場合。 | 副作用を中断しerror responseを返す。 |
 
 ### TC006
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 本文正規化 | 副作用を中断しerror responseを返す。 |
+| 対象 | 許可groupに認証主体が所属しないgroupを含む場合。 | 副作用を中断しerror responseを返す。 |
 
 ### TC007
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | provider例外 | 副作用を中断しerror responseを返す。 |
+| 対象 | audit_log.emit | 副作用を中断しerror responseを返す。 |
+
+### TC008
+
+| 要因 | 要素 | 期待観点 |
+| --- | --- | --- |
+| 対象 | PermissionError: document ingestion requires the admin group | 副作用を中断しerror responseを返す。 |
+
+### TC009
+
+| 要因 | 要素 | 期待観点 |
+| --- | --- | --- |
+| 対象 | PermissionError: document owner must match the authenticated subject | 副作用を中断しerror responseを返す。 |
+
+### TC010
+
+| 要因 | 要素 | 期待観点 |
+| --- | --- | --- |
+| 対象 | PermissionError: documents can only be shared with the actor's groups | 副作用を中断しerror responseを返す。 |
+
+### TC011
+
+| 要因 | 要素 | 期待観点 |
+| --- | --- | --- |
+| 対象 | 正規化後の本文が空の場合。 | 副作用を中断しerror responseを返す。 |
+
+### TC012
+
+| 要因 | 要素 | 期待観点 |
+| --- | --- | --- |
+| 対象 | 処理中のチャンクが存在する場合。 | 副作用を中断しerror responseを返す。 |
+
+### TC013
+
+| 要因 | 要素 | 期待観点 |
+| --- | --- | --- |
+| 対象 | `current and len(current) + len(paragraph) + 2 > size` が成立する場合。 | 副作用を中断しerror responseを返す。 |
+
+### TC014
+
+| 要因 | 要素 | 期待観点 |
+| --- | --- | --- |
+| 対象 | ValueError: document text is empty after normalization | 副作用を中断しerror responseを返す。 |
+
+### TC015
+
+| 要因 | 要素 | 期待観点 |
+| --- | --- | --- |
+| 対象 | embedder.embed | 副作用を中断しerror responseを返す。 |
+
+### TC016
+
+| 要因 | 要素 | 期待観点 |
+| --- | --- | --- |
+| 対象 | chunk_store.replace_document | 副作用を中断しerror responseを返す。 |

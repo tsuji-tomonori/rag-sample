@@ -1,4 +1,5 @@
 from app.apis.contracts import OPERATIONS
+from tools.api_analysis import analyze_operation
 
 
 def main() -> int:
@@ -20,6 +21,16 @@ def main() -> int:
                 )
             ):
                 raise SystemExit(f"{contract.markdown_slug}: incomplete {message.message_id}")
+        runtime_events = {
+            call.event
+            for call in analyze_operation(contract).integrations
+            if call.resource == "audit_log" and call.event is not None
+        }
+        if seen != runtime_events:
+            raise SystemExit(
+                f"{contract.markdown_slug}: message drift "
+                f"catalog={sorted(seen)}, runtime={sorted(runtime_events)}"
+            )
     return 0
 
 

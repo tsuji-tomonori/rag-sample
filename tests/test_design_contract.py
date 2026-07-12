@@ -1,5 +1,6 @@
 from app.apis.contracts import OPERATIONS
 from app.main import create_app
+from tools.api_analysis import analyze_operation
 
 
 def test_every_runtime_operation_has_unique_design_contract() -> None:
@@ -13,4 +14,4 @@ def test_every_runtime_operation_has_unique_design_contract() -> None:
     contract_ids = {operation.operation_id for operation in OPERATIONS}
     assert len(contract_ids) == len(OPERATIONS)
     assert runtime_ids == contract_ids
-    assert all(operation.sequence and operation.test_factors for operation in OPERATIONS)
+    assert all(analyze_operation(operation).steps for operation in OPERATIONS)

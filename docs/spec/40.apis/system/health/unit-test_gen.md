@@ -14,7 +14,7 @@
 
 ## 1. 要因ごとの要素
 
-### F01 正常応答
+### F01 audit_log.emit
 
 | 要素 | 期待観点 |
 | --- | --- |
@@ -26,7 +26,7 @@
 | Test case | 主要素 | 期待結果 |
 | --- | --- | --- |
 | `TC001` | 全要因正常 | API正常応答 |
-| `TC002` | 正常応答: 異常 | 契約済みerror response |
+| `TC002` | audit_log.emit: 異常 | 契約済みerror response |
 
 ## 3. テスト詳細
 
@@ -40,4 +40,4 @@
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 正常応答 | 副作用を中断しerror responseを返す。 |
+| 対象 | audit_log.emit | 副作用を中断しerror responseを返す。 |

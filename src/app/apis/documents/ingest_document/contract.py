@@ -10,29 +10,12 @@ CONTRACT = ApiContract(
     auth_mode="management-bearer",
     business_summary="ACL metadataを伴う正本文書を正規化・索引化する。",
     permissions=("admin",),
-    sequence=(
-        "validate_ingestion_permission",
-        "normalize_and_chunk_document",
-        "store_document_chunks",
-        "build_ingest_response",
-    ),
-    prerequisites=(
-        "呼び出し元がadmin groupに所属する。",
-        "ownerSubjectが認証主体と一致する。",
-        "allowedGroupsが認証主体のgroupに含まれる。",
-    ),
-    resource_changes=(
-        "S3 source objectを版置換する。",
-        "Bedrock Knowledge Base ingestion jobを開始する。",
-        "AppSyncへingestion eventを発行する。",
-    ),
     response_sources=(
-        ("documentId", "Request: documentId"),
+        ("document_id", "Request: document_id"),
         ("version", "Request: version"),
-        ("chunkCount", "生成したchunk数"),
-        ("requestId", "Application generated UUID"),
+        ("chunk_count", "生成したchunk数"),
+        ("request_id", "Application generated UUID"),
     ),
-    test_factors=("認証", "admin認可", "所有者一致", "共有group認可", "本文正規化", "provider例外"),
     messages=(
         MessageContract(
             "M001",
@@ -55,6 +38,4 @@ CONTRACT = ApiContract(
             ("traceId", "actorPrincipalId", "documentId", "chunkCount"),
         ),
     ),
-    sql_summary="RAG sourceへの文書登録境界を仕様化する。",
-    sql_tables=("s3_source", "bedrock_knowledge_base"),
 )

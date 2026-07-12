@@ -2,28 +2,4 @@
 
 # health query
 
-## 001_operation_boundary.sql
-
-### SQL種別
-
-- `SELECT`
-
-### SQLの概要
-
-- API processの死活確認境界を仕様化する。
-
-### 利用するテーブル
-
-- `api_process`
-
-### 引数
-
-_引数はありません。_
-
-### 戻り値
-
-- `operation_name`: operation境界名。
-
-### 条件
-
-_検索条件はありません。_
+_DB queryはありません。_

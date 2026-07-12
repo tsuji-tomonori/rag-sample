@@ -7,10 +7,19 @@ sequenceDiagram
   autonumber
   participant User as User
   participant API as API
-  participant RAG as Resource: RagRuntime
+  participant R_embedder as Resource: Embedder
+  participant DB as DB: Chunk Store
+  participant R_audit_log as Resource: Audit Log
   User->>API: POST /v1/search
-  API->>RAG: normalize query
-  API->>RAG: retrieve authorized evidence
-  API->>RAG: build search response
+  alt Bearer access tokenが未指定または検証できない場合。
+    API-->>User: HTTP 401 Unauthorized<br/>Bearer authentication is required
+  end
+  alt Request bodyが型または制約に一致しない場合。
+    API-->>User: HTTP 422 Unprocessable Content<br/>request validation failed
+  end
+  API->>API: 検索語の空白を正規化する。
+  API->>R_embedder: 疎密hybrid retrieval用のquery embeddingを生成する。<br/>Port EmbedderPort.embed<br/>実装 Local HashingEmbedder / AWS Knowledge Base managed embedding
+  API->>DB: ACL hard filter後に疎密検索とRRFを行う。<br/>Port ChunkStorePort.search<br/>実装 Local InMemoryChunkStore / AWS Bedrock Knowledge Base + S3 Vectors
+  API->>R_audit_log: 検索診断scoreを含む認可済み根拠一覧を組み立てる。<br/>Port searchEvidence.completed<br/>実装 Structured application audit logger
   API-->>User: HTTP success response
 ```

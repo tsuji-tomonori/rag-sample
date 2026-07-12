@@ -2,29 +2,35 @@
 
 # generate_grounded_answer query
 
-## 001_operation_boundary.sql
+## ChunkStorePort.search
 
-### SQL種別
+### Query種別
 
-- `SELECT`
+`HYBRID READ`
 
-### SQLの概要
+### Queryの概要
 
-- 認可済み根拠による回答生成境界を仕様化する。
+回答生成前にACL適用済み根拠を取得する。
 
-### 利用するテーブル
+### 利用するデータストア
 
-- `bedrock_knowledge_base`
-- `bedrock_runtime`
+- Local: `InMemoryChunkStore`
+- AWS: `Bedrock Knowledge Base` + `S3 Vectors`
 
 ### 引数
 
-_引数はありません。_
+| 項目 | 型 |
+| --- | --- |
+| `question` | `str` |
+| `question_embedding` | `tuple[float, ...]` |
+| `top_k` | `int` |
+| `actor` | `Principal` |
+| `chunk_store` | `ChunkStorePort` |
 
 ### 戻り値
 
-- `operation_name`: operation境界名。
+`tuple[RankedChunk, ...]`
 
 ### 条件
 
-_検索条件はありません。_
+_追加条件はありません。_

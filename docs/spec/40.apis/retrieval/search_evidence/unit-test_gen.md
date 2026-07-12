@@ -14,56 +14,35 @@
 
 ## 1. 要因ごとの要素
 
-### F01 認証
+### F01 Bearer認証
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F02 query正規化
+### F02 OpenAPI入力検証
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F03 ACL hard filter
+### F03 embedder.embed
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F04 疎検索
+### F04 chunk_store.search
 
 | 要素 | 期待観点 |
 | --- | --- |
 | 成立 | 対象処理または条件成立側を実行する。 |
 | 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
 
-### F05 密検索
-
-| 要素 | 期待観点 |
-| --- | --- |
-| 成立 | 対象処理または条件成立側を実行する。 |
-| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
-
-### F06 RRF
-
-| 要素 | 期待観点 |
-| --- | --- |
-| 成立 | 対象処理または条件成立側を実行する。 |
-| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
-
-### F07 重複排除
-
-| 要素 | 期待観点 |
-| --- | --- |
-| 成立 | 対象処理または条件成立側を実行する。 |
-| 不成立/例外 | 定義済みerror responseを返し、後続の副作用を行わない。 |
-
-### F08 topK境界
+### F05 audit_log.emit
 
 | 要素 | 期待観点 |
 | --- | --- |
@@ -75,14 +54,11 @@
 | Test case | 主要素 | 期待結果 |
 | --- | --- | --- |
 | `TC001` | 全要因正常 | API正常応答 |
-| `TC002` | 認証: 異常 | 契約済みerror response |
-| `TC003` | query正規化: 異常 | 契約済みerror response |
-| `TC004` | ACL hard filter: 異常 | 契約済みerror response |
-| `TC005` | 疎検索: 異常 | 契約済みerror response |
-| `TC006` | 密検索: 異常 | 契約済みerror response |
-| `TC007` | RRF: 異常 | 契約済みerror response |
-| `TC008` | 重複排除: 異常 | 契約済みerror response |
-| `TC009` | topK境界: 異常 | 契約済みerror response |
+| `TC002` | Bearer認証: 異常 | 契約済みerror response |
+| `TC003` | OpenAPI入力検証: 異常 | 契約済みerror response |
+| `TC004` | embedder.embed: 異常 | 契約済みerror response |
+| `TC005` | chunk_store.search: 異常 | 契約済みerror response |
+| `TC006` | audit_log.emit: 異常 | 契約済みerror response |
 
 ## 3. テスト詳細
 
@@ -96,46 +72,28 @@
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 認証 | 副作用を中断しerror responseを返す。 |
+| 対象 | Bearer認証 | 副作用を中断しerror responseを返す。 |
 
 ### TC003
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | query正規化 | 副作用を中断しerror responseを返す。 |
+| 対象 | OpenAPI入力検証 | 副作用を中断しerror responseを返す。 |
 
 ### TC004
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | ACL hard filter | 副作用を中断しerror responseを返す。 |
+| 対象 | embedder.embed | 副作用を中断しerror responseを返す。 |
 
 ### TC005
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 疎検索 | 副作用を中断しerror responseを返す。 |
+| 対象 | chunk_store.search | 副作用を中断しerror responseを返す。 |
 
 ### TC006
 
 | 要因 | 要素 | 期待観点 |
 | --- | --- | --- |
-| 対象 | 密検索 | 副作用を中断しerror responseを返す。 |
-
-### TC007
-
-| 要因 | 要素 | 期待観点 |
-| --- | --- | --- |
-| 対象 | RRF | 副作用を中断しerror responseを返す。 |
-
-### TC008
-
-| 要因 | 要素 | 期待観点 |
-| --- | --- | --- |
-| 対象 | 重複排除 | 副作用を中断しerror responseを返す。 |
-
-### TC009
-
-| 要因 | 要素 | 期待観点 |
-| --- | --- | --- |
-| 対象 | topK境界 | 副作用を中断しerror responseを返す。 |
+| 対象 | audit_log.emit | 副作用を中断しerror responseを返す。 |

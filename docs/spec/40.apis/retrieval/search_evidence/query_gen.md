@@ -2,29 +2,35 @@
 
 # search_evidence query
 
-## 001_operation_boundary.sql
+## ChunkStorePort.search
 
-### SQL種別
+### Query種別
 
-- `SELECT`
+`HYBRID READ`
 
-### SQLの概要
+### Queryの概要
 
-- ACL適用済みhybrid retrieval境界を仕様化する。
+ACL hard filter後に疎密検索とRRFを行う。
 
-### 利用するテーブル
+### 利用するデータストア
 
-- `s3_vectors`
-- `bedrock_knowledge_base`
+- Local: `InMemoryChunkStore`
+- AWS: `Bedrock Knowledge Base` + `S3 Vectors`
 
 ### 引数
 
-_引数はありません。_
+| 項目 | 型 |
+| --- | --- |
+| `query` | `str` |
+| `query_embedding` | `tuple[float, ...]` |
+| `top_k` | `int` |
+| `actor` | `Principal` |
+| `chunk_store` | `ChunkStorePort` |
 
 ### 戻り値
 
-- `operation_name`: operation境界名。
+`tuple[RankedChunk, ...]`
 
 ### 条件
 
-_検索条件はありません。_
+_追加条件はありません。_

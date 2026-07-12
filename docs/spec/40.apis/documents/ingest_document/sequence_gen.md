@@ -7,11 +7,41 @@ sequenceDiagram
   autonumber
   participant User as User
   participant API as API
-  participant RAG as Resource: RagRuntime
+  participant R_audit_log as Resource: Audit Log
+  participant R_embedder as Resource: Embedder
+  participant DB as DB: Chunk Store
   User->>API: POST /v1/documents
-  API->>RAG: validate ingestion permission
-  API->>RAG: normalize and chunk document
-  API->>RAG: store document chunks
-  API->>RAG: build ingest response
+  alt Bearer access tokenが未指定または検証できない場合。
+    API-->>User: HTTP 401 Unauthorized<br/>Bearer authentication is required
+  end
+  alt Request bodyが型または制約に一致しない場合。
+    API-->>User: HTTP 422 Unprocessable Content<br/>request validation failed
+  end
+  alt 呼び出し元がadmin groupに所属しない場合。
+    API->>R_audit_log: ingestDocument.permission_denied<br/>Port audit.emit
+    API-->>User: HTTP 403 Forbidden<br/>PermissionError: document ingestion requires the admin group
+  end
+  alt 文書所有者が認証主体と一致しない場合。
+    API->>R_audit_log: ingestDocument.permission_denied<br/>Port audit.emit
+    API-->>User: HTTP 403 Forbidden<br/>PermissionError: document owner must match the authenticated subject
+  end
+  alt 許可groupに認証主体が所属しないgroupを含む場合。
+    API->>R_audit_log: ingestDocument.permission_denied<br/>Port audit.emit
+    API-->>User: HTTP 403 Forbidden<br/>PermissionError: documents can only be shared with the actor's groups
+  end
+  API->>API: 文書登録権限、所有者、共有groupを検証する。
+  alt 正規化後の本文が空の場合。
+    API-->>User: HTTP 400 Bad Request<br/>ValueError: document text is empty after normalization
+  end
+  alt 処理中のチャンクが存在する場合。
+    API-->>User: HTTP 500 Internal Server Error<br/>operation error
+  end
+  alt `current and len(current) + len(paragraph) + 2 > size` が成立する場合。
+    API-->>User: HTTP 500 Internal Server Error<br/>operation error
+  end
+  API->>API: 正本文書を正規化し、overlap付きのチャンクへ分割する。
+  API->>R_embedder: 各チャンクをembedding化し、ACL metadata付きの索引recordを組み立てる。<br/>Port EmbedderPort.embed<br/>実装 Local HashingEmbedder / AWS Knowledge Base managed embedding
+  API->>DB: 版置換の単位で認可metadata付きチャンクを保存する。<br/>Port ChunkStorePort.replace_document<br/>実装 Local InMemoryChunkStore / AWS Bedrock Knowledge Base + S3 Vectors
+  API->>R_audit_log: 監査イベントを記録し登録結果を組み立てる。<br/>Port ingestDocument.completed<br/>実装 Structured application audit logger
   API-->>User: HTTP success response
 ```

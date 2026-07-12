@@ -6,10 +6,9 @@ from tools.operation_layout import ROOT, operation_dir
 
 TEMPLATE = """from pathlib import Path
 
-# This file is generated from SQL files in the sibling sql directory.
-# Do not edit generated models by hand.
+# No relational query wrapper is generated for this operation.
+# Runtime data access is declared by typed integration ports in functions.py.
 SQL_DIR = Path(__file__).parents[1] / "sql"
-OPERATION_BOUNDARY_SQL = SQL_DIR / "001_operation_boundary.sql"
 """
 
 

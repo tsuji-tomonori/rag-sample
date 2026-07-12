@@ -7,8 +7,8 @@ sequenceDiagram
   autonumber
   participant User as User
   participant API as API
-  participant RAG as Resource: RagRuntime
+  participant R_audit_log as Resource: Audit Log
   User->>API: GET /health
-  API->>RAG: build health response
+  API->>R_audit_log: 機微情報を含まないprocess死活応答を組み立てる。<br/>Port health.completed<br/>実装 Structured application audit logger
   API-->>User: HTTP success response
 ```

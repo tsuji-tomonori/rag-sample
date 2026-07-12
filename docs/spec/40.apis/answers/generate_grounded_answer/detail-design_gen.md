@@ -22,11 +22,15 @@
 ## 2. 正常系前提
 
 - Bearer access tokenが検証済みである。
-- generatorへ渡す前にACLと根拠閾値を検証する。
+- 条件分岐: 生成回答が存在しない場合。: 不成立
 
 ## 3. 正常系リソース変更
 
-_正常系で作成/更新/削除するリソースはありません。_
+### 外部リソース `audit_log.emit`
+
+- 目的: 引用付き回答または明示的な根拠不足応答を組み立てる。
+- 実装: Structured application audit logger
+
 
 ## 4. 正常系レスポンス
 
@@ -37,4 +41,4 @@ _正常系で作成/更新/削除するリソースはありません。_
 | `status` | 回答可否です。 | Evidence gate result |
 | `answer` | 根拠限定回答または回答拒否理由です。 | AnswerGenerator output or fixed abstention message |
 | `citations` | 回答に使用した認可済み根拠です。 | Authorized evidence chunks |
-| `request_id` | 処理を追跡するリクエストIDです。 | Operation function |
+| `request_id` | 処理を追跡するリクエストIDです。 | Application generated UUID |

@@ -1,19 +1,11 @@
-from typing import Protocol
+"""Compatibility aliases for integration-local ports."""
 
-from app.domain import Chunk, Principal, RankedChunk
+from app.integrations.answer_generator.port import AnswerGeneratorPort
+from app.integrations.chunk_store.port import ChunkStorePort
+from app.integrations.embedder.port import EmbedderPort
 
+AnswerGenerator = AnswerGeneratorPort
+ChunkStore = ChunkStorePort
+Embedder = EmbedderPort
 
-class Embedder(Protocol):
-    def embed(self, text: str) -> tuple[float, ...]: ...
-
-
-class ChunkStore(Protocol):
-    def replace_document(self, document_id: str, chunks: tuple[Chunk, ...]) -> None: ...
-
-    def search(
-        self, *, principal: Principal, query: str, query_embedding: tuple[float, ...], limit: int
-    ) -> tuple[RankedChunk, ...]: ...
-
-
-class AnswerGenerator(Protocol):
-    def generate(self, question: str, evidence: tuple[RankedChunk, ...]) -> str: ...
+__all__ = ("AnswerGenerator", "ChunkStore", "Embedder")

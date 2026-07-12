@@ -24,14 +24,8 @@ class ApiContract:
     auth_mode: str
     business_summary: str
     permissions: tuple[str, ...]
-    sequence: tuple[str, ...]
-    prerequisites: tuple[str, ...]
-    resource_changes: tuple[str, ...]
     response_sources: tuple[tuple[str, str], ...]
-    test_factors: tuple[str, ...]
     messages: tuple[MessageContract, ...]
-    sql_summary: str
-    sql_tables: tuple[str, ...]
 
     @property
     def domain(self) -> str:

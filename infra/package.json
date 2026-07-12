@@ -11,7 +11,7 @@
     "synth": "npm run bundle && cdk synth",
     "docs:snapshot": "node -r ts-node/register scripts/generate-inventory-snapshot.ts",
     "docs:snapshot:check": "node -r ts-node/register scripts/generate-inventory-snapshot.ts --check",
-    "docs": "npm run docs:snapshot && node ../tools/infra-inventory/generate-infra-inventory.mjs",
+    "docs": "npm run bundle && npm run docs:snapshot && node ../tools/infra-inventory/generate-infra-inventory.mjs",
     "docs:check": "npm run docs:snapshot:check && node ../tools/infra-inventory/generate-infra-inventory.mjs --check"
   },
   "dependencies": { "aws-cdk-lib": "^2.261.0", "constructs": "^10.4.2", "cdk-nag": "^2.37.0" },
