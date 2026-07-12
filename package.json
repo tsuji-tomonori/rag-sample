@@ -11,7 +11,8 @@
     "ci": "npm run lint && npm run typecheck && npm test && npm run build",
     "docs:web": "node tools/web-inventory.mjs",
     "docs:web:check": "node tools/web-inventory.mjs --check",
-    "docs:infra": "npm run docs -w @rag-engineering/infra",
+    "docs:infra-inventory": "npm run docs -w @rag-engineering/infra",
+    "docs:infra": "npm run docs:infra-inventory",
     "docs:infra:check": "npm run docs:check -w @rag-engineering/infra"
   },
   "devDependencies": {
@@ -22,4 +23,3 @@
     "typescript-eslint": "^8.59.1"
   }
 }
-

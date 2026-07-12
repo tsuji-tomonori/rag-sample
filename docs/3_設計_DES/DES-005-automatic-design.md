@@ -6,6 +6,8 @@
 unit test factorを生成する。operation IDまたは必須operationファイルが一致しない場合は失敗する。
 
 `npm run docs:web` は `apps/web/design-contract.json` とproduction `App.tsx` labelを照合する。
-`npm run docs:infra` は CDK synth templateからresource、retention、parameters、outputs、IAM actionsを
-生成する。API artifactは `docs/spec/40.apis`、Web/Infra inventoryは各設計正本が定める出力先に置く。
+`npm run docs:infra` はCDK synth templateをsnapshot化し、Rag-assistと同じ
+`tools/infra-inventory/generate-infra-inventory.mjs` でdomain集計、resource type別概要、
+logical ID別主要設定、secret masking、IAM要約を生成する。API artifactは
+`docs/spec/40.apis`、Web/Infra inventoryは各設計正本が定める出力先に置く。
 `task docs:check` はbyte-level drift、operation layout、query wrapper、message catalogを拒否する。

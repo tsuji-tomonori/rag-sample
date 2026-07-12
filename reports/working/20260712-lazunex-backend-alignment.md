@@ -37,3 +37,11 @@
 - CDK synth: pass
 - Playwright desktop/mobile E2E: 2 passed
 - deployおよび実AWS API call: 未実施
+
+## Infra document follow-up
+
+- 初回対応はファイル分割だけで、Rag-assistのresource要約・domain集計・masking・logical ID別表現を移植できていなかった。
+- Rag-assistの `tools/infra-inventory/generate-infra-inventory.mjs` を正本として移植した。
+- 現在のCDK synth templateをcommitted snapshotへ変換し、snapshotと生成Markdown/JSONをbyte-level検査する。
+- 参考元renderer移植後の `task verify` は、Lint、全型検査、24 Python test、2 contract test、6 Web test、6 Infra test、build、docs drift、skills、CDK synthを含めてpassした。
+- deployおよび実AWS API callは実施していない。

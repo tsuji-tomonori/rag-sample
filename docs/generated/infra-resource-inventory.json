@@ -1,1278 +1,615 @@
 {
-  "generatedBy": "infra/scripts/generate-inventory.ts",
-  "source": "CDK synth CloudFormation template",
+  "generatedBy": "tools/infra-inventory/generate-infra-inventory.mjs",
+  "source": "infra/test/__snapshots__/rag-engineering-stack.snapshot.json",
   "stackName": "InventoryStack",
   "totalResources": 75,
+  "totalsByDomain": [
+    {
+      "domain": "Storage",
+      "count": 6
+    },
+    {
+      "domain": "Compute",
+      "count": 4
+    },
+    {
+      "domain": "API",
+      "count": 26
+    },
+    {
+      "domain": "Identity",
+      "count": 4
+    },
+    {
+      "domain": "Delivery",
+      "count": 3
+    },
+    {
+      "domain": "AI/RAG",
+      "count": 2
+    },
+    {
+      "domain": "Security/IAM",
+      "count": 12
+    },
+    {
+      "domain": "Observability/Cost",
+      "count": 8
+    },
+    {
+      "domain": "Custom",
+      "count": 2
+    }
+  ],
   "countsByType": [
-    {
-      "type": "AWS::ApiGateway::Account",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-apigateway-account.md"
-    },
-    {
-      "type": "AWS::ApiGateway::Authorizer",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-apigateway-authorizer.md"
-    },
-    {
-      "type": "AWS::ApiGateway::Deployment",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-apigateway-deployment.md"
-    },
-    {
-      "type": "AWS::ApiGateway::Method",
-      "count": 10,
-      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
-    },
-    {
-      "type": "AWS::ApiGateway::Resource",
-      "count": 5,
-      "detailFilePath": "infra-inventory/aws-apigateway-resource.md"
-    },
-    {
-      "type": "AWS::ApiGateway::RestApi",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-apigateway-restapi.md"
-    },
-    {
-      "type": "AWS::ApiGateway::Stage",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-apigateway-stage.md"
-    },
-    {
-      "type": "AWS::AppSync::DataSource",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-appsync-datasource.md"
-    },
-    {
-      "type": "AWS::AppSync::GraphQLApi",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-appsync-graphqlapi.md"
-    },
-    {
-      "type": "AWS::AppSync::GraphQLSchema",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-appsync-graphqlschema.md"
-    },
-    {
-      "type": "AWS::AppSync::Resolver",
-      "count": 3,
-      "detailFilePath": "infra-inventory/aws-appsync-resolver.md"
-    },
-    {
-      "type": "AWS::Bedrock::DataSource",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-bedrock-datasource.md"
-    },
-    {
-      "type": "AWS::Bedrock::KnowledgeBase",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-bedrock-knowledgebase.md"
-    },
-    {
-      "type": "AWS::Budgets::Budget",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-budgets-budget.md"
-    },
-    {
-      "type": "AWS::CloudFront::Distribution",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-cloudfront-distribution.md"
-    },
-    {
-      "type": "AWS::CloudFront::Function",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-cloudfront-function.md"
-    },
-    {
-      "type": "AWS::CloudFront::OriginAccessControl",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-cloudfront-originaccesscontrol.md"
-    },
-    {
-      "type": "AWS::CloudWatch::Alarm",
-      "count": 4,
-      "detailFilePath": "infra-inventory/aws-cloudwatch-alarm.md"
-    },
-    {
-      "type": "AWS::CloudWatch::Dashboard",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-cloudwatch-dashboard.md"
-    },
-    {
-      "type": "AWS::Cognito::UserPool",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-cognito-userpool.md"
-    },
-    {
-      "type": "AWS::Cognito::UserPoolClient",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-cognito-userpoolclient.md"
-    },
-    {
-      "type": "AWS::Cognito::UserPoolDomain",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-cognito-userpooldomain.md"
-    },
-    {
-      "type": "AWS::Cognito::UserPoolGroup",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-cognito-userpoolgroup.md"
-    },
-    {
-      "type": "AWS::IAM::Policy",
-      "count": 4,
-      "detailFilePath": "infra-inventory/aws-iam-policy.md"
-    },
-    {
-      "type": "AWS::IAM::Role",
-      "count": 7,
-      "detailFilePath": "infra-inventory/aws-iam-role.md"
-    },
-    {
-      "type": "AWS::KMS::Key",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-kms-key.md"
-    },
-    {
-      "type": "AWS::Lambda::Function",
-      "count": 3,
-      "detailFilePath": "infra-inventory/aws-lambda-function.md"
-    },
-    {
-      "type": "AWS::Lambda::LayerVersion",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-lambda-layerversion.md"
-    },
-    {
-      "type": "AWS::Lambda::Permission",
-      "count": 8,
-      "detailFilePath": "infra-inventory/aws-lambda-permission.md"
-    },
-    {
-      "type": "AWS::Logs::LogGroup",
-      "count": 2,
-      "detailFilePath": "infra-inventory/aws-logs-loggroup.md"
-    },
     {
       "type": "AWS::S3::Bucket",
       "count": 2,
-      "detailFilePath": "infra-inventory/aws-s3-bucket.md"
-    },
-    {
-      "type": "AWS::S3::BucketPolicy",
-      "count": 2,
-      "detailFilePath": "infra-inventory/aws-s3-bucketpolicy.md"
-    },
-    {
-      "type": "AWS::S3Vectors::Index",
-      "count": 1,
-      "detailFilePath": "infra-inventory/aws-s3vectors-index.md"
+      "purpose": "S3 bucket"
     },
     {
       "type": "AWS::S3Vectors::VectorBucket",
       "count": 1,
-      "detailFilePath": "infra-inventory/aws-s3vectors-vectorbucket.md"
+      "purpose": "S3 Vectors bucket"
+    },
+    {
+      "type": "AWS::S3Vectors::Index",
+      "count": 1,
+      "purpose": "S3 Vectors index"
+    },
+    {
+      "type": "AWS::Lambda::Function",
+      "count": 3,
+      "purpose": "Lambda function"
+    },
+    {
+      "type": "AWS::ApiGateway::RestApi",
+      "count": 1,
+      "purpose": "API Gateway REST API"
+    },
+    {
+      "type": "AWS::ApiGateway::Stage",
+      "count": 1,
+      "purpose": "API Gateway stage"
+    },
+    {
+      "type": "AWS::ApiGateway::Resource",
+      "count": 5,
+      "purpose": "API Gateway resource path"
+    },
+    {
+      "type": "AWS::ApiGateway::Method",
+      "count": 10,
+      "purpose": "API Gateway method"
+    },
+    {
+      "type": "AWS::AppSync::GraphQLApi",
+      "count": 1,
+      "purpose": "AppSync GraphQL API"
+    },
+    {
+      "type": "AWS::AppSync::GraphQLSchema",
+      "count": 1,
+      "purpose": "AppSync GraphQL schema"
+    },
+    {
+      "type": "AWS::AppSync::DataSource",
+      "count": 1,
+      "purpose": "AppSync data source"
+    },
+    {
+      "type": "AWS::AppSync::Resolver",
+      "count": 3,
+      "purpose": "AppSync resolver"
+    },
+    {
+      "type": "AWS::Bedrock::KnowledgeBase",
+      "count": 1,
+      "purpose": "Bedrock knowledge base"
+    },
+    {
+      "type": "AWS::Bedrock::DataSource",
+      "count": 1,
+      "purpose": "Bedrock knowledge base data source"
+    },
+    {
+      "type": "AWS::Cognito::UserPool",
+      "count": 1,
+      "purpose": "Cognito user pool"
+    },
+    {
+      "type": "AWS::Cognito::UserPoolClient",
+      "count": 1,
+      "purpose": "Cognito app client"
+    },
+    {
+      "type": "AWS::Cognito::UserPoolDomain",
+      "count": 1,
+      "purpose": "Cognito hosted domain"
+    },
+    {
+      "type": "AWS::Cognito::UserPoolGroup",
+      "count": 1,
+      "purpose": "Cognito role group"
+    },
+    {
+      "type": "AWS::CloudFront::Distribution",
+      "count": 1,
+      "purpose": "CloudFront distribution"
+    },
+    {
+      "type": "AWS::CloudFront::OriginAccessControl",
+      "count": 1,
+      "purpose": "CloudFront origin access control"
+    },
+    {
+      "type": "AWS::CloudFront::Function",
+      "count": 1,
+      "purpose": "CloudFront routing function"
+    },
+    {
+      "type": "AWS::KMS::Key",
+      "count": 1,
+      "purpose": "KMS key"
+    },
+    {
+      "type": "AWS::Logs::LogGroup",
+      "count": 2,
+      "purpose": "CloudWatch Logs log group"
+    },
+    {
+      "type": "AWS::CloudWatch::Alarm",
+      "count": 4,
+      "purpose": "CloudWatch alarm"
+    },
+    {
+      "type": "AWS::CloudWatch::Dashboard",
+      "count": 1,
+      "purpose": "CloudWatch dashboard"
+    },
+    {
+      "type": "AWS::IAM::Role",
+      "count": 7,
+      "purpose": "IAM role"
+    },
+    {
+      "type": "AWS::IAM::Policy",
+      "count": 4,
+      "purpose": "IAM inline policy"
     },
     {
       "type": "Custom::CDKBucketDeployment",
       "count": 1,
-      "detailFilePath": "infra-inventory/custom-cdkbucketdeployment.md"
+      "purpose": "CDK bucket deployment"
+    },
+    {
+      "type": "AWS::S3::BucketPolicy",
+      "count": 2,
+      "purpose": "S3 bucket policy"
+    },
+    {
+      "type": "AWS::Lambda::LayerVersion",
+      "count": 1,
+      "purpose": "Lambda layer"
+    },
+    {
+      "type": "AWS::Lambda::Permission",
+      "count": 8,
+      "purpose": "Lambda invoke permission"
+    },
+    {
+      "type": "AWS::ApiGateway::Account",
+      "count": 1,
+      "purpose": "API Gateway account settings"
+    },
+    {
+      "type": "AWS::ApiGateway::Deployment",
+      "count": 1,
+      "purpose": "API Gateway deployment"
+    },
+    {
+      "type": "AWS::ApiGateway::Authorizer",
+      "count": 1,
+      "purpose": "API Gateway Cognito authorizer"
+    },
+    {
+      "type": "AWS::Budgets::Budget",
+      "count": 1,
+      "purpose": "AWS monthly budget"
     },
     {
       "type": "Custom::LogRetention",
       "count": 1,
-      "detailFilePath": "infra-inventory/custom-logretention.md"
+      "purpose": "CloudWatch log retention custom resource"
     }
   ],
   "resources": [
     {
-      "logicalId": "AdminGroup",
-      "type": "AWS::Cognito::UserPoolGroup",
-      "deletionPolicy": "Delete",
-      "purpose": "利用者認証とgroup認可",
-      "properties": {
-        "Description": "May ingest and manage authorized knowledge documents",
-        "GroupName": "admin",
-        "UserPoolId": {
-          "Ref": "UserPool6BA7E5F2"
-        }
-      }
-    },
-    {
-      "logicalId": "ApiFunctionCE271BD4",
-      "type": "AWS::Lambda::Function",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Architectures": [
-          "x86_64"
+      "logicalId": "SourceBucketDDD2130A",
+      "logicalName": "Source Bucket",
+      "type": "AWS::S3::Bucket",
+      "purpose": "Source Bucket (S3 bucket)",
+      "settings": {
+        "encryption": [
+          "aws:kms"
         ],
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-          },
-          "S3Key": "ffd0968d729632aedd42825be0064c4ef9f23115f9be6cfc76b5e6a1f0e83792.zip"
+        "publicAccessBlock": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
         },
-        "Environment": {
-          "Variables": {
-            "RAG_ENVIRONMENT": "aws",
-            "RAG_AUTH_MODE": "cognito",
-            "RAG_STORAGE_BACKEND": "aws",
-            "RAG_AWS_REGION": {
-              "Ref": "AWS::Region"
-            },
-            "RAG_SOURCE_BUCKET": {
-              "Ref": "SourceBucketDDD2130A"
-            },
-            "RAG_KNOWLEDGE_BASE_ID": {
-              "Fn::GetAtt": [
-                "KnowledgeBase",
-                "KnowledgeBaseId"
-              ]
-            },
-            "RAG_DATA_SOURCE_ID": {
-              "Fn::GetAtt": [
-                "DataSource",
-                "DataSourceId"
-              ]
-            },
-            "RAG_COGNITO_USER_POOL_ID": {
-              "Ref": "UserPool6BA7E5F2"
-            },
-            "RAG_COGNITO_CLIENT_ID": {
-              "Ref": "UserPoolWebClient4C9370B0"
-            },
-            "RAG_GENERATION_MODEL_ID": "anthropic.claude-haiku-4-5-20251001-v1:0",
-            "RAG_APPSYNC_GRAPHQL_URL": {
-              "Fn::GetAtt": [
-                "EventApiE141E6C0",
-                "GraphQLUrl"
-              ]
-            }
-          }
-        },
-        "Handler": "app.lambda_handler.handler",
-        "LoggingConfig": {
-          "LogGroup": {
-            "Ref": "ApiLogGroup1DEDFC07"
-          }
-        },
-        "MemorySize": 1024,
-        "ReservedConcurrentExecutions": 20,
-        "Role": {
-          "Fn::GetAtt": [
-            "ApiFunctionServiceRole52B9747B",
-            "Arn"
-          ]
-        },
-        "Runtime": "python3.12",
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
+        "enforceSSLPolicy": "BucketPolicy を参照"
+      },
+      "detailFilePath": "infra-inventory/aws-s3-bucket.md"
+    },
+    {
+      "logicalId": "WebBucket12880F5B",
+      "logicalName": "Web Bucket",
+      "type": "AWS::S3::Bucket",
+      "purpose": "Web Bucket (S3 bucket)",
+      "settings": {
+        "encryption": [
+          "AES256"
         ],
-        "Timeout": 60,
-        "TracingConfig": {
-          "Mode": "Active"
-        }
-      }
-    },
-    {
-      "logicalId": "ApiFunctionServiceRole52B9747B",
-      "type": "AWS::IAM::Role",
-      "deletionPolicy": "Delete",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
+        "publicAccessBlock": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
         },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-              ]
-            ]
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
+        "enforceSSLPolicy": "BucketPolicy を参照"
+      },
+      "detailFilePath": "infra-inventory/aws-s3-bucket.md"
     },
     {
-      "logicalId": "ApiFunctionServiceRoleDefaultPolicy20A32B8D",
-      "type": "AWS::IAM::Policy",
-      "deletionPolicy": "Delete",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "xray:PutTraceSegments",
-                "xray:PutTelemetryRecords"
-              ],
-              "Effect": "Allow",
-              "Resource": "*"
-            },
-            {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject",
-                "s3:PutObjectLegalHold",
-                "s3:PutObjectRetention",
-                "s3:PutObjectTagging",
-                "s3:PutObjectVersionTagging",
-                "s3:Abort*"
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "SourceBucketDDD2130A",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "SourceBucketDDD2130A",
-                          "Arn"
-                        ]
-                      },
-                      "/source/*"
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:DescribeKey",
-                "kms:Encrypt",
-                "kms:ReEncrypt*",
-                "kms:GenerateDataKey*"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "DataKey17AFBB84",
-                  "Arn"
-                ]
-              }
-            },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:Encrypt",
-                "kms:ReEncrypt*",
-                "kms:GenerateDataKey*"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "DataKey17AFBB84",
-                  "Arn"
-                ]
-              }
-            },
-            {
-              "Action": [
-                "bedrock:Retrieve",
-                "bedrock:StartIngestionJob"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "KnowledgeBase",
-                  "KnowledgeBaseArn"
-                ]
-              }
-            },
-            {
-              "Action": "bedrock:InvokeModel",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition"
-                    },
-                    ":bedrock:",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    "::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0"
-                  ]
-                ]
-              }
-            },
-            {
-              "Action": "appsync:GraphQL",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition"
-                    },
-                    ":appsync:",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId"
-                    },
-                    ":apis/",
-                    {
-                      "Fn::GetAtt": [
-                        "EventApiE141E6C0",
-                        "ApiId"
-                      ]
-                    },
-                    "/types/Mutation/fields/publishEvent"
-                  ]
-                ]
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "ApiFunctionServiceRoleDefaultPolicy20A32B8D",
-        "Roles": [
-          {
-            "Ref": "ApiFunctionServiceRole52B9747B"
-          }
-        ]
-      }
-    },
-    {
-      "logicalId": "ApiLogGroup1DEDFC07",
-      "type": "AWS::Logs::LogGroup",
-      "deletionPolicy": "Retain",
-      "purpose": "監視・監査・運用可視化",
-      "properties": {
-        "KmsKeyId": {
-          "Fn::GetAtt": [
-            "DataKey17AFBB84",
-            "Arn"
-          ]
-        },
-        "RetentionInDays": 365,
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
-    },
-    {
-      "logicalId": "ApiServerErrorsAlarm602F142D",
-      "type": "AWS::CloudWatch::Alarm",
-      "deletionPolicy": "Delete",
-      "purpose": "監視・監査・運用可視化",
-      "properties": {
-        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "Dimensions": [
-          {
-            "Name": "ApiName",
-            "Value": "RestApi"
-          }
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "5XXError",
-        "Namespace": "AWS/ApiGateway",
-        "Period": 300,
-        "Statistic": "Sum",
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ],
-        "Threshold": 1,
-        "TreatMissingData": "notBreaching"
-      }
-    },
-    {
-      "logicalId": "AuditLogA5B7094E",
-      "type": "AWS::Logs::LogGroup",
-      "deletionPolicy": "Retain",
-      "purpose": "監視・監査・運用可視化",
-      "properties": {
-        "KmsKeyId": {
-          "Fn::GetAtt": [
-            "DataKey17AFBB84",
-            "Arn"
-          ]
-        },
-        "RetentionInDays": 365,
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
-    },
-    {
-      "logicalId": "CognitoAuthorizerF3215DBC",
-      "type": "AWS::ApiGateway::Authorizer",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "IdentitySource": "method.request.header.Authorization",
-        "Name": "InventoryStackCognitoAuthorizer3C7F788F",
-        "ProviderARNs": [
-          {
+      "logicalId": "VectorBucket",
+      "logicalName": "Vector Bucket",
+      "type": "AWS::S3Vectors::VectorBucket",
+      "purpose": "Vector Bucket (S3 Vectors bucket)",
+      "settings": {
+        "EncryptionConfiguration": {
+          "SseType": "aws:kms",
+          "KmsKeyArn": {
             "Fn::GetAtt": [
-              "UserPool6BA7E5F2",
+              "DataKey17AFBB84",
               "Arn"
             ]
           }
-        ],
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
         },
-        "Type": "COGNITO_USER_POOLS"
-      }
+        "Tags": [
+          {
+            "Key": "System",
+            "Value": "rag-engineering"
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "aws-cdk"
+          },
+          {
+            "Key": "Environment",
+            "Value": "shared"
+          }
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-s3vectors-vectorbucket.md"
+    },
+    {
+      "logicalId": "VectorIndex",
+      "logicalName": "Vector Index",
+      "type": "AWS::S3Vectors::Index",
+      "purpose": "Vector Index (S3 Vectors index)",
+      "settings": {
+        "DataType": "float32",
+        "Dimension": 1024,
+        "DistanceMetric": "cosine",
+        "IndexName": "rag-content",
+        "VectorBucketArn": {
+          "Ref": "VectorBucket"
+        },
+        "Tags": [
+          {
+            "Key": "System",
+            "Value": "rag-engineering"
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "aws-cdk"
+          },
+          {
+            "Key": "Environment",
+            "Value": "shared"
+          }
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-s3vectors-index.md"
+    },
+    {
+      "logicalId": "ApiFunctionCE271BD4",
+      "logicalName": "Api Function",
+      "type": "AWS::Lambda::Function",
+      "purpose": "Api Function (Lambda function)",
+      "settings": {
+        "handler": "app.lambda_handler.handler",
+        "runtime": "python3.12",
+        "architectures": [
+          "x86_64"
+        ],
+        "memorySize": 1024,
+        "timeoutSeconds": 60,
+        "environment": {
+          "RAG_APPSYNC_GRAPHQL_URL": "GetAtt:EventApiE141E6C0.GraphQLUrl",
+          "RAG_AUTH_MODE": "cognito",
+          "RAG_AWS_REGION": "Ref:AWS::Region",
+          "RAG_COGNITO_CLIENT_ID": "Ref:UserPoolWebClient4C9370B0",
+          "RAG_COGNITO_USER_POOL_ID": "Ref:UserPool6BA7E5F2",
+          "RAG_DATA_SOURCE_ID": "GetAtt:DataSource.DataSourceId",
+          "RAG_ENVIRONMENT": "aws",
+          "RAG_GENERATION_MODEL_ID": "anthropic.claude-haiku-4-5-20251001-v1:0",
+          "RAG_KNOWLEDGE_BASE_ID": "GetAtt:KnowledgeBase.KnowledgeBaseId",
+          "RAG_SOURCE_BUCKET": "Ref:SourceBucketDDD2130A",
+          "RAG_STORAGE_BACKEND": "aws"
+        },
+        "role": "GetAtt:ApiFunctionServiceRole52B9747B.Arn"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-function.md"
     },
     {
       "logicalId": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "logicalName": "Custom CDK Bucket Deployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
       "type": "AWS::Lambda::Function",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-          },
-          "S3Key": "97e9ebf0b174a5c8f7faa505739022b7f509edddffcab9211dcd08b759944c4f.zip"
+      "purpose": "Custom CDK Bucket Deployment8693BB64968944B69AAFB0CC9EB8756C81C01536 (Lambda function)",
+      "settings": {
+        "handler": "index.handler",
+        "runtime": "python3.13",
+        "timeoutSeconds": 900,
+        "environment": {
+          "AWS_CA_BUNDLE": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
         },
-        "Environment": {
-          "Variables": {
-            "AWS_CA_BUNDLE": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
-          }
-        },
-        "Handler": "index.handler",
-        "Layers": [
-          {
-            "Ref": "WebDeploymentAwsCliLayer79C1EFEA"
-          }
+        "layers": [
+          "Ref:WebDeploymentAwsCliLayer79C1EFEA"
         ],
-        "Role": {
-          "Fn::GetAtt": [
-            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265",
-            "Arn"
-          ]
-        },
-        "Runtime": "python3.13",
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ],
-        "Timeout": 900
-      }
+        "role": "GetAtt:CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265.Arn"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-function.md"
     },
     {
-      "logicalId": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265",
-      "type": "AWS::IAM::Role",
-      "deletionPolicy": "Delete",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-              ]
-            ]
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
+      "logicalId": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "logicalName": "Log Retentionaae0aa3c5b4d4f87b02d85b201efdd8a",
+      "type": "AWS::Lambda::Function",
+      "purpose": "Log Retentionaae0aa3c5b4d4f87b02d85b201efdd8a (Lambda function)",
+      "settings": {
+        "handler": "index.handler",
+        "runtime": "nodejs24.x",
+        "timeoutSeconds": 900,
+        "role": "GetAtt:LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB.Arn"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-function.md"
+    },
+    {
+      "logicalId": "RestApi0C43BF4B",
+      "logicalName": "Rest Api",
+      "type": "AWS::ApiGateway::RestApi",
+      "purpose": "Rest Api (API Gateway REST API)",
+      "settings": {
+        "name": "RestApi",
+        "endpointTypes": [
+          "REGIONAL"
         ]
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-restapi.md"
     },
     {
-      "logicalId": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF",
-      "type": "AWS::IAM::Policy",
-      "deletionPolicy": "Delete",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*"
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":s3:::",
-                      {
-                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":s3:::",
-                      {
-                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject",
-                "s3:PutObjectLegalHold",
-                "s3:PutObjectRetention",
-                "s3:PutObjectTagging",
-                "s3:PutObjectVersionTagging",
-                "s3:Abort*"
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "WebBucket12880F5B",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "WebBucket12880F5B",
-                          "Arn"
-                        ]
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Action": [
-                "cloudfront:GetInvalidation",
-                "cloudfront:CreateInvalidation"
-              ],
-              "Effect": "Allow",
-              "Resource": "*"
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF",
-        "Roles": [
-          {
-            "Ref": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
-          }
-        ]
-      }
+      "logicalId": "RestApiDeploymentStageapi14DA8585",
+      "logicalName": "Rest Api Deployment Stageapi",
+      "type": "AWS::ApiGateway::Stage",
+      "purpose": "Rest Api Deployment Stageapi (API Gateway stage)",
+      "settings": {
+        "stageName": "api",
+        "loggingLevel": "INFO",
+        "metricsEnabled": true,
+        "dataTraceEnabled": false
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-stage.md"
     },
     {
-      "logicalId": "DataKey17AFBB84",
-      "type": "AWS::KMS::Key",
-      "deletionPolicy": "Retain",
-      "purpose": "保存データ暗号化",
-      "properties": {
-        "EnableKeyRotation": true,
-        "KeyPolicy": {
-          "Statement": [
-            {
-              "Action": "kms:*",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":iam::",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":root"
-                    ]
-                  ]
-                }
-              },
-              "Resource": "*"
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
+      "logicalId": "RestApihealthC6B391F6",
+      "logicalName": "Rest Apihealth",
+      "type": "AWS::ApiGateway::Resource",
+      "purpose": "Rest Apihealth (API Gateway resource path)",
+      "settings": {
+        "path": "/health",
+        "pathPart": "health"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-resource.md"
     },
     {
-      "logicalId": "DataSource",
-      "type": "AWS::Bedrock::DataSource",
-      "deletionPolicy": "Delete",
-      "purpose": "CloudFormation managed resource",
-      "properties": {
-        "DataDeletionPolicy": "RETAIN",
-        "DataSourceConfiguration": {
-          "S3Configuration": {
-            "BucketArn": {
-              "Fn::GetAtt": [
-                "SourceBucketDDD2130A",
-                "Arn"
-              ]
-            },
-            "InclusionPrefixes": [
-              "source/"
-            ]
-          },
-          "Type": "S3"
-        },
-        "KnowledgeBaseId": {
-          "Fn::GetAtt": [
-            "KnowledgeBase",
-            "KnowledgeBaseId"
-          ]
-        },
-        "Name": "authorized-source",
-        "VectorIngestionConfiguration": {
-          "ChunkingConfiguration": {
-            "ChunkingStrategy": "FIXED_SIZE",
-            "FixedSizeChunkingConfiguration": {
-              "MaxTokens": 300,
-              "OverlapPercentage": 20
-            }
-          }
-        }
-      }
+      "logicalId": "RestApiv1answers67B57CE0",
+      "logicalName": "Rest Apiv1answers",
+      "type": "AWS::ApiGateway::Resource",
+      "purpose": "Rest Apiv1answers (API Gateway resource path)",
+      "settings": {
+        "path": "/v1/answers",
+        "pathPart": "answers"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-resource.md"
     },
     {
-      "logicalId": "Distribution830FAC52",
-      "type": "AWS::CloudFront::Distribution",
-      "deletionPolicy": "Delete",
-      "purpose": "WebとAPIの統合配信",
-      "properties": {
-        "DistributionConfig": {
-          "CacheBehaviors": [
-            {
-              "AllowedMethods": [
-                "GET",
-                "HEAD",
-                "OPTIONS",
-                "PUT",
-                "PATCH",
-                "POST",
-                "DELETE"
-              ],
-              "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
-              "Compress": true,
-              "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
-              "PathPattern": "/v1/*",
-              "TargetOriginId": "InventoryStackDistributionOrigin2A935382E",
-              "ViewerProtocolPolicy": "https-only"
-            },
-            {
-              "AllowedMethods": [
-                "GET",
-                "HEAD",
-                "OPTIONS"
-              ],
-              "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
-              "Compress": true,
-              "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
-              "PathPattern": "/health",
-              "TargetOriginId": "InventoryStackDistributionOrigin34B3A3A5D",
-              "ViewerProtocolPolicy": "https-only"
-            }
-          ],
-          "DefaultCacheBehavior": {
-            "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-            "Compress": true,
-            "FunctionAssociations": [
-              {
-                "EventType": "viewer-request",
-                "FunctionARN": {
-                  "Fn::GetAtt": [
-                    "SpaRewrite1C145184",
-                    "FunctionARN"
-                  ]
-                }
-              }
-            ],
-            "TargetOriginId": "InventoryStackDistributionOrigin182ED7A49",
-            "ViewerProtocolPolicy": "redirect-to-https"
-          },
-          "DefaultRootObject": "index.html",
-          "Enabled": true,
-          "HttpVersion": "http2",
-          "IPV6Enabled": true,
-          "Origins": [
-            {
-              "DomainName": {
-                "Fn::GetAtt": [
-                  "WebBucket12880F5B",
-                  "RegionalDomainName"
-                ]
-              },
-              "Id": "InventoryStackDistributionOrigin182ED7A49",
-              "OriginAccessControlId": {
-                "Fn::GetAtt": [
-                  "DistributionOrigin1S3OriginAccessControlEB606076",
-                  "Id"
-                ]
-              },
-              "S3OriginConfig": {
-                "OriginAccessIdentity": ""
-              }
-            },
-            {
-              "CustomOriginConfig": {
-                "OriginProtocolPolicy": "https-only",
-                "OriginSSLProtocols": [
-                  "TLSv1.2"
-                ]
-              },
-              "DomainName": {
-                "Fn::Select": [
-                  2,
-                  {
-                    "Fn::Split": [
-                      "/",
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "https://",
-                            {
-                              "Ref": "RestApi0C43BF4B"
-                            },
-                            ".execute-api.",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ".",
-                            {
-                              "Ref": "AWS::URLSuffix"
-                            },
-                            "/",
-                            {
-                              "Ref": "RestApiDeploymentStageapi14DA8585"
-                            },
-                            "/"
-                          ]
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              "Id": "InventoryStackDistributionOrigin2A935382E",
-              "OriginPath": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "/",
-                    {
-                      "Fn::Select": [
-                        3,
-                        {
-                          "Fn::Split": [
-                            "/",
-                            {
-                              "Fn::Join": [
-                                "",
-                                [
-                                  "https://",
-                                  {
-                                    "Ref": "RestApi0C43BF4B"
-                                  },
-                                  ".execute-api.",
-                                  {
-                                    "Ref": "AWS::Region"
-                                  },
-                                  ".",
-                                  {
-                                    "Ref": "AWS::URLSuffix"
-                                  },
-                                  "/",
-                                  {
-                                    "Ref": "RestApiDeploymentStageapi14DA8585"
-                                  },
-                                  "/"
-                                ]
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                ]
-              }
-            },
-            {
-              "CustomOriginConfig": {
-                "OriginProtocolPolicy": "https-only",
-                "OriginSSLProtocols": [
-                  "TLSv1.2"
-                ]
-              },
-              "DomainName": {
-                "Fn::Select": [
-                  2,
-                  {
-                    "Fn::Split": [
-                      "/",
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "https://",
-                            {
-                              "Ref": "RestApi0C43BF4B"
-                            },
-                            ".execute-api.",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ".",
-                            {
-                              "Ref": "AWS::URLSuffix"
-                            },
-                            "/",
-                            {
-                              "Ref": "RestApiDeploymentStageapi14DA8585"
-                            },
-                            "/"
-                          ]
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              "Id": "InventoryStackDistributionOrigin34B3A3A5D",
-              "OriginPath": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "/",
-                    {
-                      "Fn::Select": [
-                        3,
-                        {
-                          "Fn::Split": [
-                            "/",
-                            {
-                              "Fn::Join": [
-                                "",
-                                [
-                                  "https://",
-                                  {
-                                    "Ref": "RestApi0C43BF4B"
-                                  },
-                                  ".execute-api.",
-                                  {
-                                    "Ref": "AWS::Region"
-                                  },
-                                  ".",
-                                  {
-                                    "Ref": "AWS::URLSuffix"
-                                  },
-                                  "/",
-                                  {
-                                    "Ref": "RestApiDeploymentStageapi14DA8585"
-                                  },
-                                  "/"
-                                ]
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                ]
-              }
-            }
-          ]
-        },
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
+      "logicalId": "RestApiv1BD03133D",
+      "logicalName": "Rest Apiv1BD03133D",
+      "type": "AWS::ApiGateway::Resource",
+      "purpose": "Rest Apiv1BD03133D (API Gateway resource path)",
+      "settings": {
+        "path": "/v1",
+        "pathPart": "v1"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-resource.md"
     },
     {
-      "logicalId": "DistributionErrorsAlarm2792C7CB",
-      "type": "AWS::CloudWatch::Alarm",
-      "deletionPolicy": "Delete",
-      "purpose": "監視・監査・運用可視化",
-      "properties": {
-        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "Dimensions": [
-          {
-            "Name": "DistributionId",
-            "Value": {
-              "Ref": "Distribution830FAC52"
-            }
-          }
-        ],
-        "EvaluationPeriods": 1,
-        "MetricName": "5xxErrorRate",
-        "Namespace": "AWS/CloudFront",
-        "Period": 300,
-        "Statistic": "Average",
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ],
-        "Threshold": 1,
-        "TreatMissingData": "notBreaching"
-      }
+      "logicalId": "RestApiv1documentsBC91F695",
+      "logicalName": "Rest Apiv1documents",
+      "type": "AWS::ApiGateway::Resource",
+      "purpose": "Rest Apiv1documents (API Gateway resource path)",
+      "settings": {
+        "path": "/v1/documents",
+        "pathPart": "documents"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-resource.md"
     },
     {
-      "logicalId": "DistributionOrigin1S3OriginAccessControlEB606076",
-      "type": "AWS::CloudFront::OriginAccessControl",
-      "deletionPolicy": "Delete",
-      "purpose": "WebとAPIの統合配信",
-      "properties": {
-        "OriginAccessControlConfig": {
-          "Name": "InventoryStackDistributionOrigin1S3OriginAccessControl70DE3769",
-          "OriginAccessControlOriginType": "s3",
-          "SigningBehavior": "always",
-          "SigningProtocol": "sigv4"
-        }
-      }
+      "logicalId": "RestApiv1searchF6333DAD",
+      "logicalName": "Rest Apiv1search",
+      "type": "AWS::ApiGateway::Resource",
+      "purpose": "Rest Apiv1search (API Gateway resource path)",
+      "settings": {
+        "path": "/v1/search",
+        "pathPart": "search"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-resource.md"
     },
     {
-      "logicalId": "EventApiApiLogsRoleED9A8150",
-      "type": "AWS::IAM::Role",
-      "deletionPolicy": "Delete",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "appsync.amazonaws.com"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":iam::aws:policy/service-role/AWSAppSyncPushToCloudWatchLogs"
-              ]
-            ]
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
+      "logicalId": "RestApihealthGET0B7A6069",
+      "logicalName": "Rest Apihealth GET",
+      "type": "AWS::ApiGateway::Method",
+      "purpose": "Rest Apihealth GET (API Gateway method)",
+      "settings": {
+        "method": "GET",
+        "path": "/health",
+        "authorizationType": "NONE",
+        "integrationType": "AWS_PROXY",
+        "integrationHttpMethod": "POST"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
+    },
+    {
+      "logicalId": "RestApihealthOPTIONS8285AB3C",
+      "logicalName": "Rest Apihealth OPTIONS",
+      "type": "AWS::ApiGateway::Method",
+      "purpose": "Rest Apihealth OPTIONS (API Gateway method)",
+      "settings": {
+        "method": "OPTIONS",
+        "path": "/health",
+        "authorizationType": "NONE",
+        "integrationType": "MOCK"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
+    },
+    {
+      "logicalId": "RestApiOPTIONS6AA64D2D",
+      "logicalName": "Rest Api OPTIONS",
+      "type": "AWS::ApiGateway::Method",
+      "purpose": "Rest Api OPTIONS (API Gateway method)",
+      "settings": {
+        "method": "OPTIONS",
+        "path": "/",
+        "authorizationType": "NONE",
+        "integrationType": "MOCK"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
+    },
+    {
+      "logicalId": "RestApiv1answersOPTIONS508F02F8",
+      "logicalName": "Rest Apiv1answers OPTIONS",
+      "type": "AWS::ApiGateway::Method",
+      "purpose": "Rest Apiv1answers OPTIONS (API Gateway method)",
+      "settings": {
+        "method": "OPTIONS",
+        "path": "/v1/answers",
+        "authorizationType": "NONE",
+        "integrationType": "MOCK"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
+    },
+    {
+      "logicalId": "RestApiv1answersPOST4F8C1276",
+      "logicalName": "Rest Apiv1answers POST",
+      "type": "AWS::ApiGateway::Method",
+      "purpose": "Rest Apiv1answers POST (API Gateway method)",
+      "settings": {
+        "method": "POST",
+        "path": "/v1/answers",
+        "authorizationType": "COGNITO_USER_POOLS",
+        "authorizerId": "Ref:CognitoAuthorizerF3215DBC",
+        "integrationType": "AWS_PROXY",
+        "integrationHttpMethod": "POST"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
+    },
+    {
+      "logicalId": "RestApiv1documentsOPTIONS84A8831A",
+      "logicalName": "Rest Apiv1documents OPTIONS",
+      "type": "AWS::ApiGateway::Method",
+      "purpose": "Rest Apiv1documents OPTIONS (API Gateway method)",
+      "settings": {
+        "method": "OPTIONS",
+        "path": "/v1/documents",
+        "authorizationType": "NONE",
+        "integrationType": "MOCK"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
+    },
+    {
+      "logicalId": "RestApiv1documentsPOST8A6865F1",
+      "logicalName": "Rest Apiv1documents POST",
+      "type": "AWS::ApiGateway::Method",
+      "purpose": "Rest Apiv1documents POST (API Gateway method)",
+      "settings": {
+        "method": "POST",
+        "path": "/v1/documents",
+        "authorizationType": "COGNITO_USER_POOLS",
+        "authorizerId": "Ref:CognitoAuthorizerF3215DBC",
+        "integrationType": "AWS_PROXY",
+        "integrationHttpMethod": "POST"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
+    },
+    {
+      "logicalId": "RestApiv1OPTIONSE3D842E6",
+      "logicalName": "Rest Apiv1OPTIONS",
+      "type": "AWS::ApiGateway::Method",
+      "purpose": "Rest Apiv1OPTIONS (API Gateway method)",
+      "settings": {
+        "method": "OPTIONS",
+        "path": "/v1",
+        "authorizationType": "NONE",
+        "integrationType": "MOCK"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
+    },
+    {
+      "logicalId": "RestApiv1searchOPTIONS4236A591",
+      "logicalName": "Rest Apiv1search OPTIONS",
+      "type": "AWS::ApiGateway::Method",
+      "purpose": "Rest Apiv1search OPTIONS (API Gateway method)",
+      "settings": {
+        "method": "OPTIONS",
+        "path": "/v1/search",
+        "authorizationType": "NONE",
+        "integrationType": "MOCK"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
+    },
+    {
+      "logicalId": "RestApiv1searchPOST2EB1645B",
+      "logicalName": "Rest Apiv1search POST",
+      "type": "AWS::ApiGateway::Method",
+      "purpose": "Rest Apiv1search POST (API Gateway method)",
+      "settings": {
+        "method": "POST",
+        "path": "/v1/search",
+        "authorizationType": "COGNITO_USER_POOLS",
+        "authorizerId": "Ref:CognitoAuthorizerF3215DBC",
+        "integrationType": "AWS_PROXY",
+        "integrationHttpMethod": "POST"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-method.md"
     },
     {
       "logicalId": "EventApiE141E6C0",
+      "logicalName": "Event Api",
       "type": "AWS::AppSync::GraphQLApi",
-      "deletionPolicy": "Delete",
-      "purpose": "ingestion状態のrealtime通知",
-      "properties": {
+      "purpose": "Event Api (AppSync GraphQL API)",
+      "settings": {
         "AdditionalAuthenticationProviders": [
           {
             "AuthenticationType": "AWS_IAM"
@@ -1313,14 +650,31 @@
           }
         },
         "XrayEnabled": true
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-appsync-graphqlapi.md"
+    },
+    {
+      "logicalId": "EventApiSchemaE2269AE0",
+      "logicalName": "Event Api Schema",
+      "type": "AWS::AppSync::GraphQLSchema",
+      "purpose": "Event Api Schema (AppSync GraphQL schema)",
+      "settings": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "EventApiE141E6C0",
+            "ApiId"
+          ]
+        },
+        "Definition": "type AsyncEvent @aws_iam @aws_cognito_user_pools {\n  channel: String!\n  resourceId: String!\n  kind: String!\n  status: String!\n  requestId: String!\n}\n\ntype Query {\n  health: Boolean!\n}\n\ntype Mutation {\n  publishEvent(\n    channel: String!\n    resourceId: String!\n    kind: String!\n    status: String!\n    requestId: String!\n  ): AsyncEvent! @aws_iam\n}\n\ntype Subscription {\n  onEvent(channel: String!): AsyncEvent\n    @aws_subscribe(mutations: [\"publishEvent\"])\n    @aws_cognito_user_pools\n}\n\nschema {\n  query: Query\n  mutation: Mutation\n  subscription: Subscription\n}\n"
+      },
+      "detailFilePath": "infra-inventory/aws-appsync-graphqlschema.md"
     },
     {
       "logicalId": "EventApiEventSource92E8C3BB",
+      "logicalName": "Event Api Event Source",
       "type": "AWS::AppSync::DataSource",
-      "deletionPolicy": "Delete",
-      "purpose": "ingestion状態のrealtime通知",
-      "properties": {
+      "purpose": "Event Api Event Source (AppSync data source)",
+      "settings": {
         "ApiId": {
           "Fn::GetAtt": [
             "EventApiE141E6C0",
@@ -1329,14 +683,15 @@
         },
         "Name": "EventSource",
         "Type": "NONE"
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-appsync-datasource.md"
     },
     {
       "logicalId": "EventApiHealthResolver89823A79",
+      "logicalName": "Event Api Health Resolver",
       "type": "AWS::AppSync::Resolver",
-      "deletionPolicy": "Delete",
-      "purpose": "ingestion状態のrealtime通知",
-      "properties": {
+      "purpose": "Event Api Health Resolver (AppSync resolver)",
+      "settings": {
         "ApiId": {
           "Fn::GetAtt": [
             "EventApiE141E6C0",
@@ -1349,43 +704,15 @@
         "RequestMappingTemplate": "{\"version\":\"2017-02-28\",\"payload\":true}",
         "ResponseMappingTemplate": "$util.toJson($context.result)",
         "TypeName": "Query"
-      }
-    },
-    {
-      "logicalId": "EventApiLogRetention68604E65",
-      "type": "Custom::LogRetention",
-      "deletionPolicy": "Delete",
-      "purpose": "CloudFormation managed resource",
-      "properties": {
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
-            "Arn"
-          ]
-        },
-        "LogGroupName": {
-          "Fn::Join": [
-            "",
-            [
-              "/aws/appsync/apis/",
-              {
-                "Fn::GetAtt": [
-                  "EventApiE141E6C0",
-                  "ApiId"
-                ]
-              }
-            ]
-          ]
-        },
-        "RetentionInDays": 365
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-appsync-resolver.md"
     },
     {
       "logicalId": "EventApiPublishEventResolver8E6D47D6",
+      "logicalName": "Event Api Publish Event Resolver",
       "type": "AWS::AppSync::Resolver",
-      "deletionPolicy": "Delete",
-      "purpose": "ingestion状態のrealtime通知",
-      "properties": {
+      "purpose": "Event Api Publish Event Resolver (AppSync resolver)",
+      "settings": {
         "ApiId": {
           "Fn::GetAtt": [
             "EventApiE141E6C0",
@@ -1398,29 +725,15 @@
         "RequestMappingTemplate": "{\"version\":\"2017-02-28\",\"payload\":$util.toJson($context.arguments)}",
         "ResponseMappingTemplate": "$util.toJson($context.result)",
         "TypeName": "Mutation"
-      }
-    },
-    {
-      "logicalId": "EventApiSchemaE2269AE0",
-      "type": "AWS::AppSync::GraphQLSchema",
-      "deletionPolicy": "Delete",
-      "purpose": "ingestion状態のrealtime通知",
-      "properties": {
-        "ApiId": {
-          "Fn::GetAtt": [
-            "EventApiE141E6C0",
-            "ApiId"
-          ]
-        },
-        "Definition": "type AsyncEvent @aws_iam @aws_cognito_user_pools {\n  channel: String!\n  resourceId: String!\n  kind: String!\n  status: String!\n  requestId: String!\n}\n\ntype Query {\n  health: Boolean!\n}\n\ntype Mutation {\n  publishEvent(\n    channel: String!\n    resourceId: String!\n    kind: String!\n    status: String!\n    requestId: String!\n  ): AsyncEvent! @aws_iam\n}\n\ntype Subscription {\n  onEvent(channel: String!): AsyncEvent\n    @aws_subscribe(mutations: [\"publishEvent\"])\n    @aws_cognito_user_pools\n}\n\nschema {\n  query: Query\n  mutation: Mutation\n  subscription: Subscription\n}\n"
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-appsync-resolver.md"
     },
     {
       "logicalId": "EventApiSubscriptionAuthorizationResolver41D8A879",
+      "logicalName": "Event Api Subscription Authorization Resolver",
       "type": "AWS::AppSync::Resolver",
-      "deletionPolicy": "Delete",
-      "purpose": "ingestion状態のrealtime通知",
-      "properties": {
+      "purpose": "Event Api Subscription Authorization Resolver (AppSync resolver)",
+      "settings": {
         "ApiId": {
           "Fn::GetAtt": [
             "EventApiE141E6C0",
@@ -1433,14 +746,15 @@
         "RequestMappingTemplate": "\n        #if($context.identity.sub != $context.arguments.channel)\n          $util.unauthorized()\n        #end\n        {\"version\":\"2017-02-28\",\"payload\":{}}\n      ",
         "ResponseMappingTemplate": "$util.toJson($context.result)",
         "TypeName": "Subscription"
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-appsync-resolver.md"
     },
     {
       "logicalId": "KnowledgeBase",
+      "logicalName": "Knowledge Base",
       "type": "AWS::Bedrock::KnowledgeBase",
-      "deletionPolicy": "Delete",
-      "purpose": "認可済みRAG retrieval基盤",
-      "properties": {
+      "purpose": "Knowledge Base (Bedrock knowledge base)",
+      "settings": {
         "Description": "Authorized evidence index for grounded answers",
         "KnowledgeBaseConfiguration": {
           "Type": "VECTOR",
@@ -1493,25 +807,192 @@
           "ManagedBy": "aws-cdk",
           "System": "rag-engineering"
         }
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-bedrock-knowledgebase.md"
     },
     {
-      "logicalId": "KnowledgeBaseRoleA2B317B9",
-      "type": "AWS::IAM::Role",
-      "deletionPolicy": "Delete",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "bedrock.amazonaws.com"
-              }
+      "logicalId": "DataSource",
+      "logicalName": "Data Source",
+      "type": "AWS::Bedrock::DataSource",
+      "purpose": "Data Source (Bedrock knowledge base data source)",
+      "settings": {
+        "DataDeletionPolicy": "RETAIN",
+        "DataSourceConfiguration": {
+          "S3Configuration": {
+            "BucketArn": {
+              "Fn::GetAtt": [
+                "SourceBucketDDD2130A",
+                "Arn"
+              ]
+            },
+            "InclusionPrefixes": [
+              "source/"
+            ]
+          },
+          "Type": "S3"
+        },
+        "KnowledgeBaseId": {
+          "Fn::GetAtt": [
+            "KnowledgeBase",
+            "KnowledgeBaseId"
+          ]
+        },
+        "Name": "authorized-source",
+        "VectorIngestionConfiguration": {
+          "ChunkingConfiguration": {
+            "ChunkingStrategy": "FIXED_SIZE",
+            "FixedSizeChunkingConfiguration": {
+              "MaxTokens": "<masked-or-reference>",
+              "OverlapPercentage": 20
             }
-          ],
-          "Version": "2012-10-17"
+          }
+        }
+      },
+      "detailFilePath": "infra-inventory/aws-bedrock-datasource.md"
+    },
+    {
+      "logicalId": "UserPool6BA7E5F2",
+      "logicalName": "User Pool",
+      "type": "AWS::Cognito::UserPool",
+      "purpose": "User Pool (Cognito user pool)",
+      "settings": {
+        "adminCreateUserOnly": true,
+        "usernameAttributes": [
+          "email"
+        ],
+        "autoVerifiedAttributes": [
+          "email"
+        ],
+        "mfaConfiguration": "OPTIONAL",
+        "enabledMfas": [
+          "SMS_MFA"
+        ],
+        "accountRecoveryMechanisms": [
+          {
+            "Name": "verified_email",
+            "Priority": 1
+          }
+        ],
+        "passwordPolicy": {
+          "MinimumLength": 14,
+          "RequireLowercase": true,
+          "RequireNumbers": true,
+          "RequireSymbols": true,
+          "RequireUppercase": true
+        }
+      },
+      "detailFilePath": "infra-inventory/aws-cognito-userpool.md"
+    },
+    {
+      "logicalId": "UserPoolWebClient4C9370B0",
+      "logicalName": "User Pool Web Client",
+      "type": "AWS::Cognito::UserPoolClient",
+      "purpose": "User Pool Web Client (Cognito app client)",
+      "settings": {
+        "generateSecret": false,
+        "explicitAuthFlows": [
+          "ALLOW_USER_SRP_AUTH",
+          "ALLOW_REFRESH_TOKEN_AUTH"
+        ],
+        "preventUserExistenceErrors": "ENABLED"
+      },
+      "detailFilePath": "infra-inventory/aws-cognito-userpoolclient.md"
+    },
+    {
+      "logicalId": "UserPoolHostedDomainE2BAC752",
+      "logicalName": "User Pool Hosted Domain",
+      "type": "AWS::Cognito::UserPoolDomain",
+      "purpose": "User Pool Hosted Domain (Cognito hosted domain)",
+      "settings": {
+        "domain": "Ref:CognitoDomainPrefix",
+        "userPoolId": "Ref:UserPool6BA7E5F2"
+      },
+      "detailFilePath": "infra-inventory/aws-cognito-userpooldomain.md"
+    },
+    {
+      "logicalId": "AdminGroup",
+      "logicalName": "Admin Group",
+      "type": "AWS::Cognito::UserPoolGroup",
+      "purpose": "Admin Group (Cognito role group)",
+      "settings": {
+        "groupName": "admin",
+        "description": "May ingest and manage authorized knowledge documents"
+      },
+      "detailFilePath": "infra-inventory/aws-cognito-userpoolgroup.md"
+    },
+    {
+      "logicalId": "Distribution830FAC52",
+      "logicalName": "Distribution",
+      "type": "AWS::CloudFront::Distribution",
+      "purpose": "Distribution (CloudFront distribution)",
+      "settings": {
+        "enabled": true,
+        "defaultRootObject": "index.html",
+        "httpVersion": "http2",
+        "defaultViewerProtocolPolicy": "redirect-to-https",
+        "origins": [
+          {
+            "id": "InventoryStackDistributionOrigin182ED7A49",
+            "domainName": "GetAtt:WebBucket12880F5B.RegionalDomainName",
+            "originAccessControlId": "GetAtt:DistributionOrigin1S3OriginAccessControlEB606076.Id"
+          },
+          {
+            "id": "InventoryStackDistributionOrigin2A935382E",
+            "domainName": "{\"Fn::Select\":[2,{\"Fn::Split\":[\"/\",{\"Fn::Join\":[\"\",[\"https://\",{\"Ref\":\"RestApi0C43BF4B\"},\".execute-api.\",{\"Ref\":\"AWS::Region\"},\".\",{\"Ref\":\"AWS::URLSuffix\"},\"/\",{\"Ref\":\"RestApiDepl…"
+          },
+          {
+            "id": "InventoryStackDistributionOrigin34B3A3A5D",
+            "domainName": "{\"Fn::Select\":[2,{\"Fn::Split\":[\"/\",{\"Fn::Join\":[\"\",[\"https://\",{\"Ref\":\"RestApi0C43BF4B\"},\".execute-api.\",{\"Ref\":\"AWS::Region\"},\".\",{\"Ref\":\"AWS::URLSuffix\"},\"/\",{\"Ref\":\"RestApiDepl…"
+          }
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-cloudfront-distribution.md"
+    },
+    {
+      "logicalId": "DistributionOrigin1S3OriginAccessControlEB606076",
+      "logicalName": "Distribution Origin1S3Origin Access Control",
+      "type": "AWS::CloudFront::OriginAccessControl",
+      "purpose": "Distribution Origin1S3Origin Access Control (CloudFront origin access control)",
+      "settings": {
+        "name": "InventoryStackDistributionOrigin1S3OriginAccessControl70DE3769",
+        "originType": "s3",
+        "signingBehavior": "always",
+        "signingProtocol": "sigv4"
+      },
+      "detailFilePath": "infra-inventory/aws-cloudfront-originaccesscontrol.md"
+    },
+    {
+      "logicalId": "SpaRewrite1C145184",
+      "logicalName": "Spa Rewrite",
+      "type": "AWS::CloudFront::Function",
+      "purpose": "Spa Rewrite (CloudFront routing function)",
+      "settings": {
+        "AutoPublish": true,
+        "FunctionCode": "\n        function handler(event) {\n          var request = event.request;\n          if (request.uri.indexOf('.') === -1) request.uri = '/index.html';\n          return request;\n        }\n      ",
+        "FunctionConfig": {
+          "Comment": {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "InventoryStackSpaRewriteD6F24FC3"
+              ]
+            ]
+          },
+          "Runtime": "cloudfront-js-2.0"
+        },
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::Region"
+              },
+              "InventoryStackSpaRewriteD6F24FC3"
+            ]
+          ]
         },
         "Tags": [
           {
@@ -1527,119 +1008,122 @@
             "Value": "rag-engineering"
           }
         ]
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-cloudfront-function.md"
     },
     {
-      "logicalId": "KnowledgeBaseRoleDefaultPolicyB3F66209",
-      "type": "AWS::IAM::Policy",
-      "deletionPolicy": "Delete",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "bedrock:InvokeModel",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition"
-                    },
-                    ":bedrock:",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    "::foundation-model/amazon.titan-embed-text-v2:0"
-                  ]
-                ]
-              }
-            },
-            {
-              "Action": [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*"
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "SourceBucketDDD2130A",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "SourceBucketDDD2130A",
-                          "Arn"
-                        ]
-                      },
-                      "/source/*"
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Action": [
-                "kms:Decrypt",
-                "kms:DescribeKey"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "DataKey17AFBB84",
-                  "Arn"
-                ]
-              }
-            },
-            {
-              "Action": "kms:Decrypt",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "DataKey17AFBB84",
-                  "Arn"
-                ]
-              }
-            },
-            {
-              "Action": [
-                "s3vectors:GetIndex",
-                "s3vectors:QueryVectors",
-                "s3vectors:PutVectors",
-                "s3vectors:DeleteVectors",
-                "s3vectors:GetVectors"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "VectorIndex"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "KnowledgeBaseRoleDefaultPolicyB3F66209",
-        "Roles": [
+      "logicalId": "DataKey17AFBB84",
+      "logicalName": "Data Key",
+      "type": "AWS::KMS::Key",
+      "purpose": "Data Key (KMS key)",
+      "settings": {
+        "enableKeyRotation": true,
+        "keyPolicyStatementCount": 1
+      },
+      "detailFilePath": "infra-inventory/aws-kms-key.md"
+    },
+    {
+      "logicalId": "ApiLogGroup1DEDFC07",
+      "logicalName": "Api Log Group",
+      "type": "AWS::Logs::LogGroup",
+      "purpose": "Api Log Group (CloudWatch Logs log group)",
+      "settings": {
+        "retentionInDays": 365
+      },
+      "detailFilePath": "infra-inventory/aws-logs-loggroup.md"
+    },
+    {
+      "logicalId": "AuditLogA5B7094E",
+      "logicalName": "Audit Log",
+      "type": "AWS::Logs::LogGroup",
+      "purpose": "Audit Log (CloudWatch Logs log group)",
+      "settings": {
+        "retentionInDays": 365
+      },
+      "detailFilePath": "infra-inventory/aws-logs-loggroup.md"
+    },
+    {
+      "logicalId": "ApiServerErrorsAlarm602F142D",
+      "logicalName": "Api Server Errors Alarm",
+      "type": "AWS::CloudWatch::Alarm",
+      "purpose": "Api Server Errors Alarm (CloudWatch alarm)",
+      "settings": {
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": [
           {
-            "Ref": "KnowledgeBaseRoleA2B317B9"
+            "Name": "ApiName",
+            "Value": "RestApi"
           }
-        ]
-      }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "5XXError",
+        "Namespace": "AWS/ApiGateway",
+        "Period": 300,
+        "Statistic": "Sum",
+        "Tags": [
+          {
+            "Key": "Environment",
+            "Value": "shared"
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "aws-cdk"
+          },
+          {
+            "Key": "System",
+            "Value": "rag-engineering"
+          }
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching"
+      },
+      "detailFilePath": "infra-inventory/aws-cloudwatch-alarm.md"
+    },
+    {
+      "logicalId": "DistributionErrorsAlarm2792C7CB",
+      "logicalName": "Distribution Errors Alarm",
+      "type": "AWS::CloudWatch::Alarm",
+      "purpose": "Distribution Errors Alarm (CloudWatch alarm)",
+      "settings": {
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "Dimensions": [
+          {
+            "Name": "DistributionId",
+            "Value": {
+              "Ref": "Distribution830FAC52"
+            }
+          }
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "5xxErrorRate",
+        "Namespace": "AWS/CloudFront",
+        "Period": 300,
+        "Statistic": "Average",
+        "Tags": [
+          {
+            "Key": "Environment",
+            "Value": "shared"
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "aws-cdk"
+          },
+          {
+            "Key": "System",
+            "Value": "rag-engineering"
+          }
+        ],
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching"
+      },
+      "detailFilePath": "infra-inventory/aws-cloudwatch-alarm.md"
     },
     {
       "logicalId": "LambdaErrorsAlarm8ED74A7D",
+      "logicalName": "Lambda Errors Alarm",
       "type": "AWS::CloudWatch::Alarm",
-      "deletionPolicy": "Delete",
-      "purpose": "監視・監査・運用可視化",
-      "properties": {
+      "purpose": "Lambda Errors Alarm (CloudWatch alarm)",
+      "settings": {
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
         "Dimensions": [
           {
@@ -1670,14 +1154,15 @@
         ],
         "Threshold": 1,
         "TreatMissingData": "notBreaching"
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-cloudwatch-alarm.md"
     },
     {
       "logicalId": "LambdaThrottlesAlarm13DE03A1",
+      "logicalName": "Lambda Throttles Alarm",
       "type": "AWS::CloudWatch::Alarm",
-      "deletionPolicy": "Delete",
-      "purpose": "監視・監査・運用可視化",
-      "properties": {
+      "purpose": "Lambda Throttles Alarm (CloudWatch alarm)",
+      "settings": {
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
         "Dimensions": [
           {
@@ -1708,168 +1193,15 @@
         ],
         "Threshold": 1,
         "TreatMissingData": "notBreaching"
-      }
-    },
-    {
-      "logicalId": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
-      "type": "AWS::Lambda::Function",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Handler": "index.handler",
-        "Runtime": "nodejs24.x",
-        "Timeout": 900,
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-          },
-          "S3Key": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip"
-        },
-        "Role": {
-          "Fn::GetAtt": [
-            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-            "Arn"
-          ]
-        },
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
-    },
-    {
-      "logicalId": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
-      "type": "AWS::IAM::Role",
-      "deletionPolicy": "Delete",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-              ]
-            ]
-          }
-        ],
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
-    },
-    {
-      "logicalId": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
-      "type": "AWS::IAM::Policy",
-      "deletionPolicy": "Delete",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "logs:PutRetentionPolicy",
-                "logs:DeleteRetentionPolicy"
-              ],
-              "Effect": "Allow",
-              "Resource": "*"
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
-        "Roles": [
-          {
-            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
-          }
-        ]
-      }
-    },
-    {
-      "logicalId": "MonthlyBudget",
-      "type": "AWS::Budgets::Budget",
-      "deletionPolicy": "Delete",
-      "purpose": "月次cost guardrail",
-      "properties": {
-        "Budget": {
-          "BudgetLimit": {
-            "Amount": {
-              "Ref": "MonthlyBudgetUsd"
-            },
-            "Unit": "USD"
-          },
-          "BudgetName": "rag-engineering-monthly",
-          "BudgetType": "COST",
-          "CostFilters": {
-            "TagKeyValue": [
-              "user:System$rag-engineering"
-            ]
-          },
-          "TimeUnit": "MONTHLY"
-        },
-        "NotificationsWithSubscribers": [
-          {
-            "Notification": {
-              "ComparisonOperator": "GREATER_THAN",
-              "NotificationType": "ACTUAL",
-              "Threshold": 80,
-              "ThresholdType": "PERCENTAGE"
-            },
-            "Subscribers": [
-              {
-                "Address": {
-                  "Ref": "AlertEmail"
-                },
-                "SubscriptionType": "EMAIL"
-              }
-            ]
-          }
-        ]
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-cloudwatch-alarm.md"
     },
     {
       "logicalId": "OperationsDashboard06307C07",
+      "logicalName": "Operations Dashboard",
       "type": "AWS::CloudWatch::Dashboard",
-      "deletionPolicy": "Delete",
-      "purpose": "監視・監査・運用可視化",
-      "properties": {
+      "purpose": "Operations Dashboard (CloudWatch dashboard)",
+      "settings": {
         "DashboardBody": {
           "Fn::Join": [
             "",
@@ -1948,1884 +1280,510 @@
             "Value": "rag-engineering"
           }
         ]
-      }
+      },
+      "detailFilePath": "infra-inventory/aws-cloudwatch-dashboard.md"
     },
     {
-      "logicalId": "RestApi0C43BF4B",
-      "type": "AWS::ApiGateway::RestApi",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "EndpointConfiguration": {
-          "Types": [
-            "REGIONAL"
-          ]
-        },
-        "Name": "RestApi",
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
+      "logicalId": "ApiFunctionServiceRole52B9747B",
+      "logicalName": "Api Function Service Role",
+      "type": "AWS::IAM::Role",
+      "purpose": "Api Function Service Role (IAM role)",
+      "settings": {
+        "assumedBy": [
+          "Service:lambda.amazonaws.com"
+        ],
+        "managedPolicyArns": [
+          "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole\"]]"
+        ],
+        "inlinePolicyCount": 0
+      },
+      "detailFilePath": "infra-inventory/aws-iam-role.md"
     },
     {
-      "logicalId": "RestApiAccount7C83CF5A",
-      "type": "AWS::ApiGateway::Account",
-      "deletionPolicy": "Retain",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "CloudWatchRoleArn": {
-          "Fn::GetAtt": [
-            "RestApiCloudWatchRoleE3ED6605",
-            "Arn"
-          ]
-        }
-      }
+      "logicalId": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265",
+      "logicalName": "Custom CDK Bucket Deployment8693BB64968944B69AAFB0CC9EB8756C Service Role",
+      "type": "AWS::IAM::Role",
+      "purpose": "Custom CDK Bucket Deployment8693BB64968944B69AAFB0CC9EB8756C Service Role (IAM role)",
+      "settings": {
+        "assumedBy": [
+          "Service:lambda.amazonaws.com"
+        ],
+        "managedPolicyArns": [
+          "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole\"]]"
+        ],
+        "inlinePolicyCount": 0
+      },
+      "detailFilePath": "infra-inventory/aws-iam-role.md"
+    },
+    {
+      "logicalId": "EventApiApiLogsRoleED9A8150",
+      "logicalName": "Event Api Api Logs Role",
+      "type": "AWS::IAM::Role",
+      "purpose": "Event Api Api Logs Role (IAM role)",
+      "settings": {
+        "assumedBy": [
+          "Service:appsync.amazonaws.com"
+        ],
+        "managedPolicyArns": [
+          "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":iam::aws:policy/service-role/AWSAppSyncPushToCloudWatchLogs\"]]"
+        ],
+        "inlinePolicyCount": 0
+      },
+      "detailFilePath": "infra-inventory/aws-iam-role.md"
+    },
+    {
+      "logicalId": "KnowledgeBaseRoleA2B317B9",
+      "logicalName": "Knowledge Base Role",
+      "type": "AWS::IAM::Role",
+      "purpose": "Knowledge Base Role (IAM role)",
+      "settings": {
+        "assumedBy": [
+          "Service:bedrock.amazonaws.com"
+        ],
+        "inlinePolicyCount": 0
+      },
+      "detailFilePath": "infra-inventory/aws-iam-role.md"
+    },
+    {
+      "logicalId": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      "logicalName": "Log Retentionaae0aa3c5b4d4f87b02d85b201efdd8a Service Role",
+      "type": "AWS::IAM::Role",
+      "purpose": "Log Retentionaae0aa3c5b4d4f87b02d85b201efdd8a Service Role (IAM role)",
+      "settings": {
+        "assumedBy": [
+          "Service:lambda.amazonaws.com"
+        ],
+        "managedPolicyArns": [
+          "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole\"]]"
+        ],
+        "inlinePolicyCount": 0
+      },
+      "detailFilePath": "infra-inventory/aws-iam-role.md"
     },
     {
       "logicalId": "RestApiCloudWatchRoleE3ED6605",
+      "logicalName": "Rest Api Cloud Watch Role",
       "type": "AWS::IAM::Role",
-      "deletionPolicy": "Retain",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "apigateway.amazonaws.com"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
-              ]
-            ]
-          }
+      "purpose": "Rest Api Cloud Watch Role (IAM role)",
+      "settings": {
+        "assumedBy": [
+          "Service:apigateway.amazonaws.com"
         ],
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
-    },
-    {
-      "logicalId": "RestApiDeployment180EC5033d4ddef50a60a00df299b94f3932a818",
-      "type": "AWS::ApiGateway::Deployment",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "Description": "Automatically created by the RestApi construct",
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiDeploymentStageapi14DA8585",
-      "type": "AWS::ApiGateway::Stage",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "DeploymentId": {
-          "Ref": "RestApiDeployment180EC5033d4ddef50a60a00df299b94f3932a818"
-        },
-        "MethodSettings": [
-          {
-            "DataTraceEnabled": false,
-            "HttpMethod": "*",
-            "LoggingLevel": "INFO",
-            "MetricsEnabled": true,
-            "ResourcePath": "/*",
-            "ThrottlingBurstLimit": 100,
-            "ThrottlingRateLimit": 50
-          }
+        "managedPolicyArns": [
+          "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs\"]]"
         ],
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        },
-        "StageName": "api",
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ],
-        "TracingEnabled": true
-      }
-    },
-    {
-      "logicalId": "RestApiOPTIONS6AA64D2D",
-      "type": "AWS::ApiGateway::Method",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ApiKeyRequired": false,
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "Integration": {
-          "IntegrationResponses": [
-            {
-              "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type'",
-                "method.response.header.Access-Control-Allow-Origin": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "'",
-                      {
-                        "Ref": "WebOrigin"
-                      },
-                      "'"
-                    ]
-                  ]
-                },
-                "method.response.header.Vary": "'Origin'",
-                "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
-                "method.response.header.Access-Control-Max-Age": "'3600'"
-              },
-              "StatusCode": "204"
-            }
-          ],
-          "RequestTemplates": {
-            "application/json": "{ statusCode: 200 }"
-          },
-          "Type": "MOCK"
-        },
-        "MethodResponses": [
-          {
-            "ResponseParameters": {
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Vary": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Max-Age": true
-            },
-            "StatusCode": "204"
-          }
-        ],
-        "ResourceId": {
-          "Fn::GetAtt": [
-            "RestApi0C43BF4B",
-            "RootResourceId"
-          ]
-        },
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApihealthC6B391F6",
-      "type": "AWS::ApiGateway::Resource",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ParentId": {
-          "Fn::GetAtt": [
-            "RestApi0C43BF4B",
-            "RootResourceId"
-          ]
-        },
-        "PathPart": "health",
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApihealthGET0B7A6069",
-      "type": "AWS::ApiGateway::Method",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "GET",
-        "Integration": {
-          "IntegrationHttpMethod": "POST",
-          "Type": "AWS_PROXY",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":apigateway:",
-                {
-                  "Ref": "AWS::Region"
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "ApiFunctionCE271BD4",
-                    "Arn"
-                  ]
-                },
-                "/invocations"
-              ]
-            ]
-          }
-        },
-        "ResourceId": {
-          "Ref": "RestApihealthC6B391F6"
-        },
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApihealthGETApiPermissionInventoryStackRestApiF45BCEEFGEThealth61BE6A7F",
-      "type": "AWS::Lambda::Permission",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "ApiFunctionCE271BD4",
-            "Arn"
-          ]
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition"
-              },
-              ":execute-api:",
-              {
-                "Ref": "AWS::Region"
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId"
-              },
-              ":",
-              {
-                "Ref": "RestApi0C43BF4B"
-              },
-              "/",
-              {
-                "Ref": "RestApiDeploymentStageapi14DA8585"
-              },
-              "/GET/health"
-            ]
-          ]
-        }
-      }
-    },
-    {
-      "logicalId": "RestApihealthGETApiPermissionTestInventoryStackRestApiF45BCEEFGEThealth72EC3427",
-      "type": "AWS::Lambda::Permission",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "ApiFunctionCE271BD4",
-            "Arn"
-          ]
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition"
-              },
-              ":execute-api:",
-              {
-                "Ref": "AWS::Region"
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId"
-              },
-              ":",
-              {
-                "Ref": "RestApi0C43BF4B"
-              },
-              "/test-invoke-stage/GET/health"
-            ]
-          ]
-        }
-      }
-    },
-    {
-      "logicalId": "RestApihealthOPTIONS8285AB3C",
-      "type": "AWS::ApiGateway::Method",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ApiKeyRequired": false,
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "Integration": {
-          "IntegrationResponses": [
-            {
-              "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type'",
-                "method.response.header.Access-Control-Allow-Origin": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "'",
-                      {
-                        "Ref": "WebOrigin"
-                      },
-                      "'"
-                    ]
-                  ]
-                },
-                "method.response.header.Vary": "'Origin'",
-                "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
-                "method.response.header.Access-Control-Max-Age": "'3600'"
-              },
-              "StatusCode": "204"
-            }
-          ],
-          "RequestTemplates": {
-            "application/json": "{ statusCode: 200 }"
-          },
-          "Type": "MOCK"
-        },
-        "MethodResponses": [
-          {
-            "ResponseParameters": {
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Vary": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Max-Age": true
-            },
-            "StatusCode": "204"
-          }
-        ],
-        "ResourceId": {
-          "Ref": "RestApihealthC6B391F6"
-        },
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1BD03133D",
-      "type": "AWS::ApiGateway::Resource",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ParentId": {
-          "Fn::GetAtt": [
-            "RestApi0C43BF4B",
-            "RootResourceId"
-          ]
-        },
-        "PathPart": "v1",
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1OPTIONSE3D842E6",
-      "type": "AWS::ApiGateway::Method",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ApiKeyRequired": false,
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "Integration": {
-          "IntegrationResponses": [
-            {
-              "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type'",
-                "method.response.header.Access-Control-Allow-Origin": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "'",
-                      {
-                        "Ref": "WebOrigin"
-                      },
-                      "'"
-                    ]
-                  ]
-                },
-                "method.response.header.Vary": "'Origin'",
-                "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
-                "method.response.header.Access-Control-Max-Age": "'3600'"
-              },
-              "StatusCode": "204"
-            }
-          ],
-          "RequestTemplates": {
-            "application/json": "{ statusCode: 200 }"
-          },
-          "Type": "MOCK"
-        },
-        "MethodResponses": [
-          {
-            "ResponseParameters": {
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Vary": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Max-Age": true
-            },
-            "StatusCode": "204"
-          }
-        ],
-        "ResourceId": {
-          "Ref": "RestApiv1BD03133D"
-        },
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1answers67B57CE0",
-      "type": "AWS::ApiGateway::Resource",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ParentId": {
-          "Ref": "RestApiv1BD03133D"
-        },
-        "PathPart": "answers",
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1answersOPTIONS508F02F8",
-      "type": "AWS::ApiGateway::Method",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ApiKeyRequired": false,
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "Integration": {
-          "IntegrationResponses": [
-            {
-              "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type'",
-                "method.response.header.Access-Control-Allow-Origin": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "'",
-                      {
-                        "Ref": "WebOrigin"
-                      },
-                      "'"
-                    ]
-                  ]
-                },
-                "method.response.header.Vary": "'Origin'",
-                "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
-                "method.response.header.Access-Control-Max-Age": "'3600'"
-              },
-              "StatusCode": "204"
-            }
-          ],
-          "RequestTemplates": {
-            "application/json": "{ statusCode: 200 }"
-          },
-          "Type": "MOCK"
-        },
-        "MethodResponses": [
-          {
-            "ResponseParameters": {
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Vary": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Max-Age": true
-            },
-            "StatusCode": "204"
-          }
-        ],
-        "ResourceId": {
-          "Ref": "RestApiv1answers67B57CE0"
-        },
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1answersPOST4F8C1276",
-      "type": "AWS::ApiGateway::Method",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "AuthorizationType": "COGNITO_USER_POOLS",
-        "AuthorizerId": {
-          "Ref": "CognitoAuthorizerF3215DBC"
-        },
-        "HttpMethod": "POST",
-        "Integration": {
-          "IntegrationHttpMethod": "POST",
-          "Type": "AWS_PROXY",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":apigateway:",
-                {
-                  "Ref": "AWS::Region"
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "ApiFunctionCE271BD4",
-                    "Arn"
-                  ]
-                },
-                "/invocations"
-              ]
-            ]
-          }
-        },
-        "ResourceId": {
-          "Ref": "RestApiv1answers67B57CE0"
-        },
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1answersPOSTApiPermissionInventoryStackRestApiF45BCEEFPOSTv1answersE035AB0F",
-      "type": "AWS::Lambda::Permission",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "ApiFunctionCE271BD4",
-            "Arn"
-          ]
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition"
-              },
-              ":execute-api:",
-              {
-                "Ref": "AWS::Region"
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId"
-              },
-              ":",
-              {
-                "Ref": "RestApi0C43BF4B"
-              },
-              "/",
-              {
-                "Ref": "RestApiDeploymentStageapi14DA8585"
-              },
-              "/POST/v1/answers"
-            ]
-          ]
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1answersPOSTApiPermissionTestInventoryStackRestApiF45BCEEFPOSTv1answers4261C499",
-      "type": "AWS::Lambda::Permission",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "ApiFunctionCE271BD4",
-            "Arn"
-          ]
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition"
-              },
-              ":execute-api:",
-              {
-                "Ref": "AWS::Region"
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId"
-              },
-              ":",
-              {
-                "Ref": "RestApi0C43BF4B"
-              },
-              "/test-invoke-stage/POST/v1/answers"
-            ]
-          ]
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1documentsBC91F695",
-      "type": "AWS::ApiGateway::Resource",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ParentId": {
-          "Ref": "RestApiv1BD03133D"
-        },
-        "PathPart": "documents",
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1documentsOPTIONS84A8831A",
-      "type": "AWS::ApiGateway::Method",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ApiKeyRequired": false,
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "Integration": {
-          "IntegrationResponses": [
-            {
-              "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type'",
-                "method.response.header.Access-Control-Allow-Origin": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "'",
-                      {
-                        "Ref": "WebOrigin"
-                      },
-                      "'"
-                    ]
-                  ]
-                },
-                "method.response.header.Vary": "'Origin'",
-                "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
-                "method.response.header.Access-Control-Max-Age": "'3600'"
-              },
-              "StatusCode": "204"
-            }
-          ],
-          "RequestTemplates": {
-            "application/json": "{ statusCode: 200 }"
-          },
-          "Type": "MOCK"
-        },
-        "MethodResponses": [
-          {
-            "ResponseParameters": {
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Vary": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Max-Age": true
-            },
-            "StatusCode": "204"
-          }
-        ],
-        "ResourceId": {
-          "Ref": "RestApiv1documentsBC91F695"
-        },
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1documentsPOST8A6865F1",
-      "type": "AWS::ApiGateway::Method",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "AuthorizationType": "COGNITO_USER_POOLS",
-        "AuthorizerId": {
-          "Ref": "CognitoAuthorizerF3215DBC"
-        },
-        "HttpMethod": "POST",
-        "Integration": {
-          "IntegrationHttpMethod": "POST",
-          "Type": "AWS_PROXY",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":apigateway:",
-                {
-                  "Ref": "AWS::Region"
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "ApiFunctionCE271BD4",
-                    "Arn"
-                  ]
-                },
-                "/invocations"
-              ]
-            ]
-          }
-        },
-        "ResourceId": {
-          "Ref": "RestApiv1documentsBC91F695"
-        },
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1documentsPOSTApiPermissionInventoryStackRestApiF45BCEEFPOSTv1documentsE71BAB10",
-      "type": "AWS::Lambda::Permission",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "ApiFunctionCE271BD4",
-            "Arn"
-          ]
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition"
-              },
-              ":execute-api:",
-              {
-                "Ref": "AWS::Region"
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId"
-              },
-              ":",
-              {
-                "Ref": "RestApi0C43BF4B"
-              },
-              "/",
-              {
-                "Ref": "RestApiDeploymentStageapi14DA8585"
-              },
-              "/POST/v1/documents"
-            ]
-          ]
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1documentsPOSTApiPermissionTestInventoryStackRestApiF45BCEEFPOSTv1documents420BB1FD",
-      "type": "AWS::Lambda::Permission",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "ApiFunctionCE271BD4",
-            "Arn"
-          ]
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition"
-              },
-              ":execute-api:",
-              {
-                "Ref": "AWS::Region"
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId"
-              },
-              ":",
-              {
-                "Ref": "RestApi0C43BF4B"
-              },
-              "/test-invoke-stage/POST/v1/documents"
-            ]
-          ]
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1searchF6333DAD",
-      "type": "AWS::ApiGateway::Resource",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ParentId": {
-          "Ref": "RestApiv1BD03133D"
-        },
-        "PathPart": "search",
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1searchOPTIONS4236A591",
-      "type": "AWS::ApiGateway::Method",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "ApiKeyRequired": false,
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "Integration": {
-          "IntegrationResponses": [
-            {
-              "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type'",
-                "method.response.header.Access-Control-Allow-Origin": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "'",
-                      {
-                        "Ref": "WebOrigin"
-                      },
-                      "'"
-                    ]
-                  ]
-                },
-                "method.response.header.Vary": "'Origin'",
-                "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
-                "method.response.header.Access-Control-Max-Age": "'3600'"
-              },
-              "StatusCode": "204"
-            }
-          ],
-          "RequestTemplates": {
-            "application/json": "{ statusCode: 200 }"
-          },
-          "Type": "MOCK"
-        },
-        "MethodResponses": [
-          {
-            "ResponseParameters": {
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Vary": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Max-Age": true
-            },
-            "StatusCode": "204"
-          }
-        ],
-        "ResourceId": {
-          "Ref": "RestApiv1searchF6333DAD"
-        },
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1searchPOST2EB1645B",
-      "type": "AWS::ApiGateway::Method",
-      "deletionPolicy": "Delete",
-      "purpose": "REST API公開境界",
-      "properties": {
-        "AuthorizationType": "COGNITO_USER_POOLS",
-        "AuthorizerId": {
-          "Ref": "CognitoAuthorizerF3215DBC"
-        },
-        "HttpMethod": "POST",
-        "Integration": {
-          "IntegrationHttpMethod": "POST",
-          "Type": "AWS_PROXY",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":apigateway:",
-                {
-                  "Ref": "AWS::Region"
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "ApiFunctionCE271BD4",
-                    "Arn"
-                  ]
-                },
-                "/invocations"
-              ]
-            ]
-          }
-        },
-        "ResourceId": {
-          "Ref": "RestApiv1searchF6333DAD"
-        },
-        "RestApiId": {
-          "Ref": "RestApi0C43BF4B"
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1searchPOSTApiPermissionInventoryStackRestApiF45BCEEFPOSTv1searchF0AE07B7",
-      "type": "AWS::Lambda::Permission",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "ApiFunctionCE271BD4",
-            "Arn"
-          ]
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition"
-              },
-              ":execute-api:",
-              {
-                "Ref": "AWS::Region"
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId"
-              },
-              ":",
-              {
-                "Ref": "RestApi0C43BF4B"
-              },
-              "/",
-              {
-                "Ref": "RestApiDeploymentStageapi14DA8585"
-              },
-              "/POST/v1/search"
-            ]
-          ]
-        }
-      }
-    },
-    {
-      "logicalId": "RestApiv1searchPOSTApiPermissionTestInventoryStackRestApiF45BCEEFPOSTv1searchCA002715",
-      "type": "AWS::Lambda::Permission",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "ApiFunctionCE271BD4",
-            "Arn"
-          ]
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition"
-              },
-              ":execute-api:",
-              {
-                "Ref": "AWS::Region"
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId"
-              },
-              ":",
-              {
-                "Ref": "RestApi0C43BF4B"
-              },
-              "/test-invoke-stage/POST/v1/search"
-            ]
-          ]
-        }
-      }
-    },
-    {
-      "logicalId": "SourceBucketDDD2130A",
-      "type": "AWS::S3::Bucket",
-      "deletionPolicy": "Retain",
-      "purpose": "暗号化されたsourceまたはlog保管",
-      "properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "KMSMasterKeyID": {
-                  "Fn::GetAtt": [
-                    "DataKey17AFBB84",
-                    "Arn"
-                  ]
-                },
-                "SSEAlgorithm": "aws:kms"
-              }
-            }
-          ]
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true
-        },
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ],
-        "VersioningConfiguration": {
-          "Status": "Enabled"
-        }
-      }
-    },
-    {
-      "logicalId": "SourceBucketPolicy703DFBF9",
-      "type": "AWS::S3::BucketPolicy",
-      "deletionPolicy": "Delete",
-      "purpose": "暗号化されたsourceまたはlog保管",
-      "properties": {
-        "Bucket": {
-          "Ref": "SourceBucketDDD2130A"
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false"
-                }
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*"
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "SourceBucketDDD2130A",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "SourceBucketDDD2130A",
-                          "Arn"
-                        ]
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            }
-          ],
-          "Version": "2012-10-17"
-        }
-      }
-    },
-    {
-      "logicalId": "SpaRewrite1C145184",
-      "type": "AWS::CloudFront::Function",
-      "deletionPolicy": "Delete",
-      "purpose": "WebとAPIの統合配信",
-      "properties": {
-        "AutoPublish": true,
-        "FunctionCode": "\n        function handler(event) {\n          var request = event.request;\n          if (request.uri.indexOf('.') === -1) request.uri = '/index.html';\n          return request;\n        }\n      ",
-        "FunctionConfig": {
-          "Comment": {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "InventoryStackSpaRewriteD6F24FC3"
-              ]
-            ]
-          },
-          "Runtime": "cloudfront-js-2.0"
-        },
-        "Name": {
-          "Fn::Join": [
-            "",
-            [
-              {
-                "Ref": "AWS::Region"
-              },
-              "InventoryStackSpaRewriteD6F24FC3"
-            ]
-          ]
-        },
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
-    },
-    {
-      "logicalId": "UserPool6BA7E5F2",
-      "type": "AWS::Cognito::UserPool",
-      "deletionPolicy": "Retain",
-      "purpose": "利用者認証とgroup認可",
-      "properties": {
-        "AccountRecoverySetting": {
-          "RecoveryMechanisms": [
-            {
-              "Name": "verified_email",
-              "Priority": 1
-            }
-          ]
-        },
-        "AdminCreateUserConfig": {
-          "AllowAdminCreateUserOnly": true
-        },
-        "AutoVerifiedAttributes": [
-          "email"
-        ],
-        "EmailVerificationMessage": "The verification code to your new account is {####}",
-        "EmailVerificationSubject": "Verify your new account",
-        "EnabledMfas": [
-          "SMS_MFA"
-        ],
-        "MfaConfiguration": "OPTIONAL",
-        "Policies": {
-          "PasswordPolicy": {
-            "MinimumLength": 14,
-            "RequireLowercase": true,
-            "RequireNumbers": true,
-            "RequireSymbols": true,
-            "RequireUppercase": true
-          }
-        },
-        "SmsConfiguration": {
-          "ExternalId": "InventoryStackUserPoolBEB4F784",
-          "SnsCallerArn": {
-            "Fn::GetAtt": [
-              "UserPoolsmsRole4EA729DD",
-              "Arn"
-            ]
-          }
-        },
-        "SmsVerificationMessage": "The verification code to your new account is {####}",
-        "UserPoolTags": {
-          "Environment": "shared",
-          "ManagedBy": "aws-cdk",
-          "System": "rag-engineering"
-        },
-        "UsernameAttributes": [
-          "email"
-        ],
-        "VerificationMessageTemplate": {
-          "DefaultEmailOption": "CONFIRM_WITH_CODE",
-          "EmailMessage": "The verification code to your new account is {####}",
-          "EmailSubject": "Verify your new account",
-          "SmsMessage": "The verification code to your new account is {####}"
-        }
-      }
-    },
-    {
-      "logicalId": "UserPoolHostedDomainE2BAC752",
-      "type": "AWS::Cognito::UserPoolDomain",
-      "deletionPolicy": "Delete",
-      "purpose": "利用者認証とgroup認可",
-      "properties": {
-        "Domain": {
-          "Ref": "CognitoDomainPrefix"
-        },
-        "UserPoolId": {
-          "Ref": "UserPool6BA7E5F2"
-        }
-      }
-    },
-    {
-      "logicalId": "UserPoolWebClient4C9370B0",
-      "type": "AWS::Cognito::UserPoolClient",
-      "deletionPolicy": "Delete",
-      "purpose": "利用者認証とgroup認可",
-      "properties": {
-        "AllowedOAuthFlows": [
-          "code"
-        ],
-        "AllowedOAuthFlowsUserPoolClient": true,
-        "AllowedOAuthScopes": [
-          "openid",
-          "email",
-          "profile"
-        ],
-        "CallbackURLs": [
-          {
-            "Ref": "WebCallbackUrl"
-          }
-        ],
-        "ExplicitAuthFlows": [
-          "ALLOW_USER_SRP_AUTH",
-          "ALLOW_REFRESH_TOKEN_AUTH"
-        ],
-        "GenerateSecret": false,
-        "LogoutURLs": [
-          {
-            "Ref": "WebLogoutUrl"
-          }
-        ],
-        "PreventUserExistenceErrors": "ENABLED",
-        "SupportedIdentityProviders": [
-          "COGNITO"
-        ],
-        "UserPoolId": {
-          "Ref": "UserPool6BA7E5F2"
-        }
-      }
+        "inlinePolicyCount": 0
+      },
+      "detailFilePath": "infra-inventory/aws-iam-role.md"
     },
     {
       "logicalId": "UserPoolsmsRole4EA729DD",
+      "logicalName": "User Poolsms Role",
       "type": "AWS::IAM::Role",
-      "deletionPolicy": "Delete",
-      "purpose": "最小権限の実行権限",
-      "properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": "InventoryStackUserPoolBEB4F784"
-                }
-              },
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "cognito-idp.amazonaws.com"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": "sns:Publish",
-                  "Effect": "Allow",
-                  "Resource": "*"
-                }
-              ],
-              "Version": "2012-10-17"
-            },
-            "PolicyName": "sns-publish"
-          }
+      "purpose": "User Poolsms Role (IAM role)",
+      "settings": {
+        "assumedBy": [
+          "Service:cognito-idp.amazonaws.com"
         ],
-        "Tags": [
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
-        ]
-      }
+        "inlinePolicyCount": 1
+      },
+      "detailFilePath": "infra-inventory/aws-iam-role.md"
     },
     {
-      "logicalId": "VectorBucket",
-      "type": "AWS::S3Vectors::VectorBucket",
-      "deletionPolicy": "Retain",
-      "purpose": "埋め込みvector索引",
-      "properties": {
-        "EncryptionConfiguration": {
-          "SseType": "aws:kms",
-          "KmsKeyArn": {
-            "Fn::GetAtt": [
-              "DataKey17AFBB84",
-              "Arn"
-            ]
-          }
-        },
-        "Tags": [
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          }
-        ]
-      }
-    },
-    {
-      "logicalId": "VectorIndex",
-      "type": "AWS::S3Vectors::Index",
-      "deletionPolicy": "Retain",
-      "purpose": "埋め込みvector索引",
-      "properties": {
-        "DataType": "float32",
-        "Dimension": 1024,
-        "DistanceMetric": "cosine",
-        "IndexName": "rag-content",
-        "VectorBucketArn": {
-          "Ref": "VectorBucket"
-        },
-        "Tags": [
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          }
-        ]
-      }
-    },
-    {
-      "logicalId": "WebBucket12880F5B",
-      "type": "AWS::S3::Bucket",
-      "deletionPolicy": "Retain",
-      "purpose": "private Web asset配信",
-      "properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256"
-              }
-            }
-          ]
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true
-        },
-        "Tags": [
-          {
-            "Key": "aws-cdk:cr-owned:6fbb5230",
-            "Value": "true"
-          },
-          {
-            "Key": "Environment",
-            "Value": "shared"
-          },
-          {
-            "Key": "ManagedBy",
-            "Value": "aws-cdk"
-          },
-          {
-            "Key": "System",
-            "Value": "rag-engineering"
-          }
+      "logicalId": "ApiFunctionServiceRoleDefaultPolicy20A32B8D",
+      "logicalName": "Api Function Service Role Default Policy",
+      "type": "AWS::IAM::Policy",
+      "purpose": "Api Function Service Role Default Policy (IAM inline policy)",
+      "settings": {
+        "policyName": "ApiFunctionServiceRoleDefaultPolicy20A32B8D",
+        "roles": [
+          "Ref:ApiFunctionServiceRole52B9747B"
         ],
-        "VersioningConfiguration": {
-          "Status": "Enabled"
-        }
-      }
+        "statementCount": 7,
+        "actions": [
+          "appsync:GraphQL",
+          "bedrock:InvokeModel",
+          "bedrock:Retrieve",
+          "bedrock:StartIngestionJob",
+          "kms:Decrypt",
+          "kms:DescribeKey",
+          "kms:Encrypt",
+          "kms:GenerateDataKey*",
+          "kms:ReEncrypt*",
+          "s3:Abort*",
+          "s3:DeleteObject*",
+          "s3:GetBucket*",
+          "s3:GetObject*",
+          "s3:List*",
+          "s3:PutObject",
+          "s3:PutObjectLegalHold",
+          "s3:PutObjectRetention",
+          "s3:PutObjectTagging",
+          "s3:PutObjectVersionTagging",
+          "xray:PutTelemetryRecords",
+          "xray:PutTraceSegments"
+        ],
+        "resources": [
+          "*",
+          "GetAtt:DataKey17AFBB84.Arn",
+          "GetAtt:KnowledgeBase.KnowledgeBaseArn",
+          "GetAtt:SourceBucketDDD2130A.Arn",
+          "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":appsync:\",{\"Ref\":\"AWS::Region\"},\":\",{\"Ref\":\"AWS::AccountId\"},\":apis/\",{\"Fn::GetAtt\":[\"EventApiE141E6…",
+          "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":bedrock:\",{\"Ref\":\"AWS::Region\"},\"::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0\"]]",
+          "Join:[\"\",[{\"Fn::GetAtt\":[\"SourceBucketDDD2130A\",\"Arn\"]},\"/source/*\"]]"
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-iam-policy.md"
     },
     {
-      "logicalId": "WebBucketPolicy95D08FAA",
-      "type": "AWS::S3::BucketPolicy",
-      "deletionPolicy": "Delete",
-      "purpose": "private Web asset配信",
-      "properties": {
-        "Bucket": {
-          "Ref": "WebBucket12880F5B"
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false"
-                }
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*"
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "WebBucket12880F5B",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "WebBucket12880F5B",
-                          "Arn"
-                        ]
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Action": "s3:GetObject",
-              "Condition": {
-                "StringEquals": {
-                  "AWS:SourceArn": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        "arn:",
-                        {
-                          "Ref": "AWS::Partition"
-                        },
-                        ":cloudfront::",
-                        {
-                          "Ref": "AWS::AccountId"
-                        },
-                        ":distribution/",
-                        {
-                          "Ref": "Distribution830FAC52"
-                        }
-                      ]
-                    ]
-                  }
-                }
-              },
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "cloudfront.amazonaws.com"
-              },
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Fn::GetAtt": [
-                        "WebBucket12880F5B",
-                        "Arn"
-                      ]
-                    },
-                    "/*"
-                  ]
-                ]
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        }
-      }
+      "logicalId": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF",
+      "logicalName": "Custom CDK Bucket Deployment8693BB64968944B69AAFB0CC9EB8756C Service Role Default Policy",
+      "type": "AWS::IAM::Policy",
+      "purpose": "Custom CDK Bucket Deployment8693BB64968944B69AAFB0CC9EB8756C Service Role Default Policy (IAM inline policy)",
+      "settings": {
+        "policyName": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF",
+        "roles": [
+          "Ref:CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+        ],
+        "statementCount": 3,
+        "actions": [
+          "cloudfront:CreateInvalidation",
+          "cloudfront:GetInvalidation",
+          "s3:Abort*",
+          "s3:DeleteObject*",
+          "s3:GetBucket*",
+          "s3:GetObject*",
+          "s3:List*",
+          "s3:PutObject",
+          "s3:PutObjectLegalHold",
+          "s3:PutObjectRetention",
+          "s3:PutObjectTagging",
+          "s3:PutObjectVersionTagging"
+        ],
+        "resources": [
+          "*",
+          "GetAtt:WebBucket12880F5B.Arn",
+          "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":s3:::\",{\"Fn::Sub\":\"cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}\"},\"/*\"]]",
+          "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":s3:::\",{\"Fn::Sub\":\"cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}\"}]]",
+          "Join:[\"\",[{\"Fn::GetAtt\":[\"WebBucket12880F5B\",\"Arn\"]},\"/*\"]]"
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-iam-policy.md"
     },
     {
-      "logicalId": "WebDeploymentAwsCliLayer79C1EFEA",
-      "type": "AWS::Lambda::LayerVersion",
-      "deletionPolicy": "Delete",
-      "purpose": "FastAPI runtimeまたは補助処理",
-      "properties": {
-        "Content": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-          },
-          "S3Key": "a72522445441e9b66c2f16956c54d4786af8c61c156b80c48a6e7c32fcc49023.zip"
-        },
-        "Description": "/opt/awscli/aws"
-      }
+      "logicalId": "KnowledgeBaseRoleDefaultPolicyB3F66209",
+      "logicalName": "Knowledge Base Role Default Policy",
+      "type": "AWS::IAM::Policy",
+      "purpose": "Knowledge Base Role Default Policy (IAM inline policy)",
+      "settings": {
+        "policyName": "KnowledgeBaseRoleDefaultPolicyB3F66209",
+        "roles": [
+          "Ref:KnowledgeBaseRoleA2B317B9"
+        ],
+        "statementCount": 5,
+        "actions": [
+          "bedrock:InvokeModel",
+          "kms:Decrypt",
+          "kms:DescribeKey",
+          "s3:GetBucket*",
+          "s3:GetObject*",
+          "s3:List*",
+          "s3vectors:DeleteVectors",
+          "s3vectors:GetIndex",
+          "s3vectors:GetVectors",
+          "s3vectors:PutVectors",
+          "s3vectors:QueryVectors"
+        ],
+        "resources": [
+          "GetAtt:DataKey17AFBB84.Arn",
+          "GetAtt:SourceBucketDDD2130A.Arn",
+          "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":bedrock:\",{\"Ref\":\"AWS::Region\"},\"::foundation-model/amazon.titan-embed-text-v2:0\"]]",
+          "Join:[\"\",[{\"Fn::GetAtt\":[\"SourceBucketDDD2130A\",\"Arn\"]},\"/source/*\"]]",
+          "Ref:VectorIndex"
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-iam-policy.md"
+    },
+    {
+      "logicalId": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+      "logicalName": "Log Retentionaae0aa3c5b4d4f87b02d85b201efdd8a Service Role Default Policy",
+      "type": "AWS::IAM::Policy",
+      "purpose": "Log Retentionaae0aa3c5b4d4f87b02d85b201efdd8a Service Role Default Policy (IAM inline policy)",
+      "settings": {
+        "policyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "roles": [
+          "Ref:LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+        ],
+        "statementCount": 1,
+        "actions": [
+          "logs:DeleteRetentionPolicy",
+          "logs:PutRetentionPolicy"
+        ],
+        "resources": [
+          "*"
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-iam-policy.md"
     },
     {
       "logicalId": "WebDeploymentCustomResource08EEC474",
+      "logicalName": "Web Deployment Custom Resource",
       "type": "Custom::CDKBucketDeployment",
-      "deletionPolicy": "Delete",
-      "purpose": "CloudFormation managed resource",
-      "properties": {
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
-            "Arn"
-          ]
-        },
-        "SourceBucketNames": [
-          {
-            "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
-          }
-        ],
-        "SourceObjectKeys": [
+      "purpose": "Web Deployment Custom Resource (CDK bucket deployment)",
+      "settings": {
+        "destinationBucketName": "Ref:WebBucket12880F5B",
+        "sourceObjectKeys": [
           "fe0ecf5437f70c33c64989aa6fbb009c1ce9cbd34fedfe310a9e8ad05d8eb867.zip"
         ],
-        "DestinationBucketName": {
-          "Ref": "WebBucket12880F5B"
+        "prune": true
+      },
+      "detailFilePath": "infra-inventory/custom-cdkbucketdeployment.md"
+    },
+    {
+      "logicalId": "SourceBucketPolicy703DFBF9",
+      "logicalName": "Source Bucket Policy",
+      "type": "AWS::S3::BucketPolicy",
+      "purpose": "Source Bucket Policy (S3 bucket policy)",
+      "settings": {
+        "bucket": "Ref:SourceBucketDDD2130A",
+        "statementCount": 1,
+        "actions": [
+          "s3:*"
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-s3-bucketpolicy.md"
+    },
+    {
+      "logicalId": "WebBucketPolicy95D08FAA",
+      "logicalName": "Web Bucket Policy",
+      "type": "AWS::S3::BucketPolicy",
+      "purpose": "Web Bucket Policy (S3 bucket policy)",
+      "settings": {
+        "bucket": "Ref:WebBucket12880F5B",
+        "statementCount": 2,
+        "actions": [
+          "s3:*",
+          "s3:GetObject"
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-s3-bucketpolicy.md"
+    },
+    {
+      "logicalId": "WebDeploymentAwsCliLayer79C1EFEA",
+      "logicalName": "Web Deployment Aws Cli Layer",
+      "type": "AWS::Lambda::LayerVersion",
+      "purpose": "Web Deployment Aws Cli Layer (Lambda layer)",
+      "settings": {
+        "content": "{\"S3Bucket\":{\"Fn::Sub\":\"cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}\"},\"S3Key\":\"a72522445441e9b66c2f16956c54d4786af8c61c156b80c48a6e7c32fcc49023.zip\"}"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-layerversion.md"
+    },
+    {
+      "logicalId": "RestApihealthGETApiPermissionInventoryStackRestApiF45BCEEFGEThealth61BE6A7F",
+      "logicalName": "Rest Apihealth GET Api Permission Inventory Stack Rest Api F45BCEEFGE Thealth",
+      "type": "AWS::Lambda::Permission",
+      "purpose": "Rest Apihealth GET Api Permission Inventory Stack Rest Api F45BCEEFGE Thealth (Lambda invoke permission)",
+      "settings": {
+        "action": "lambda:InvokeFunction",
+        "principal": "apigateway.amazonaws.com",
+        "functionName": "GetAtt:ApiFunctionCE271BD4.Arn",
+        "sourceArn": "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":execute-api:\",{\"Ref\":\"AWS::Region\"},\":\",{\"Ref\":\"AWS::AccountId\"},\":\",{\"Ref\":\"RestApi0C43BF4B\"},\"/\",{…"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-permission.md"
+    },
+    {
+      "logicalId": "RestApihealthGETApiPermissionTestInventoryStackRestApiF45BCEEFGEThealth72EC3427",
+      "logicalName": "Rest Apihealth GET Api Permission Test Inventory Stack Rest Api F45BCEEFGE Thealth",
+      "type": "AWS::Lambda::Permission",
+      "purpose": "Rest Apihealth GET Api Permission Test Inventory Stack Rest Api F45BCEEFGE Thealth (Lambda invoke permission)",
+      "settings": {
+        "action": "lambda:InvokeFunction",
+        "principal": "apigateway.amazonaws.com",
+        "functionName": "GetAtt:ApiFunctionCE271BD4.Arn",
+        "sourceArn": "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":execute-api:\",{\"Ref\":\"AWS::Region\"},\":\",{\"Ref\":\"AWS::AccountId\"},\":\",{\"Ref\":\"RestApi0C43BF4B\"},\"/tes…"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-permission.md"
+    },
+    {
+      "logicalId": "RestApiv1answersPOSTApiPermissionInventoryStackRestApiF45BCEEFPOSTv1answersE035AB0F",
+      "logicalName": "Rest Apiv1answers POST Api Permission Inventory Stack Rest Api F45BCEEFPOS Tv1answers",
+      "type": "AWS::Lambda::Permission",
+      "purpose": "Rest Apiv1answers POST Api Permission Inventory Stack Rest Api F45BCEEFPOS Tv1answers (Lambda invoke permission)",
+      "settings": {
+        "action": "lambda:InvokeFunction",
+        "principal": "apigateway.amazonaws.com",
+        "functionName": "GetAtt:ApiFunctionCE271BD4.Arn",
+        "sourceArn": "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":execute-api:\",{\"Ref\":\"AWS::Region\"},\":\",{\"Ref\":\"AWS::AccountId\"},\":\",{\"Ref\":\"RestApi0C43BF4B\"},\"/\",{…"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-permission.md"
+    },
+    {
+      "logicalId": "RestApiv1answersPOSTApiPermissionTestInventoryStackRestApiF45BCEEFPOSTv1answers4261C499",
+      "logicalName": "Rest Apiv1answers POST Api Permission Test Inventory Stack Rest Api F45BCEEFPOS Tv1answers",
+      "type": "AWS::Lambda::Permission",
+      "purpose": "Rest Apiv1answers POST Api Permission Test Inventory Stack Rest Api F45BCEEFPOS Tv1answers (Lambda invoke permission)",
+      "settings": {
+        "action": "lambda:InvokeFunction",
+        "principal": "apigateway.amazonaws.com",
+        "functionName": "GetAtt:ApiFunctionCE271BD4.Arn",
+        "sourceArn": "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":execute-api:\",{\"Ref\":\"AWS::Region\"},\":\",{\"Ref\":\"AWS::AccountId\"},\":\",{\"Ref\":\"RestApi0C43BF4B\"},\"/tes…"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-permission.md"
+    },
+    {
+      "logicalId": "RestApiv1documentsPOSTApiPermissionInventoryStackRestApiF45BCEEFPOSTv1documentsE71BAB10",
+      "logicalName": "Rest Apiv1documents POST Api Permission Inventory Stack Rest Api F45BCEEFPOS Tv1documents",
+      "type": "AWS::Lambda::Permission",
+      "purpose": "Rest Apiv1documents POST Api Permission Inventory Stack Rest Api F45BCEEFPOS Tv1documents (Lambda invoke permission)",
+      "settings": {
+        "action": "lambda:InvokeFunction",
+        "principal": "apigateway.amazonaws.com",
+        "functionName": "GetAtt:ApiFunctionCE271BD4.Arn",
+        "sourceArn": "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":execute-api:\",{\"Ref\":\"AWS::Region\"},\":\",{\"Ref\":\"AWS::AccountId\"},\":\",{\"Ref\":\"RestApi0C43BF4B\"},\"/\",{…"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-permission.md"
+    },
+    {
+      "logicalId": "RestApiv1documentsPOSTApiPermissionTestInventoryStackRestApiF45BCEEFPOSTv1documents420BB1FD",
+      "logicalName": "Rest Apiv1documents POST Api Permission Test Inventory Stack Rest Api F45BCEEFPOS Tv1documents",
+      "type": "AWS::Lambda::Permission",
+      "purpose": "Rest Apiv1documents POST Api Permission Test Inventory Stack Rest Api F45BCEEFPOS Tv1documents (Lambda invoke permission)",
+      "settings": {
+        "action": "lambda:InvokeFunction",
+        "principal": "apigateway.amazonaws.com",
+        "functionName": "GetAtt:ApiFunctionCE271BD4.Arn",
+        "sourceArn": "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":execute-api:\",{\"Ref\":\"AWS::Region\"},\":\",{\"Ref\":\"AWS::AccountId\"},\":\",{\"Ref\":\"RestApi0C43BF4B\"},\"/tes…"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-permission.md"
+    },
+    {
+      "logicalId": "RestApiv1searchPOSTApiPermissionInventoryStackRestApiF45BCEEFPOSTv1searchF0AE07B7",
+      "logicalName": "Rest Apiv1search POST Api Permission Inventory Stack Rest Api F45BCEEFPOS Tv1search",
+      "type": "AWS::Lambda::Permission",
+      "purpose": "Rest Apiv1search POST Api Permission Inventory Stack Rest Api F45BCEEFPOS Tv1search (Lambda invoke permission)",
+      "settings": {
+        "action": "lambda:InvokeFunction",
+        "principal": "apigateway.amazonaws.com",
+        "functionName": "GetAtt:ApiFunctionCE271BD4.Arn",
+        "sourceArn": "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":execute-api:\",{\"Ref\":\"AWS::Region\"},\":\",{\"Ref\":\"AWS::AccountId\"},\":\",{\"Ref\":\"RestApi0C43BF4B\"},\"/\",{…"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-permission.md"
+    },
+    {
+      "logicalId": "RestApiv1searchPOSTApiPermissionTestInventoryStackRestApiF45BCEEFPOSTv1searchCA002715",
+      "logicalName": "Rest Apiv1search POST Api Permission Test Inventory Stack Rest Api F45BCEEFPOS Tv1search",
+      "type": "AWS::Lambda::Permission",
+      "purpose": "Rest Apiv1search POST Api Permission Test Inventory Stack Rest Api F45BCEEFPOS Tv1search (Lambda invoke permission)",
+      "settings": {
+        "action": "lambda:InvokeFunction",
+        "principal": "apigateway.amazonaws.com",
+        "functionName": "GetAtt:ApiFunctionCE271BD4.Arn",
+        "sourceArn": "Join:[\"\",[\"arn:\",{\"Ref\":\"AWS::Partition\"},\":execute-api:\",{\"Ref\":\"AWS::Region\"},\":\",{\"Ref\":\"AWS::AccountId\"},\":\",{\"Ref\":\"RestApi0C43BF4B\"},\"/tes…"
+      },
+      "detailFilePath": "infra-inventory/aws-lambda-permission.md"
+    },
+    {
+      "logicalId": "RestApiAccount7C83CF5A",
+      "logicalName": "Rest Api Account",
+      "type": "AWS::ApiGateway::Account",
+      "purpose": "Rest Api Account (API Gateway account settings)",
+      "settings": {
+        "cloudWatchRoleArn": "GetAtt:RestApiCloudWatchRoleE3ED6605.Arn"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-account.md"
+    },
+    {
+      "logicalId": "RestApiDeployment180EC5033d4ddef50a60a00df299b94f3932a818",
+      "logicalName": "Rest Api Deployment180EC5033d4ddef50a60a00df299b94f3932a818",
+      "type": "AWS::ApiGateway::Deployment",
+      "purpose": "Rest Api Deployment180EC5033d4ddef50a60a00df299b94f3932a818 (API Gateway deployment)",
+      "settings": {
+        "restApiId": "Ref:RestApi0C43BF4B",
+        "description": "Automatically created by the RestApi construct"
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-deployment.md"
+    },
+    {
+      "logicalId": "CognitoAuthorizerF3215DBC",
+      "logicalName": "Cognito Authorizer",
+      "type": "AWS::ApiGateway::Authorizer",
+      "purpose": "Cognito Authorizer (API Gateway Cognito authorizer)",
+      "settings": {
+        "name": "InventoryStackCognitoAuthorizer3C7F788F",
+        "type": "COGNITO_USER_POOLS",
+        "providerARNs": [
+          "GetAtt:UserPool6BA7E5F2.Arn"
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-apigateway-authorizer.md"
+    },
+    {
+      "logicalId": "MonthlyBudget",
+      "logicalName": "Monthly Budget",
+      "type": "AWS::Budgets::Budget",
+      "purpose": "Monthly Budget (AWS monthly budget)",
+      "settings": {
+        "Budget": {
+          "BudgetLimit": {
+            "Amount": {
+              "Ref": "MonthlyBudgetUsd"
+            },
+            "Unit": "USD"
+          },
+          "BudgetName": "rag-engineering-monthly",
+          "BudgetType": "COST",
+          "CostFilters": {
+            "TagKeyValue": [
+              "user:System$rag-engineering"
+            ]
+          },
+          "TimeUnit": "MONTHLY"
         },
-        "WaitForDistributionInvalidation": true,
-        "Prune": true,
-        "DistributionId": {
-          "Ref": "Distribution830FAC52"
+        "NotificationsWithSubscribers": [
+          {
+            "Notification": {
+              "ComparisonOperator": "GREATER_THAN",
+              "NotificationType": "ACTUAL",
+              "Threshold": 80,
+              "ThresholdType": "PERCENTAGE"
+            },
+            "Subscribers": [
+              {
+                "Address": {
+                  "Ref": "AlertEmail"
+                },
+                "SubscriptionType": "EMAIL"
+              }
+            ]
+          }
+        ]
+      },
+      "detailFilePath": "infra-inventory/aws-budgets-budget.md"
+    },
+    {
+      "logicalId": "EventApiLogRetention68604E65",
+      "logicalName": "Event Api Log Retention",
+      "type": "Custom::LogRetention",
+      "purpose": "Event Api Log Retention (CloudWatch log retention custom resource)",
+      "settings": {
+        "ServiceToken": "<masked-or-reference>",
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/appsync/apis/",
+              {
+                "Fn::GetAtt": [
+                  "EventApiE141E6C0",
+                  "ApiId"
+                ]
+              }
+            ]
+          ]
         },
-        "DistributionPaths": [
-          "/*"
-        ],
-        "OutputObjectKeys": true
-      }
+        "RetentionInDays": 365
+      },
+      "detailFilePath": "infra-inventory/custom-logretention.md"
     }
-  ],
-  "parameters": {
-    "WebCallbackUrl": {
-      "Type": "String",
-      "Default": "http://localhost:5173/auth/callback",
-      "Description": "Allowed OAuth callback URL; override for each deployed environment"
-    },
-    "WebLogoutUrl": {
-      "Type": "String",
-      "Default": "http://localhost:5173/",
-      "Description": "Allowed OAuth logout URL; override for each deployed environment"
-    },
-    "WebOrigin": {
-      "Type": "String",
-      "Default": "http://localhost:5173",
-      "AllowedPattern": "^https?://[^/]+$",
-      "Description": "Exact browser Origin allowed by API CORS; no trailing slash"
-    },
-    "CognitoDomainPrefix": {
-      "Type": "String",
-      "AllowedPattern": "^[a-z0-9-]{1,63}$",
-      "Description": "Globally unique Cognito hosted UI domain prefix"
-    },
-    "AlertEmail": {
-      "Type": "String",
-      "AllowedPattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
-      "Description": "Operator email for the monthly AWS budget alert"
-    },
-    "MonthlyBudgetUsd": {
-      "Type": "Number",
-      "Default": 50,
-      "Description": "Monthly cost budget in USD for resources tagged System=rag-engineering",
-      "MinValue": 1
-    },
-    "BootstrapVersion": {
-      "Type": "AWS::SSM::Parameter::Value<String>",
-      "Default": "/cdk-bootstrap/hnb659fds/version",
-      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
-    }
-  },
-  "outputs": {
-    "RestApiEndpoint0551178A": {
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "https://",
-            {
-              "Ref": "RestApi0C43BF4B"
-            },
-            ".execute-api.",
-            {
-              "Ref": "AWS::Region"
-            },
-            ".",
-            {
-              "Ref": "AWS::URLSuffix"
-            },
-            "/",
-            {
-              "Ref": "RestApiDeploymentStageapi14DA8585"
-            },
-            "/"
-          ]
-        ]
-      }
-    },
-    "SourceBucketName": {
-      "Value": {
-        "Ref": "SourceBucketDDD2130A"
-      }
-    },
-    "KnowledgeBaseId": {
-      "Value": {
-        "Fn::GetAtt": [
-          "KnowledgeBase",
-          "KnowledgeBaseId"
-        ]
-      }
-    },
-    "ApiUrl": {
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "https://",
-            {
-              "Fn::GetAtt": [
-                "Distribution830FAC52",
-                "DomainName"
-              ]
-            }
-          ]
-        ]
-      }
-    },
-    "RestApiUrl": {
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "https://",
-            {
-              "Ref": "RestApi0C43BF4B"
-            },
-            ".execute-api.",
-            {
-              "Ref": "AWS::Region"
-            },
-            ".",
-            {
-              "Ref": "AWS::URLSuffix"
-            },
-            "/",
-            {
-              "Ref": "RestApiDeploymentStageapi14DA8585"
-            },
-            "/"
-          ]
-        ]
-      }
-    },
-    "WebUrl": {
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "https://",
-            {
-              "Fn::GetAtt": [
-                "Distribution830FAC52",
-                "DomainName"
-              ]
-            }
-          ]
-        ]
-      }
-    },
-    "AppSyncGraphqlUrl": {
-      "Value": {
-        "Fn::GetAtt": [
-          "EventApiE141E6C0",
-          "GraphQLUrl"
-        ]
-      }
-    },
-    "AppSyncRealtimeUrl": {
-      "Value": {
-        "Fn::GetAtt": [
-          "EventApiE141E6C0",
-          "GraphQLUrl"
-        ]
-      }
-    },
-    "OperationsDashboardName": {
-      "Value": {
-        "Ref": "OperationsDashboard06307C07"
-      }
-    },
-    "CognitoUserPoolId": {
-      "Value": {
-        "Ref": "UserPool6BA7E5F2"
-      }
-    },
-    "CognitoClientId": {
-      "Value": {
-        "Ref": "UserPoolWebClient4C9370B0"
-      }
-    },
-    "CognitoHostedUiBaseUrl": {
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "https://",
-            {
-              "Ref": "UserPoolHostedDomainE2BAC752"
-            },
-            ".auth.",
-            {
-              "Ref": "AWS::Region"
-            },
-            ".amazoncognito.com"
-          ]
-        ]
-      }
-    }
-  },
-  "iamActions": [
-    "appsync:GraphQL",
-    "bedrock:InvokeModel",
-    "bedrock:Retrieve",
-    "bedrock:StartIngestionJob",
-    "cloudfront:CreateInvalidation",
-    "cloudfront:GetInvalidation",
-    "kms:*",
-    "kms:Decrypt",
-    "kms:DescribeKey",
-    "kms:Encrypt",
-    "kms:GenerateDataKey*",
-    "kms:ReEncrypt*",
-    "lambda:InvokeFunction",
-    "logs:DeleteRetentionPolicy",
-    "logs:PutRetentionPolicy",
-    "s3:*",
-    "s3:Abort*",
-    "s3:DeleteObject*",
-    "s3:GetBucket*",
-    "s3:GetObject",
-    "s3:GetObject*",
-    "s3:List*",
-    "s3:PutObject",
-    "s3:PutObjectLegalHold",
-    "s3:PutObjectRetention",
-    "s3:PutObjectTagging",
-    "s3:PutObjectVersionTagging",
-    "s3vectors:DeleteVectors",
-    "s3vectors:GetIndex",
-    "s3vectors:GetVectors",
-    "s3vectors:PutVectors",
-    "s3vectors:QueryVectors",
-    "sns:Publish",
-    "sts:AssumeRole",
-    "xray:PutTelemetryRecords",
-    "xray:PutTraceSegments"
   ]
 }

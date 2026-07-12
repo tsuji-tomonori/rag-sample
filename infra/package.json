@@ -9,8 +9,10 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "npm run bundle && node --test -r ts-node/register test/*.test.ts",
     "synth": "npm run bundle && cdk synth",
-    "docs": "node -r ts-node/register scripts/generate-inventory.ts",
-    "docs:check": "node -r ts-node/register scripts/generate-inventory.ts --check"
+    "docs:snapshot": "node -r ts-node/register scripts/generate-inventory-snapshot.ts",
+    "docs:snapshot:check": "node -r ts-node/register scripts/generate-inventory-snapshot.ts --check",
+    "docs": "npm run docs:snapshot && node ../tools/infra-inventory/generate-infra-inventory.mjs",
+    "docs:check": "npm run docs:snapshot:check && node ../tools/infra-inventory/generate-infra-inventory.mjs --check"
   },
   "dependencies": { "aws-cdk-lib": "^2.261.0", "constructs": "^10.4.2", "cdk-nag": "^2.37.0" },
   "devDependencies": { "@types/node": "^24.0.0", "aws-cdk": "^2.1020.0", "ts-node": "^10.9.2", "typescript": "^5.9.0" }
