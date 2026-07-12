@@ -20,6 +20,7 @@ PROTECTED_RESPONSES: dict[int | str, dict[str, Any]] = {
     status_code=status.HTTP_201_CREATED,
     responses=PROTECTED_RESPONSES,
     summary="文書を取り込む",
+    operation_id="ingestDocument",
     description="版と ACL を保持して文書を正規化、チャンク化、索引化します。",
 )
 async def ingest_document(
@@ -33,6 +34,7 @@ async def ingest_document(
     response_model=SearchOut,
     responses=PROTECTED_RESPONSES,
     summary="認可済み根拠を検索する",
+    operation_id="searchEvidence",
     description="ACL hard filter 後に疎密ハイブリッド検索と順位融合を行います。",
 )
 async def search(
@@ -46,6 +48,7 @@ async def search(
     response_model=AnswerOut,
     responses=PROTECTED_RESPONSES,
     summary="引用付き回答を生成する",
+    operation_id="generateGroundedAnswer",
     description="認可済み根拠だけで回答し、根拠不足時は明示的に回答を拒否します。",
 )
 async def answer(

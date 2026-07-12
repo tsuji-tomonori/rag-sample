@@ -13,7 +13,9 @@ def create_app() -> FastAPI:
     application = FastAPI(title=settings.app_name, version="0.1.0")
     application.include_router(router)
 
-    @application.get("/health", tags=["system"], summary="死活状態を取得する")
+    @application.get(
+        "/health", tags=["system"], summary="死活状態を取得する", operation_id="health"
+    )
     async def health() -> dict[str, str]:
         return {"status": "ok"}
 

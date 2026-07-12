@@ -29,3 +29,32 @@ uv run app-docs --check
 
 OpenAPI と API 一覧を同じ実行時 router から生成し、設計と実装の drift を検出します。
 
+## Architecture
+
+AWS designは `docs/あーき.drawio` に従い、CloudFront、OACで閉じたS3 SPA、viewer-request
+rewrite、regional API Gateway REST API、Lambda/Mangum/FastAPI、Bedrock Knowledge Base +
+S3 Vectors、Cognito、AppSync GraphQL subscriptionを接続します。文書取込は `admin` group、
+検索と回答は認証利用者に限定し、ACLは検索前filterと取得後再検査の両方へ適用します。
+
+## Local verification
+
+```bash
+task setup
+task verify
+task e2e
+```
+
+`task verify` はlint、format、strict typecheck、Python/contract/Web/infra tests、production build、
+自動設計drift、skill validation、CDK synthを実行します。`task e2e` はdesktop/mobile browser flowを
+実行します。TaskfileとCIにdeploy target/stepはありません。
+
+## Runtime modes
+
+- Local: `RAG_AUTH_MODE=local`, `RAG_STORAGE_BACKEND=local`。Bearer payloadと明示group headerは
+  local開発だけで使用します。
+- AWS: `RAG_AUTH_MODE=cognito`, `RAG_STORAGE_BACKEND=aws`。Cognito access tokenをAPI Gatewayと
+  backendで二重検証し、必要なS3/Knowledge Base/AppSync IDをCDKがLambdaへ注入します。
+- Web production: `VITE_AUTH_MODE=cognito` と `.env.example` のCognito/API/AppSync値を
+  CloudFormation outputsから設定します。設定不足時にlocalへfallbackしません。
+
+CDKの `synth` とassertionsだけがローカル検証対象です。bootstrap/deployは実行しないでください。

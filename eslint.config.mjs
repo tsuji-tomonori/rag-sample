@@ -7,7 +7,7 @@ import tseslint from "typescript-eslint"
 const tsconfigRootDir = path.dirname(fileURLToPath(import.meta.url))
 
 export default tseslint.config(
-  { ignores: [".workspace/**", ".venv/**", "**/node_modules/**", "**/dist/**", "**/cdk.out/**", "docs/generated/**"] },
+  { ignores: [".workspace/**", ".venv/**", "infra/lambda-dist/**", "**/node_modules/**", "**/dist/**", "**/cdk.out/**", "docs/generated/**"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

@@ -123,3 +123,24 @@
   lint/typecheck、Web build、Lambda bundle、CDK synth、infra inventory drift、desktop/mobile E2E pass。
 - CloudFrontのglobal custom error responseはAPI 403を200へ変換するため不採用。SPA routeはviewer
   request functionだけでrewriteする。
+
+## 2026-07-12 Operations audit
+
+- PDF 8.4-8.6に対し、暗号化retained log、Lambda/API/CloudFront alarms、dashboard、throttle、
+  reserved concurrency、tag-filtered monthly budgetと80% email通知を追加。
+
+## 2026-07-12 Automatic design audit
+
+- backendをOpenAPI/API一覧/detail/sequence/message/test-factorの7 artifactへ拡張しoperation ID driftを拒否。
+- Webをview/action/endpoint/permission/state/auth/realtime contractとcomponent label照合へ拡張。
+- Infra inventoryをlogical resource、retention、parameters、outputs、IAM actionsまで拡張。
+- README、docs structure、root/Web env examplesを現在のruntime、Taskfile、認証、非deploy境界へ同期。
+
+## 2026-07-12 Final local verification
+
+- `task verify`: pass。Python 21 tests、contract 2 tests、Web 6 tests、infra assertion suite、
+  Ruff/format/Pyright/ESLint/全TS typecheck、全build、backend/Web/infra drift、8 skills、CDK synth。
+- `git diff --check`: pass。
+- `task e2e`: desktop/mobile 2件 pass。sandbox loopback EPERMのため承認済み権限委譲。
+- Lambda dependency bundle: source/lock hashから生成成功。
+- deploy/bootstrap/実AWS credential/API call: ユーザー指示により未実施。

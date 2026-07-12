@@ -3,8 +3,10 @@ import { readFileSync } from "node:fs"
 import * as apigateway from "aws-cdk-lib/aws-apigateway"
 import * as appsync from "aws-cdk-lib/aws-appsync"
 import * as bedrock from "aws-cdk-lib/aws-bedrock"
+import * as budgets from "aws-cdk-lib/aws-budgets"
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
+import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch"
 import * as cognito from "aws-cdk-lib/aws-cognito"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as kms from "aws-cdk-lib/aws-kms"
@@ -67,6 +69,17 @@ export class RagEngineeringStack extends cdk.Stack {
       allowedPattern:"^[a-z0-9-]{1,63}$",
       description:"Globally unique Cognito hosted UI domain prefix"
     })
+    const alertEmail = new cdk.CfnParameter(this,"AlertEmail",{
+      type:"String",
+      allowedPattern:"^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+      description:"Operator email for the monthly AWS budget alert"
+    })
+    const monthlyBudgetUsd = new cdk.CfnParameter(this,"MonthlyBudgetUsd",{
+      type:"Number",
+      default:50,
+      minValue:1,
+      description:"Monthly cost budget in USD for resources tagged System=rag-engineering"
+    })
     const userPoolClient = userPool.addClient("WebClient", {
       generateSecret:false,
       authFlows:{ userSrp:true },
@@ -122,6 +135,11 @@ export class RagEngineeringStack extends cdk.Stack {
       dataDeletionPolicy:"RETAIN"
     })
     const bundleId = readFileSync(path.resolve(__dirname,"../lambda-dist/bundle-path.txt"),"utf8").trim()
+    const apiLogGroup = new logs.LogGroup(this,"ApiLogGroup",{
+      encryptionKey:key,
+      retention:logs.RetentionDays.ONE_YEAR,
+      removalPolicy:cdk.RemovalPolicy.RETAIN
+    })
     const apiFunction = new lambda.Function(this,"ApiFunction", {
       runtime:lambda.Runtime.PYTHON_3_12,
       architecture:lambda.Architecture.X86_64,
@@ -129,7 +147,9 @@ export class RagEngineeringStack extends cdk.Stack {
       code:lambda.Code.fromAsset(path.resolve(__dirname,"../lambda-dist",bundleId)),
       memorySize:1024,
       timeout:cdk.Duration.seconds(60),
+      reservedConcurrentExecutions:20,
       tracing:lambda.Tracing.ACTIVE,
+      logGroup:apiLogGroup,
       environment:{
         RAG_ENVIRONMENT:"aws",
         RAG_AUTH_MODE:"cognito",
@@ -161,6 +181,8 @@ export class RagEngineeringStack extends cdk.Stack {
         metricsEnabled:true,
         loggingLevel:apigateway.MethodLoggingLevel.INFO,
         dataTraceEnabled:false
+        ,throttlingRateLimit:50
+        ,throttlingBurstLimit:100
       },
       defaultCorsPreflightOptions:{
         allowOrigins:[webOrigin.valueAsString],
@@ -274,6 +296,63 @@ export class RagEngineeringStack extends cdk.Stack {
       distributionPaths:["/*"],
       prune:true
     })
+    const lambdaErrors = apiFunction.metricErrors({ period:cdk.Duration.minutes(5) }).createAlarm(
+      this,"LambdaErrorsAlarm",{
+        threshold:1,
+        evaluationPeriods:1,
+        treatMissingData:cloudwatch.TreatMissingData.NOT_BREACHING
+      }
+    )
+    const lambdaThrottles = apiFunction.metricThrottles({ period:cdk.Duration.minutes(5) }).createAlarm(
+      this,"LambdaThrottlesAlarm",{
+        threshold:1,
+        evaluationPeriods:1,
+        treatMissingData:cloudwatch.TreatMissingData.NOT_BREACHING
+      }
+    )
+    const apiErrors = restApi.metricServerError({ period:cdk.Duration.minutes(5) }).createAlarm(
+      this,"ApiServerErrorsAlarm",{
+        threshold:1,
+        evaluationPeriods:1,
+        treatMissingData:cloudwatch.TreatMissingData.NOT_BREACHING
+      }
+    )
+    const distributionErrors = distribution.metric5xxErrorRate({ period:cdk.Duration.minutes(5) }).createAlarm(
+      this,"DistributionErrorsAlarm",{
+        threshold:1,
+        evaluationPeriods:1,
+        treatMissingData:cloudwatch.TreatMissingData.NOT_BREACHING
+      }
+    )
+    const dashboard = new cloudwatch.Dashboard(this,"OperationsDashboard")
+    dashboard.addWidgets(
+      new cloudwatch.AlarmWidget({ title:"API alarms",alarm:lambdaErrors }),
+      new cloudwatch.AlarmWidget({ title:"Lambda throttles",alarm:lambdaThrottles }),
+      new cloudwatch.AlarmWidget({ title:"REST 5xx",alarm:apiErrors }),
+      new cloudwatch.AlarmWidget({ title:"CloudFront 5xx rate",alarm:distributionErrors }),
+      new cloudwatch.GraphWidget({
+        title:"Lambda latency and invocations",
+        left:[apiFunction.metricDuration(),apiFunction.metricInvocations()]
+      })
+    )
+    new budgets.CfnBudget(this,"MonthlyBudget",{
+      budget:{
+        budgetName:"rag-engineering-monthly",
+        budgetType:"COST",
+        timeUnit:"MONTHLY",
+        budgetLimit:{ amount:monthlyBudgetUsd.valueAsNumber,unit:"USD" },
+        costFilters:{ TagKeyValue:["user:System$rag-engineering"] }
+      },
+      notificationsWithSubscribers:[{
+        notification:{
+          comparisonOperator:"GREATER_THAN",
+          notificationType:"ACTUAL",
+          threshold:80,
+          thresholdType:"PERCENTAGE"
+        },
+        subscribers:[{ address:alertEmail.valueAsString,subscriptionType:"EMAIL" }]
+      }]
+    })
     new cdk.CfnOutput(this,"SourceBucketName", { value:source.bucketName })
     new cdk.CfnOutput(this,"KnowledgeBaseId", { value:knowledgeBase.attrKnowledgeBaseId })
     new cdk.CfnOutput(this,"ApiUrl", { value:`https://${distribution.distributionDomainName}` })
@@ -281,6 +360,7 @@ export class RagEngineeringStack extends cdk.Stack {
     new cdk.CfnOutput(this,"WebUrl", { value:`https://${distribution.distributionDomainName}` })
     new cdk.CfnOutput(this,"AppSyncGraphqlUrl", { value:eventApi.graphqlUrl })
     new cdk.CfnOutput(this,"AppSyncRealtimeUrl", { value:eventApi.graphqlUrl.replace("appsync-api","appsync-realtime-api").replace("https://","wss://") })
+    new cdk.CfnOutput(this,"OperationsDashboardName", { value:dashboard.dashboardName })
     new cdk.CfnOutput(this,"CognitoUserPoolId", { value:userPool.userPoolId })
     new cdk.CfnOutput(this,"CognitoClientId", { value:userPoolClient.userPoolClientId })
     new cdk.CfnOutput(this,"CognitoHostedUiBaseUrl", { value:userPoolDomain.baseUrl() })

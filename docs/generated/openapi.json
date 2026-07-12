@@ -305,7 +305,7 @@
   "paths": {
     "/health": {
       "get": {
-        "operationId": "health_health_get",
+        "operationId": "health",
         "responses": {
           "200": {
             "content": {
@@ -314,7 +314,7 @@
                   "additionalProperties": {
                     "type": "string"
                   },
-                  "title": "Response Health Health Get",
+                  "title": "Response Health",
                   "type": "object"
                 }
               }
@@ -331,7 +331,7 @@
     "/v1/answers": {
       "post": {
         "description": "認可済み根拠だけで回答し、根拠不足時は明示的に回答を拒否します。",
-        "operationId": "answer_v1_answers_post",
+        "operationId": "generateGroundedAnswer",
         "parameters": [
           {
             "in": "header",
@@ -424,7 +424,7 @@
     "/v1/documents": {
       "post": {
         "description": "版と ACL を保持して文書を正規化、チャンク化、索引化します。",
-        "operationId": "ingest_document_v1_documents_post",
+        "operationId": "ingestDocument",
         "parameters": [
           {
             "in": "header",
@@ -517,7 +517,7 @@
     "/v1/search": {
       "post": {
         "description": "ACL hard filter 後に疎密ハイブリッド検索と順位融合を行います。",
-        "operationId": "search_v1_search_post",
+        "operationId": "searchEvidence",
         "parameters": [
           {
             "in": "header",

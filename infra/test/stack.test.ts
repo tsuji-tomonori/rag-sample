@@ -66,3 +66,14 @@ test("matches the architecture drawing with private SPA, routing function, REST 
   value.hasResourceProperties("AWS::Cognito::UserPoolGroup",{ GroupName:"admin" })
   value.hasResourceProperties("AWS::AppSync::Resolver",{ TypeName:"Subscription",FieldName:"onEvent" })
 })
+
+test("defines bounded capacity, alarms, retained logs, dashboard, and tagged budget", () => {
+  const value=template()
+  value.hasResourceProperties("AWS::Lambda::Function",{ ReservedConcurrentExecutions:20 })
+  value.resourceCountIs("AWS::CloudWatch::Alarm",4)
+  value.resourceCountIs("AWS::CloudWatch::Dashboard",1)
+  value.hasResourceProperties("AWS::Logs::LogGroup",{ RetentionInDays:365 })
+  value.hasResourceProperties("AWS::Budgets::Budget",{
+    Budget:{ BudgetType:"COST",TimeUnit:"MONTHLY",CostFilters:{ TagKeyValue:["user:System$rag-engineering"] } }
+  })
+})
