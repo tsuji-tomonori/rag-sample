@@ -7,7 +7,7 @@ import {
   type IngestResponse
 } from "@rag-engineering/contract"
 
-export type Session = { subject: string; groups: string[] }
+export type Session = { subject: string; groups: string[]; accessToken: string; local: boolean }
 
 export class ApiClient {
   public constructor(private readonly baseUrl = "") {}
@@ -29,8 +29,8 @@ export class ApiClient {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session.subject}`,
-        "X-Principal-Groups": session.groups.join(",")
+        Authorization: `Bearer ${session.accessToken}`,
+        ...(session.local ? { "X-Principal-Groups": session.groups.join(",") } : {})
       },
       body: JSON.stringify(body)
     })
@@ -39,4 +39,3 @@ export class ApiClient {
     return value
   }
 }
-

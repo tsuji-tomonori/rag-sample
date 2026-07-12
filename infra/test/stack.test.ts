@@ -23,3 +23,29 @@ test("retains encrypted private data and uses a constrained identity boundary", 
   assert.ok(durable.length >= 5)
 })
 
+test("protects every product route with Cognito JWT authorization", () => {
+  const json = template().toJSON() as { Resources: Record<string, { Type:string; Properties?:Record<string,unknown> }> }
+  const routes = Object.values(json.Resources).filter(resource => resource.Type === "AWS::ApiGatewayV2::Route")
+  const protectedRoutes = routes.filter(resource => String(resource.Properties?.RouteKey).startsWith("POST /v1/"))
+  assert.equal(protectedRoutes.length,3)
+  for (const route of protectedRoutes) {
+    assert.equal(route.Properties?.AuthorizationType,"JWT")
+    assert.ok(route.Properties?.AuthorizerId)
+  }
+  const health = routes.find(resource => resource.Properties?.RouteKey === "GET /health")
+  assert.ok(health)
+  assert.notEqual(health.Properties?.AuthorizationType,"JWT")
+})
+
+test("configures the Lambda API for Cognito and AWS adapters without wildcard model access", () => {
+  const value=template()
+  value.hasResourceProperties("AWS::Lambda::Function",{
+    Runtime:"python3.12",
+    Architectures:["x86_64"],
+    Environment:{ Variables:{ RAG_AUTH_MODE:"cognito",RAG_STORAGE_BACKEND:"aws" } },
+    TracingConfig:{ Mode:"Active" }
+  })
+  const serialized=JSON.stringify(value.toJSON())
+  assert.match(serialized,/anthropic\.claude-haiku-4-5-20251001-v1:0/)
+  assert.doesNotMatch(serialized,/foundation-model\/\*/)
+})

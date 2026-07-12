@@ -15,6 +15,9 @@ label { display:grid; gap:.35rem; color:var(--muted); font-size:.73rem; font-wei
 .eyebrow,.section-heading p { margin:0; font:500 .68rem "DM Mono"; letter-spacing:.16em; color:var(--muted); }
 h1 { margin:.1rem 0 0; font-size:clamp(1.45rem,3vw,2.25rem); line-height:1; letter-spacing:-.05em; }
 .session-fields { display:grid; grid-template-columns:1fr 1fr; gap:.7rem; border-left:1px solid var(--line); padding-left:1.2rem; }
+.cognito-session { display:flex; justify-content:flex-end; align-items:center; gap:.8rem; border-left:1px solid var(--line); padding-left:1.2rem; }
+.cognito-session span { max-width:18rem; overflow:hidden; text-overflow:ellipsis; font:500 .72rem "DM Mono"; }
+.cognito-session button { padding:.65rem .8rem; }
 .workspace { display:grid; grid-template-columns:minmax(340px,.72fr) minmax(480px,1.28fr); max-width:1500px; min-height:calc(100vh - 120px); margin:auto; border:1px solid var(--ink); background:rgba(248,246,239,.78); box-shadow:18px 18px 0 rgba(23,63,53,.09); animation:arrive .45s ease-out; }
 .ingest-panel,.answer-panel { padding:clamp(1.25rem,3vw,2.5rem); }
 .ingest-panel { border-right:1px solid var(--ink); background-image:linear-gradient(rgba(23,63,53,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(23,63,53,.035) 1px,transparent 1px); background-size:24px 24px; }
@@ -44,4 +47,3 @@ summary span,summary small,details code { font-family:"DM Mono"; } blockquote { 
 @keyframes arrive { from { opacity:0; transform:translateY(12px); } } @keyframes reveal { from { opacity:0; transform:translateY(8px); } }
 @media (max-width:850px) { .app-shell{padding:.8rem}.masthead{grid-template-columns:auto 1fr}.session-fields{grid-column:1/-1;border:0;padding:0}.workspace{grid-template-columns:1fr}.ingest-panel{border-right:0;border-bottom:1px solid var(--ink)}.question-form{grid-template-columns:1fr}.question-form button{min-height:48px}.empty-state{min-height:260px} }
 @media (prefers-reduced-motion:reduce) { * { animation:none!important; transition:none!important; } }
-

@@ -67,3 +67,34 @@
   port/adapter として追加。AWS 設定不足時の local fallback は禁止。
 - AWS adapter 後 gate: Python 13 tests、Ruff、format、Pyright pass。実 AWS 呼出しと deploy は
   意図的に未実施。
+
+## 2026-07-12 Cognito 認証
+
+- AWS 公式仕様に基づき RS256/JWKS、issuer、expiration、access token、client ID、subject、
+  Cognito groups を backend で再検証する設計を採用。
+- local asserted group は Cognito mode で破棄し、AWS storage と local auth の組合せを拒否。
+
+## 2026-07-12 API runtime infrastructure
+
+- source/lock hash ごとの非破壊 Lambda bundle、Mangum handler、HTTP API、Cognito JWT authorizer、
+  Hosted UI app client/domain、Lambda 最小権限を追加。
+- product POST routes は JWT 必須、public は非機微な `/health` のみに制限。
+- native wheel bundle と Lambda を x86_64 に統一。CORS origin を callback/logout URL から分離し、
+  Cognito domain prefix を deploy 時必須 parameter とした。
+
+## 2026-07-12 Web OIDC
+
+- OIDC authorization code flow、session storage、Cognito access token API送信を実装。
+- local と Cognito mode を設定で分離し、Cognito設定欠落時の暗黙 local fallback を禁止。
+- Playwright E2E は test 内だけで API を intercept し、desktop/mobile の取込・回答・引用・
+  Authorization header を検証する。本番 component に mock data は追加しない。
+
+## 2026-07-12 認証・runtime マイルストーン検証
+
+- Python: Ruff、format、Pyright、17 tests pass。
+- Contract: typecheck、source 1 file / 2 tests、declaration build pass。
+- Web: ESLint、typecheck、3 unit tests、production build、Web inventory drift pass。
+- Browser: system Chrome 139、desktop/mobile Playwright E2E 2件 pass。sandbox の loopback EPERM
+  回避に E2E command のみ権限委譲した。
+- Infra: dependency bundle、TypeScript typecheck/build、4 CDK assertions、inventory drift、
+  CloudFormation synth pass。deploy は未実施。

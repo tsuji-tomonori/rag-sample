@@ -21,5 +21,7 @@ test("renders a grounded answer and its source from the API", async () => {
   await user.click(screen.getByRole("button", { name:"回答を検証する" }))
   expect(await screen.findByText("暗号化されています。")).toBeInTheDocument()
   expect(screen.getByText("Security")).toBeInTheDocument()
-  expect(client.answer).toHaveBeenCalledWith("暗号方式は？", { subject:"alice", groups:[] })
+  expect(client.answer).toHaveBeenCalledWith("暗号方式は？", {
+    subject:"alice", groups:[], accessToken:"alice", local:true
+  })
 })

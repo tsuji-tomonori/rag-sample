@@ -5,6 +5,13 @@ from fastapi import Depends, Header, HTTPException
 
 from app.adapters.aws import AwsKnowledgeBaseConfig, create_aws_adapters
 from app.adapters.local import ExtractiveAnswerGenerator, HashingEmbedder, InMemoryChunkStore
+from app.auth import (
+    AuthenticationFailedError,
+    Authenticator,
+    CognitoAuthenticator,
+    CognitoAuthenticatorConfig,
+    LocalAuthenticator,
+)
 from app.core.config import get_settings
 from app.domain import Principal
 from app.services import RagService
@@ -49,17 +56,39 @@ async def get_service() -> RagService:
     return get_cached_service()
 
 
+@lru_cache
+def get_cached_authenticator() -> Authenticator:
+    settings = get_settings()
+    if settings.auth_mode == "local":
+        return LocalAuthenticator()
+    return CognitoAuthenticator(
+        CognitoAuthenticatorConfig(
+            region=settings.aws_region,
+            user_pool_id=cast(str, settings.cognito_user_pool_id),
+            client_id=cast(str, settings.cognito_client_id),
+        )
+    )
+
+
+async def get_authenticator() -> Authenticator:
+    return get_cached_authenticator()
+
+
 async def get_principal(
+    authenticator: Annotated[Authenticator, Depends(get_authenticator)],
     authorization: Annotated[str | None, Header()] = None,
     x_principal_groups: Annotated[str | None, Header()] = None,
 ) -> Principal:
     scheme, separator, subject = (authorization or "").partition(" ")
     if scheme.lower() != "bearer" or not separator or not subject.strip():
         raise HTTPException(status_code=401, detail="Bearer authentication is required")
-    groups = frozenset(
+    asserted_groups = frozenset(
         group.strip() for group in (x_principal_groups or "").split(",") if group.strip()
     )
-    return Principal(subject=subject.strip(), groups=groups)
+    try:
+        return authenticator.authenticate(subject.strip(), asserted_groups)
+    except AuthenticationFailedError as exc:
+        raise HTTPException(status_code=401, detail="Bearer credential is invalid") from exc
 
 
 ServiceDependency = Annotated[RagService, Depends(get_service)]

@@ -8,6 +8,7 @@ dependencies = [
   "boto3>=1.42,<2",
   "fastapi[standard-no-fastapi-cloud-cli]==0.136.3",
   "pydantic-settings>=2.10,<3",
+  "pyjwt[crypto]>=2.10,<3",
   "starlette==1.2.1",
   "uvicorn[standard]>=0.35,<1",
 ]
@@ -19,6 +20,7 @@ app-eval = "app_tool.evaluate:main"
 [dependency-groups]
 dev = [
   "httpx==0.28.1",
+  "mangum>=0.19,<1",
   "pre-commit>=4.2,<5",
   "pyright>=1.1.405,<2",
   "pytest==9.0.3",

@@ -4,12 +4,21 @@
 
 | CloudFormation type | Count |
 |---|---:|
+| `AWS::ApiGatewayV2::Api` | 1 |
+| `AWS::ApiGatewayV2::Authorizer` | 1 |
+| `AWS::ApiGatewayV2::Integration` | 1 |
+| `AWS::ApiGatewayV2::Route` | 4 |
+| `AWS::ApiGatewayV2::Stage` | 1 |
 | `AWS::Bedrock::DataSource` | 1 |
 | `AWS::Bedrock::KnowledgeBase` | 1 |
 | `AWS::Cognito::UserPool` | 1 |
-| `AWS::IAM::Policy` | 1 |
-| `AWS::IAM::Role` | 2 |
+| `AWS::Cognito::UserPoolClient` | 1 |
+| `AWS::Cognito::UserPoolDomain` | 1 |
+| `AWS::IAM::Policy` | 2 |
+| `AWS::IAM::Role` | 3 |
 | `AWS::KMS::Key` | 1 |
+| `AWS::Lambda::Function` | 1 |
+| `AWS::Lambda::Permission` | 4 |
 | `AWS::Logs::LogGroup` | 1 |
 | `AWS::S3::Bucket` | 1 |
 | `AWS::S3::BucketPolicy` | 1 |

@@ -1,10 +1,22 @@
-import { useMemo, useState, type FormEvent } from "react"
+import { useEffect, useMemo, useState, type FormEvent } from "react"
 import type { AnswerResponse, IngestRequest, IngestResponse } from "@rag-engineering/contract"
 import { ApiClient, type Session } from "./api.js"
+import { CognitoAuthClient, type AuthClient, type WebSession } from "./authClient.js"
+import { runtimeConfig, type RuntimeConfig } from "./runtimeConfig.js"
 
 type Busy = "idle" | "ingesting" | "answering"
 
-export function App({ client = new ApiClient() }: { client?: ApiClient }) {
+const defaultConfig = runtimeConfig()
+
+export function App({
+  client = new ApiClient(defaultConfig.apiBaseUrl),
+  config = defaultConfig,
+  authClient
+}: {
+  client?: ApiClient
+  config?: RuntimeConfig
+  authClient?: AuthClient | null
+}) {
   const [subject, setSubject] = useState("")
   const [groups, setGroups] = useState("")
   const [document, setDocument] = useState<IngestRequest>({
@@ -20,11 +32,55 @@ export function App({ client = new ApiClient() }: { client?: ApiClient }) {
   const [ingested, setIngested] = useState<IngestResponse | null>(null)
   const [busy, setBusy] = useState<Busy>("idle")
   const [error, setError] = useState<string | null>(null)
-  const session = useMemo<Session>(
-    () => ({ subject: subject.trim(), groups: groups.split(",").map(item => item.trim()).filter(Boolean) }),
+  const [webSession, setWebSession] = useState<WebSession | null>(null)
+  const [authLoading, setAuthLoading] = useState(config.authMode === "cognito")
+  const resolvedAuthClient = useMemo(
+    () => authClient ?? (config.authMode === "cognito" ? new CognitoAuthClient(config) : null),
+    [authClient, config]
+  )
+  const localSession = useMemo<Session>(
+    () => ({
+      subject: subject.trim(),
+      groups: groups.split(",").map(item => item.trim()).filter(Boolean),
+      accessToken: subject.trim(),
+      local: true
+    }),
     [groups, subject]
   )
+  const session: Session = config.authMode === "local"
+    ? localSession
+    : { subject: webSession?.subject ?? "", groups: webSession?.groups ?? [], accessToken: webSession?.accessToken ?? "", local: false }
   const authenticated = session.subject.length > 0
+
+  useEffect(() => {
+    if (config.authMode !== "cognito" || !resolvedAuthClient) return
+    const activeAuthClient = resolvedAuthClient
+    let active = true
+    async function restoreSession() {
+      try {
+        const callback = window.location.pathname === "/auth/callback"
+        const restored = callback
+          ? await activeAuthClient.completeSignIn()
+          : await activeAuthClient.currentSession()
+        if (active) setWebSession(restored)
+        if (callback) window.history.replaceState({}, "", "/")
+      } catch (caught) {
+        if (active) setError(errorMessage(caught))
+      } finally {
+        if (active) setAuthLoading(false)
+      }
+    }
+    void restoreSession()
+    return () => { active = false }
+  }, [config.authMode, resolvedAuthClient])
+
+  function beginSignIn() {
+    if (resolvedAuthClient) void resolvedAuthClient.signIn().catch(caught => setError(errorMessage(caught)))
+  }
+
+  function beginSignOut() {
+    if (resolvedAuthClient) void resolvedAuthClient.signOut().catch(caught => setError(errorMessage(caught)))
+  }
 
   async function ingest(event: FormEvent) {
     event.preventDefault()
@@ -61,10 +117,12 @@ export function App({ client = new ApiClient() }: { client?: ApiClient }) {
       <header className="masthead">
         <div className="brand-mark" aria-hidden="true">E</div>
         <div><p className="eyebrow">RAG ENGINEERING WORKSPACE</p><h1>Evidence Desk</h1></div>
-        <div className="session-fields" aria-label="ローカル認証">
+        {config.authMode === "local" ? <div className="session-fields" aria-label="ローカル認証">
           <label>利用者 ID<input value={subject} onChange={event => setSubject(event.target.value)} placeholder="必須" /></label>
           <label>グループ<input value={groups} onChange={event => setGroups(event.target.value)} placeholder="カンマ区切り" /></label>
-        </div>
+        </div> : <div className="cognito-session">
+          {authLoading ? <span>認証状態を確認中</span> : authenticated ? <><span>{session.subject}</span><button type="button" onClick={beginSignOut}>サインアウト</button></> : <button type="button" onClick={beginSignIn}>Cognitoでサインイン</button>}
+        </div>}
       </header>
 
       {error && <div className="error-banner" role="alert">{error}</div>}
@@ -111,4 +169,3 @@ export function App({ client = new ApiClient() }: { client?: ApiClient }) {
 function errorMessage(value: unknown): string {
   return value instanceof Error ? value.message : "予期しないエラーが発生しました"
 }
-
