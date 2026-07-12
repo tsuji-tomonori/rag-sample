@@ -1,0 +1,63 @@
+from app.apis.contract import ApiContract, MessageContract
+
+CONTRACT = ApiContract(
+    operation_id="generateGroundedAnswer",
+    markdown_slug="answers/generate_grounded_answer",
+    method="POST",
+    path="/v1/answers",
+    summary="引用付き回答を生成する",
+    description="認可済み根拠だけで回答し、根拠不足時は明示的に回答を拒否します。",
+    auth_mode="management-bearer",
+    business_summary="認可済み根拠だけから引用付き回答または明示的拒否を返す。",
+    permissions=("authenticated",),
+    sequence=(
+        "retrieve_answer_evidence",
+        "select_sufficient_evidence",
+        "generate_answer",
+        "build_answer_response",
+    ),
+    prerequisites=(
+        "Bearer access tokenが検証済みである。",
+        "generatorへ渡す前にACLと根拠閾値を検証する。",
+    ),
+    resource_changes=(),
+    response_sources=(
+        ("status", "Evidence gate result"),
+        ("answer", "AnswerGenerator output or fixed abstention message"),
+        ("citations", "Authorized evidence chunks"),
+        ("requestId", "Application generated UUID"),
+    ),
+    test_factors=(
+        "認証",
+        "ACL hard filter",
+        "根拠閾値",
+        "回答生成",
+        "回答拒否",
+        "引用整合性",
+        "model例外",
+    ),
+    messages=(
+        MessageContract(
+            "M001",
+            "generateGroundedAnswer.completed",
+            "INFO",
+            "根拠限定回答処理を完了した。",
+            "回答または回答拒否を返却した場合。",
+            "statusとcitationCountを確認する。",
+            "RUNBOOK-answer-grounding",
+            ("traceId", "actorPrincipalId", "status", "citationCount"),
+        ),
+        MessageContract(
+            "M002",
+            "generateGroundedAnswer.failed",
+            "ERROR",
+            "回答生成に失敗した。",
+            "retrievalまたはmodel providerで例外が発生した場合。",
+            "provider状態とtraceIdを確認する。",
+            "RUNBOOK-generation-failure",
+            ("traceId", "actorPrincipalId", "errorCode", "exceptionType"),
+        ),
+    ),
+    sql_summary="認可済み根拠による回答生成境界を仕様化する。",
+    sql_tables=("bedrock_knowledge_base", "bedrock_runtime"),
+)

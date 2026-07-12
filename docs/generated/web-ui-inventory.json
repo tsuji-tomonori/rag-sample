@@ -1,0 +1,183 @@
+{
+  "generatedBy": "tools/web-inventory.mjs",
+  "schemaVersion": 1,
+  "views": [
+    {
+      "id": "knowledge",
+      "label": "根拠を登録する",
+      "permission": "admin",
+      "feature": "documents",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "inquiry",
+      "label": "根拠から回答する",
+      "permission": "authenticated",
+      "feature": "answers",
+      "certainty": "confirmed"
+    }
+  ],
+  "actions": [
+    {
+      "id": "ingestDocument",
+      "label": "文書を取り込む",
+      "endpoint": "POST /v1/documents",
+      "permission": "admin",
+      "states": [
+        "idle",
+        "loading",
+        "success",
+        "permission-denied",
+        "error"
+      ],
+      "feature": "documents",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "generateGroundedAnswer",
+      "label": "回答を検証する",
+      "endpoint": "POST /v1/answers",
+      "permission": "authenticated",
+      "states": [
+        "idle",
+        "loading",
+        "answered",
+        "insufficient-evidence",
+        "error"
+      ],
+      "feature": "answers",
+      "certainty": "confirmed"
+    }
+  ],
+  "authModes": [
+    {
+      "id": "local",
+      "identitySource": "explicit local input",
+      "production": false
+    },
+    {
+      "id": "cognito",
+      "identitySource": "verified OIDC access token",
+      "production": true
+    }
+  ],
+  "realtime": {
+    "transport": "AppSync GraphQL WebSocket",
+    "channel": "verified subject",
+    "event": "INGESTION status"
+  },
+  "components": [
+    {
+      "name": "App",
+      "file": "apps/web/src/App.tsx",
+      "certainty": "confirmed"
+    }
+  ],
+  "controls": [
+    {
+      "id": "UI-001",
+      "element": "input",
+      "label": "setSubject(event.target.value)} placeholder=\"必須\" />",
+      "accessibleName": " setSubject(event.target.value)} placeholder=\"必須\" />",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-002",
+      "element": "input",
+      "label": "setGroups(event.target.value)} placeholder=\"カンマ区切り\" />",
+      "accessibleName": " setGroups(event.target.value)} placeholder=\"カンマ区切り\" />",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-003",
+      "element": "button",
+      "label": "サインアウト",
+      "accessibleName": "サインアウト",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-004",
+      "element": "button",
+      "label": "Cognitoでサインイン",
+      "accessibleName": "Cognitoでサインイン",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-005",
+      "element": "form",
+      "label": "void ingest(event)}>",
+      "accessibleName": " void ingest(event)}>\n            ",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-006",
+      "element": "input",
+      "label": "setDocument({ ...document, document_id: event.target.value })} />",
+      "accessibleName": " setDocument({ ...document, document_id: event.target.value })} />",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-007",
+      "element": "input",
+      "label": "setDocument({ ...document, version: event.target.value })} />",
+      "accessibleName": " setDocument({ ...document, version: event.target.value })} />",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-008",
+      "element": "input",
+      "label": "setDocument({ ...document, title: event.target.value })} />",
+      "accessibleName": " setDocument({ ...document, title: event.target.value })} />",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-009",
+      "element": "input",
+      "label": "setDocument({ ...document, owner_subject: event.target.value })} placeholder=\"空欄なら現在の利用者\" />",
+      "accessibleName": " setDocument({ ...document, owner_subject: event.target.value })} placeholder=\"空欄なら現在の利用者\" />",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-010",
+      "element": "input",
+      "label": "setDocument({ ...document, allowed_groups: event.target.value.split(\",\").map(item => item.trim()).filter(Boolean) })} />",
+      "accessibleName": " setDocument({ ...document, allowed_groups: event.target.value.split(\",\").map(item => item.trim()).filter(Boolean) })} />",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-011",
+      "element": "textarea",
+      "label": "setDocument({ ...document, text: event.target.value })} />",
+      "accessibleName": " setDocument({ ...document, text: event.target.value })} />",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-012",
+      "element": "button",
+      "label": "{busy === \"ingesting\" ? \"索引を構築中...\" : \"文書を取り込む\"}",
+      "accessibleName": "{busy === \"ingesting\" ? \"索引を構築中...\" : \"文書を取り込む\"}",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-013",
+      "element": "form",
+      "label": "void ask(event)}>",
+      "accessibleName": " void ask(event)}>\n            ",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-014",
+      "element": "textarea",
+      "label": "setQuestion(event.target.value)} placeholder=\"登録した資料について質問してください\" />",
+      "accessibleName": " setQuestion(event.target.value)} placeholder=\"登録した資料について質問してください\" />\n            ",
+      "certainty": "confirmed"
+    },
+    {
+      "id": "UI-015",
+      "element": "button",
+      "label": "{busy === \"answering\" ? \"根拠を照合中...\" : \"回答を検証する\"}",
+      "accessibleName": "{busy === \"answering\" ? \"根拠を照合中...\" : \"回答を検証する\"}",
+      "certainty": "confirmed"
+    }
+  ]
+}

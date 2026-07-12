@@ -2,22 +2,22 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.api import router
+from app.apis.answers.generate_grounded_answer.router import router as answer_router
+from app.apis.base import ErrorDetail, ErrorOut
+from app.apis.documents.ingest_document.router import router as ingest_router
+from app.apis.retrieval.search_evidence.router import router as search_router
+from app.apis.system.health.router import router as health_router
 from app.core.config import get_settings
-from app.schemas import ErrorDetail, ErrorOut
-from app.services import new_request_id
+from app.integrations.rag_runtime import new_request_id
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
     application = FastAPI(title=settings.app_name, version="0.1.0")
-    application.include_router(router)
-
-    @application.get(
-        "/health", tags=["system"], summary="死活状態を取得する", operation_id="health"
-    )
-    async def health() -> dict[str, str]:
-        return {"status": "ok"}
+    application.include_router(health_router)
+    application.include_router(ingest_router)
+    application.include_router(search_router)
+    application.include_router(answer_router)
 
     @application.exception_handler(RequestValidationError)
     async def validation_error(_request: Request, exc: RequestValidationError) -> JSONResponse:

@@ -26,6 +26,7 @@ tasks:
     desc: Run strict Python and TypeScript type checks.
     cmds:
       - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run pyright
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run mypy
       - npm run typecheck
 
   test:
@@ -43,6 +44,7 @@ tasks:
     desc: Generate implementation-derived design artifacts.
     cmds:
       - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run app-docs
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run python -m tools.generate_queries
       - npm run docs:web
       - npm run docs:infra
 
@@ -50,6 +52,11 @@ tasks:
     desc: Check generated designs and repository skills.
     cmds:
       - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run app-docs --check
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run python -m tools.generate_queries --check
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run python -m tools.check_api_contracts
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run python -m tools.check_api_function_names
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run python -m tools.check_api_mermaid_sequences
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run python -m tools.check_operational_logging
       - npm run docs:web:check
       - npm run docs:infra:check
       - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run python tools/validate_skills.py
@@ -73,4 +80,3 @@ tasks:
       - task: build
       - task: docs:check
       - task: synth
-

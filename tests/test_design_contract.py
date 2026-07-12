@@ -1,4 +1,4 @@
-from app.design_contract import OPERATIONS
+from app.apis.contracts import OPERATIONS
 from app.main import create_app
 
 

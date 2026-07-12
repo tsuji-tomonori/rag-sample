@@ -14,11 +14,11 @@ from app.auth import (
 )
 from app.core.config import get_settings
 from app.domain import Principal
-from app.services import RagService
+from app.integrations.rag_runtime import RagRuntime
 
 
 @lru_cache
-def get_cached_service() -> RagService:
+def get_cached_service() -> RagRuntime:
     settings = get_settings()
     if settings.storage_backend == "aws":
         required = {
@@ -40,13 +40,13 @@ def get_cached_service() -> RagService:
                 appsync_graphql_url=cast(str, settings.appsync_graphql_url),
             )
         )
-        return RagService(
+        return RagRuntime(
             settings=settings,
             store=store,
             embedder=HashingEmbedder(),
             generator=generator,
         )
-    return RagService(
+    return RagRuntime(
         settings=settings,
         store=InMemoryChunkStore(),
         embedder=HashingEmbedder(),
@@ -54,7 +54,7 @@ def get_cached_service() -> RagService:
     )
 
 
-async def get_service() -> RagService:
+async def get_service() -> RagRuntime:
     return get_cached_service()
 
 
@@ -93,5 +93,5 @@ async def get_principal(
         raise HTTPException(status_code=401, detail="Bearer credential is invalid") from exc
 
 
-ServiceDependency = Annotated[RagService, Depends(get_service)]
+ServiceDependency = Annotated[RagRuntime, Depends(get_service)]
 PrincipalDependency = Annotated[Principal, Depends(get_principal)]

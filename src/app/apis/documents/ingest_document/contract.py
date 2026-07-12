@@ -1,0 +1,60 @@
+from app.apis.contract import ApiContract, MessageContract
+
+CONTRACT = ApiContract(
+    operation_id="ingestDocument",
+    markdown_slug="documents/ingest_document",
+    method="POST",
+    path="/v1/documents",
+    summary="文書を取り込む",
+    description="版とACLを保持して文書を正規化、チャンク化、索引化します。",
+    auth_mode="management-bearer",
+    business_summary="ACL metadataを伴う正本文書を正規化・索引化する。",
+    permissions=("admin",),
+    sequence=(
+        "validate_ingestion_permission",
+        "normalize_and_chunk_document",
+        "store_document_chunks",
+        "build_ingest_response",
+    ),
+    prerequisites=(
+        "呼び出し元がadmin groupに所属する。",
+        "ownerSubjectが認証主体と一致する。",
+        "allowedGroupsが認証主体のgroupに含まれる。",
+    ),
+    resource_changes=(
+        "S3 source objectを版置換する。",
+        "Bedrock Knowledge Base ingestion jobを開始する。",
+        "AppSyncへingestion eventを発行する。",
+    ),
+    response_sources=(
+        ("documentId", "Request: documentId"),
+        ("version", "Request: version"),
+        ("chunkCount", "生成したchunk数"),
+        ("requestId", "Application generated UUID"),
+    ),
+    test_factors=("認証", "admin認可", "所有者一致", "共有group認可", "本文正規化", "provider例外"),
+    messages=(
+        MessageContract(
+            "M001",
+            "ingestDocument.permission_denied",
+            "WARNING",
+            "文書登録の認可を拒否した。",
+            "admin、所有者、共有groupの検証に失敗した場合。",
+            "認証主体と文書ACLを確認する。",
+            "RUNBOOK-authorization-forbidden",
+            ("traceId", "actorPrincipalId", "documentId", "errorCode"),
+        ),
+        MessageContract(
+            "M002",
+            "ingestDocument.completed",
+            "INFO",
+            "文書の索引化を開始した。",
+            "正規化済みchunkを保存した場合。",
+            "ingestion jobの状態を確認する。",
+            "RUNBOOK-ingestion-status",
+            ("traceId", "actorPrincipalId", "documentId", "chunkCount"),
+        ),
+    ),
+    sql_summary="RAG sourceへの文書登録境界を仕様化する。",
+    sql_tables=("s3_source", "bedrock_knowledge_base"),
+)
