@@ -11,7 +11,7 @@ AWS 構成は Web から利用可能な API endpoint を持ち、製品 route �
 
 - `/v1/documents`, `/v1/search`, `/v1/answers` は JWT authorizer を必須とする。
 - `/health` だけを非機微な public endpoint とする。
-- Lambda artifact は lock と source から再現可能に生成する。
+- Lambda artifact は checkout path に依存せず、lock と source から再現可能に生成する。
 - Lambda は AWS/Cognito adapter を明示設定し、local fallback を使わない。
 - API role の S3、Knowledge Base、ingestion、model 権限を対象資源へ制限する。
 - Lambda architecture と native dependency bundle の platform を一致させる。
