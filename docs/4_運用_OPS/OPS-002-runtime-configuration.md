@@ -10,4 +10,5 @@ Web は CloudFormation outputs から `VITE_API_BASE_URL`, `VITE_COGNITO_AUTHORI
 `VITE_COGNITO_CLIENT_ID`, callback/logout URL を設定する。
 
 CDK parameter の callback、logout、CORS origin、globally unique domain prefix は環境ごとに
-明示する。本リポジトリの検証では deploy、bootstrap、実AWS credential を使用しない。
+明示する。GitHub Environment と stack output からの設定解決は OPS-004 に従う。本リポジトリの
+ローカル検証では deploy、bootstrap、実AWS credential を使用しない。
