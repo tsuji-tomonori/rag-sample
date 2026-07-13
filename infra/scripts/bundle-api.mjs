@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto"
 import { execFileSync } from "node:child_process"
 import {
+  cpSync,
   existsSync,
   mkdirSync,
   readFileSync,
@@ -13,11 +14,13 @@ import path from "node:path"
 
 const root = path.resolve(import.meta.dirname, "../..")
 const destinationRoot = path.resolve(import.meta.dirname, "../lambda-dist")
+const sourceRoot = path.join(root, "src")
+const packagedSourceFiles = walk(sourceRoot).filter(isPackagedSourceFile)
 const sources = [
   "pyproject.toml",
   "uv.lock",
   "infra/scripts/bundle-api.mjs",
-  ...walk(path.join(root, "src")).map(file => path.relative(root, file))
+  ...packagedSourceFiles.map(file => path.relative(root, file))
 ]
 const hash = createHash("sha256")
 for (const source of sources.sort()) {
@@ -37,13 +40,42 @@ writeFileSync(path.join(destinationRoot, "bundle-path.txt"), `${bundleId}\n`)
 
 function installBundle() {
   const staging = `${destination}.tmp-${process.pid}`
+  const lockedRequirements = `${staging}.requirements.txt`
+  const environment = {
+    ...process.env,
+    UV_CACHE_DIR: process.env.UV_CACHE_DIR ?? "/tmp/uv-cache"
+  }
   rmSync(staging, { recursive: true, force: true })
+  rmSync(lockedRequirements, { force: true })
   try {
-    execFileSync("uv", ["pip", "install", "--target", staging, root], {
-      cwd: root,
-      env: { ...process.env, UV_CACHE_DIR: process.env.UV_CACHE_DIR ?? "/tmp/uv-cache" },
-      stdio: "inherit"
-    })
+    execFileSync(
+      "uv",
+      [
+        "export",
+        "--quiet",
+        "--locked",
+        "--no-dev",
+        "--no-emit-project",
+        "--output-file",
+        lockedRequirements
+      ],
+      { cwd: root, env: environment, stdio: "inherit" }
+    )
+    execFileSync(
+      "uv",
+      [
+        "pip",
+        "install",
+        "--target",
+        staging,
+        "--no-deps",
+        "--require-hashes",
+        "--requirements",
+        lockedRequirements
+      ],
+      { cwd: root, env: environment, stdio: "inherit" }
+    )
+    copyPackagedSource(staging)
     normalizeBundle(staging)
     assertPortableBundle(staging)
     writeFileSync(path.join(staging, ".bundle-complete"), `${bundleId}\n`)
@@ -51,13 +83,34 @@ function installBundle() {
     renameSync(staging, destination)
   } finally {
     rmSync(staging, { recursive: true, force: true })
+    rmSync(lockedRequirements, { force: true })
   }
+}
+
+function copyPackagedSource(directory) {
+  for (const source of packagedSourceFiles) {
+    const target = path.join(directory, path.relative(sourceRoot, source))
+    mkdirSync(path.dirname(target), { recursive: true })
+    cpSync(source, target)
+  }
+}
+
+function isPackagedSourceFile(file) {
+  const segments = path.relative(sourceRoot, file).split(path.sep)
+  return (
+    !segments.includes("__pycache__") &&
+    !file.endsWith(".pyc") &&
+    !file.endsWith(".pyo") &&
+    path.basename(file) !== ".DS_Store"
+  )
 }
 
 function normalizeBundle(directory) {
   // Installer metadata contains checkout paths, timestamps, and uv-version-specific fields.
   // Lambda imports modules directly, so these files and console scripts are not runtime inputs.
+  removePythonCaches(directory)
   rmSync(path.join(directory, "bin"), { recursive: true, force: true })
+  rmSync(path.join(directory, ".lock"), { force: true })
   for (const file of walk(directory)) {
     const parent = path.basename(path.dirname(file))
     if (parent.endsWith(".dist-info") && isNonRuntimeInstallerMetadata(path.basename(file))) {
@@ -69,6 +122,19 @@ function normalizeBundle(directory) {
         .split(/\r?\n/)
         .filter(line => line && !isHostDependentRecord(line))
       writeFileSync(file, `${lines.join("\n")}\n`)
+    }
+  }
+}
+
+function removePythonCaches(directory) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const target = path.join(directory, entry.name)
+    if (entry.isDirectory() && entry.name === "__pycache__") {
+      rmSync(target, { recursive: true, force: true })
+    } else if (entry.isDirectory()) {
+      removePythonCaches(target)
+    } else if (target.endsWith(".pyc") || target.endsWith(".pyo")) {
+      rmSync(target, { force: true })
     }
   }
 }

@@ -19,15 +19,19 @@ timestamp、tool固有metadataをartifactへ含めることで、受け入れ条
 directory差分0件、checkout path残存0件とする。
 
 Lambda bundle ID は `pyproject.toml`、`uv.lock`、packaged `src`、bundle script の内容から導出する。
-installer が生成するconsole scripts、local URL、timestamp/cache metadata、それらを参照する
-`RECORD` 行はruntime artifactから除外し、checkout pathを含むbundleを拒否する。installはstaging
-directoryで完了した場合だけcacheへ原子的に公開する。CDKはこの正規化済みdirectoryをfingerprint
-するため、同じsourceとlockのsynth templateは実行hostやuv versionに依存しない。
+production dependencyは`uv.lock`からexportし、記録されたversionとhashを必須検証してstagingへ
+installする。project sourceは未固定のbuild backendでwheel化せず、hash対象の`src`から直接配置する。
+installer が生成するconsole scripts、target lock marker、Python bytecode cache、local URL、
+timestamp/cache metadata、それらを参照する
+`RECORD` 行はruntime artifactから除外し、checkout pathまたはlock外versionを含むbundleを拒否する。
+installはstaging directoryで完了した場合だけcacheへ原子的に公開する。CDKはこの正規化済みdirectoryを
+fingerprintするため、同じsourceとlockのsynth templateは実行hostやuv versionに依存しない。
 
 根拠として、Python Packaging仕様はlocal installの`direct_url.json`が`file:///home/user/project`の
 ようなlocal directory URLを記録すると定め、`RECORD`はinstalled fileのpath、content hash、sizeを
-保持すると定める。uvの`--target`は指定directory直下へpackageをinstallするため、配備artifact側で
-runtime moduleとinstaller bookkeepingを分離する。
+保持すると定める。uvの`export --locked`はproject lockをrequirements形式へ出力し、
+`pip install --target`は指定directory直下へpackageをinstallする。これらをhash検証と`--no-deps`で
+組み合わせ、配備artifact側でlock済みruntime moduleとinstaller bookkeepingを分離する。
 
 - [Direct URL Data Structure](https://packaging.python.org/en/latest/specifications/direct-url-data-structure/)
 - [Recording installed projects](https://packaging.python.org/en/latest/specifications/recording-installed-packages/)

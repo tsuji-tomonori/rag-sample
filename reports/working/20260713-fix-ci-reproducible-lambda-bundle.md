@@ -103,3 +103,51 @@
 - AWS deploy/bootstrap/実AWS APIはscope外かつ明示承認がないため実行していない。
 - 作業中に別のcontinuous-delivery task由来のREADME、OPS、workflow、test等の変更がworktreeへ現れた。
   本修正ではそれらを編集・削除せず、全体`task verify`が現状態でpassすることだけを確認した。
+
+## 2026-07-14 PR CI follow-up
+
+- branch `agent/cd-and-bundle-reproducibility`をPR #1として`main`向けに作成した。
+- GitHub Actions run `29263108597`の`verify`は、lint、typecheck、test、buildまでpassした後、
+  `docs:infra:check`で`Infra CloudFormation snapshot is stale`となりfailした。
+- CIはuv 0.11.28のfresh installで`rich-toolkit==0.20.3`をbundleへ導入した。一方、
+  `uv export --frozen --no-dev --no-emit-project`で確認した`uv.lock`のversionは`0.20.1`だった。
+- 根本原因は、`bundle-api.mjs`がbundle IDへ`uv.lock`を含めながら、実際のinstallでは
+  `uv pip install <project>`によるversion rangeの再解決を行い、lockを入力にしていなかったことである。
+- PRへblockingのCOMMENT reviewを投稿した。ユーザー承認後、lockのproduction dependencyをexportし、
+  hash検証付きでtargetへinstallする。projectは未固定build backendでwheel化せず、packaged sourceを
+  直接配置する。回帰test、snapshot、REQ/ARC/DES/TRACEABILITY、task証跡を同期して再検証する。
+- このfollow-upでもbootstrap、CDK deploy、実AWS APIは実行しない。
+
+## 2026-07-14 lock整合修正の実装・ローカル検証
+
+- `bundle-api.mjs`は`uv export --locked --no-dev --no-emit-project`でruntime dependencyを
+  requirementsへ書き出し、`uv pip install --no-deps --require-hashes --target`でlockのversion/hashを
+  必須入力にした。project wheelはbuildせず、cache fileを除外した`src`をstagingへ直接配置する。
+- 全installed `*.dist-info/METADATA`のname/versionが`uv.lock`内に存在すること、source entrypoint、
+  completion marker、path漏えい、installer metadata、Python cache不在を`bundle.test.ts`で検証する。
+- 初回`npm test -w @rag-engineering/infra`はsandbox DNS制限によるPyPI取得失敗でfail。ネットワーク許可付き
+  再実行では、local test由来の`src/**/__pycache__`にcheckout pathが残り、path guardがfail closedした。
+  production source列挙から`__pycache__`, `*.pyc`, `*.pyo`, `.DS_Store`を除外して再実行し、7 tests pass。
+- uv 0.6.12/local checkoutと公式uv 0.11.28/別checkoutのfresh bundleを比較した。最初の比較では内容差分0件
+  だったが、uv target marker `.lock`のmodeが`0755`対`0644`だったためruntime不要metadataとして除外した。
+- bundle単独のhandler import smoke testを追加したところ、Lambda adapterの`mangum`がdev dependencyにしか
+  存在せず、production bundleに欠落していたことを検出した。`mangum`をproject dependencyへ移し、
+  `uv lock --offline`で既存lock entryをproduction dependencyとして更新した。
+- smoke test自身が生成するPython bytecodeもartifact差分となるため、`-B`、
+  `PYTHONDONTWRITEBYTECODE=1`を指定し、正規化処理はbundle全体の`__pycache__`、`*.pyc`、`*.pyo`を除外する。
+- 最終比較はbundle ID `773c8e244e52851f`、`diff -qr`差分0件、file mode差分0件、mtime/ownerを
+  正規化したtar fingerprintが双方
+  `2d2b6ef5ec7d54738a34d4afc33d8683424fc1bbe437a4e02f1ce5f3b9237865`で一致した。
+- `task docs:generate`: pass。解決commandはbackend/query/Web/Infra生成。最終script変更後に
+  `npm run docs:infra`を再実行し、Lambda asset `S3Key`を
+  `d270114e7f03d4c486443bd0f7aaff7808497037b18d127723be4af6730fd4d4.zip`へ更新した。
+- targeted check: `npm run lint`, `npm run typecheck -w @rag-engineering/infra`,
+  `npm run docs:snapshot:check -w @rag-engineering/infra`はいずれもpass。
+- 最終`task docs:check`はsandbox内でbuild backend取得時のDNS制限により一度failし、許可済みの
+  network経路で再実行してpass。API/query/Web/Infra driftとrepository skills 8件を検証した。
+- `task verify`: pass。Ruff/ESLint、Pyright 0 errors、Mypy 95 files、全TypeScript typecheck、Python 30、
+  contract 2、Web 6、Infra 7 tests、全build、design drift、CDK synthがpass。CDK feature flag 81件は
+  非失敗notice。deployは実行していない。
+- 最終`uv run pre-commit run --all-files`: Ruff check/format hooks pass。
+- `git diff --check`: pass。`task e2e`はproduction UI/component/flowを変更していないためskipした。
+- 残作業はcommit/push後のPR CI確認、review follow-up、merge。AWS bootstrap/deploy/APIは未実行。

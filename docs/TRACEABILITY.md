@@ -9,7 +9,7 @@
 | REQ-005 | ARC-002, DES-002 | `app.evaluation.evaluate` | `tests/test_evaluation.py` |
 | REQ-006 | ARC-003, DES-003 | `app.adapters.aws` | `tests/test_aws_adapters.py` |
 | REQ-007 | ARC-003, DES-004 | `app.auth.CognitoAuthenticator` | `tests/test_auth.py` |
-| REQ-008 | ARC-003 | `infra/scripts/bundle-api.mjs`, `infra/lib/rag-engineering-stack.ts` | `infra/test/bundle.test.ts`, `infra/test/stack.test.ts` |
+| REQ-008 | ARC-003 | `infra/scripts/bundle-api.mjs`, `infra/lib/rag-engineering-stack.ts` | `infra/test/bundle.test.ts` lock/version/path検証, `infra/test/stack.test.ts` |
 | REQ-009 | DES-004 | `apps/web/src/authClient.ts` | `apps/web/src/runtimeConfig.test.ts`, `apps/web/e2e/evidence-flow.spec.ts` |
 | REQ-010 | ARC-003 | `infra/lib/rag-engineering-stack.ts`, `apps/web/src/realtimeClient.ts` | `infra/test/stack.test.ts`, `apps/web/src/realtimeClient.test.ts`, `tests/test_api.py::test_ingest_requires_admin_group` |
 | REQ-011 | OPS-003 | `infra/lib/rag-engineering-stack.ts` | `infra/test/stack.test.ts` observability test |
