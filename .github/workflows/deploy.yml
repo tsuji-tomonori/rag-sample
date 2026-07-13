@@ -1,0 +1,409 @@
+name: Deploy RAG Engineering
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Protected GitHub Environment used for approvals, variables, and secrets.
+        required: true
+        type: environment
+      aws-region:
+        description: AWS region containing the target stack and CDK bootstrap resources.
+        required: true
+        default: ap-northeast-1
+        type: string
+      bootstrap:
+        description: Bootstrap CDK with the separate bootstrap role. Use only for initial setup.
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rag-engineering-deploy-${{ inputs.environment }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  verify:
+    name: Verify deployable revision
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Require the main branch
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+            echo "::error::Deployments must be dispatched from the main branch."
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          enable-cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install locked dependencies
+        run: |
+          uv sync --locked --all-groups
+          npm ci
+
+      - name: Run lint and type checks
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+          uv run pyright
+          uv run mypy
+          npm run lint
+          npm run typecheck
+
+      - name: Run unit and contract tests
+        run: |
+          uv run pytest
+          npm test
+
+      - name: Build deployable assets
+        run: npm run build
+
+      - name: Check implementation-derived designs
+        run: |
+          uv run app-docs --check
+          uv run python -m tools.generate_queries --check
+          uv run python -m tools.check_api_contracts
+          uv run python -m tools.check_api_function_names
+          uv run python -m tools.check_api_mermaid_sequences
+          uv run python -m tools.check_operational_logging
+          npm run docs:web:check
+          npm run docs:infra:check
+          uv run python tools/validate_skills.py
+
+      - name: Synthesize CloudFormation
+        run: npm run synth -w @rag-engineering/infra -- --quiet
+
+      - name: Upload verified deployment bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: rag-engineering-deploy-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            apps/web/dist
+            infra/lambda-dist
+            infra/cdk.out/RagEngineeringStack.template.json
+            infra/cdk.out/manifest.json
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    name: Deploy with AWS CDK
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment:
+      name: ${{ inputs.environment }}
+      url: ${{ steps.result.outputs.web_url }}
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: ${{ inputs.aws-region }}
+      AWS_DEFAULT_REGION: ${{ inputs.aws-region }}
+      CDK_DEFAULT_REGION: ${{ inputs.aws-region }}
+      CDK_DEFAULT_ACCOUNT: ${{ vars.AWS_ACCOUNT_ID }}
+      AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+      COGNITO_DOMAIN_PREFIX: ${{ vars.COGNITO_DOMAIN_PREFIX }}
+      ALERT_EMAIL: ${{ vars.ALERT_EMAIL }}
+      MONTHLY_BUDGET_USD: ${{ vars.MONTHLY_BUDGET_USD }}
+      CDK_EXECUTION_POLICY_ARN: ${{ vars.CDK_EXECUTION_POLICY_ARN }}
+      CDK_PERMISSIONS_BOUNDARY_NAME: ${{ vars.CDK_PERMISSIONS_BOUNDARY_NAME }}
+      STACK_NAME: RagEngineeringStack
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install CDK dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts
+
+      - name: Download verified deployment bundle
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: rag-engineering-deploy-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .
+
+      - name: Validate protected deployment configuration
+        env:
+          BOOTSTRAP_REQUESTED: ${{ inputs.bootstrap }}
+          DEPLOY_ROLE_ARN: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          BOOTSTRAP_ROLE_ARN: ${{ secrets.AWS_BOOTSTRAP_ROLE_ARN }}
+        run: |
+          set -euo pipefail
+          fail() {
+            echo "::error::$1"
+            exit 1
+          }
+          [[ "${AWS_ACCOUNT_ID}" =~ ^[0-9]{12}$ ]] || fail "AWS_ACCOUNT_ID must be 12 digits."
+          [[ "${COGNITO_DOMAIN_PREFIX}" =~ ^[a-z0-9-]{1,63}$ ]] || fail "COGNITO_DOMAIN_PREFIX is invalid."
+          [[ "${ALERT_EMAIL}" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]] || fail "ALERT_EMAIL is invalid."
+          [[ "${MONTHLY_BUDGET_USD}" =~ ^[0-9]+([.][0-9]+)?$ ]] || fail "MONTHLY_BUDGET_USD must be numeric."
+          node -e 'if (!(Number(process.env.MONTHLY_BUDGET_USD) >= 1)) process.exit(1)' || fail "MONTHLY_BUDGET_USD must be at least 1."
+          [[ "${DEPLOY_ROLE_ARN}" == "arn:aws:iam::${AWS_ACCOUNT_ID}:role/"* ]] || fail "AWS_DEPLOY_ROLE_ARN must belong to AWS_ACCOUNT_ID."
+          [[ -f apps/web/dist/index.html ]] || fail "Verified Web artifact is missing."
+          [[ -f infra/lambda-dist/bundle-path.txt ]] || fail "Verified Lambda artifact is missing."
+          if [[ "${BOOTSTRAP_REQUESTED}" == "true" ]]; then
+            [[ "${BOOTSTRAP_ROLE_ARN}" == "arn:aws:iam::${AWS_ACCOUNT_ID}:role/"* ]] || fail "AWS_BOOTSTRAP_ROLE_ARN must belong to AWS_ACCOUNT_ID."
+            [[ "${CDK_EXECUTION_POLICY_ARN}" == "arn:aws:iam::${AWS_ACCOUNT_ID}:policy/"* ]] || fail "CDK_EXECUTION_POLICY_ARN must be an account policy ARN."
+            [[ "${CDK_PERMISSIONS_BOUNDARY_NAME}" =~ ^[A-Za-z0-9+=,.@_-]{1,128}$ ]] || fail "CDK_PERMISSIONS_BOUNDARY_NAME is invalid."
+          fi
+
+      - name: Configure bootstrap credentials
+        if: ${{ inputs.bootstrap }}
+        uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
+        with:
+          role-to-assume: ${{ secrets.AWS_BOOTSTRAP_ROLE_ARN }}
+          role-session-name: rag-bootstrap-${{ github.run_id }}
+          aws-region: ${{ inputs.aws-region }}
+          allowed-account-ids: ${{ vars.AWS_ACCOUNT_ID }}
+          mask-aws-account-id: true
+          role-duration-seconds: 3600
+          unset-current-credentials: true
+
+      - name: Bootstrap CDK
+        if: ${{ inputs.bootstrap }}
+        working-directory: infra
+        run: |
+          ../node_modules/.bin/cdk bootstrap "aws://${AWS_ACCOUNT_ID}/${AWS_REGION}" \
+            --ci \
+            --termination-protection \
+            --cloudformation-execution-policies "${CDK_EXECUTION_POLICY_ARN}" \
+            --custom-permissions-boundary "${CDK_PERMISSIONS_BOUNDARY_NAME}"
+
+      - name: Configure deployment credentials
+        uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          role-session-name: rag-deploy-${{ github.run_id }}
+          aws-region: ${{ inputs.aws-region }}
+          allowed-account-ids: ${{ vars.AWS_ACCOUNT_ID }}
+          mask-aws-account-id: true
+          role-duration-seconds: 3600
+          unset-current-credentials: true
+
+      - name: Discover an existing stack
+        id: existing
+        run: |
+          set -euo pipefail
+          if stack_json="$(aws cloudformation describe-stacks --stack-name "${STACK_NAME}" --output json 2>stack-error.log)"; then
+            web_url="$(jq -er '.Stacks[0].Outputs[] | select(.OutputKey == "WebUrl") | .OutputValue' <<<"${stack_json}")"
+            user_pool_id="$(jq -er '.Stacks[0].Outputs[] | select(.OutputKey == "CognitoUserPoolId") | .OutputValue' <<<"${stack_json}")"
+            client_id="$(jq -er '.Stacks[0].Outputs[] | select(.OutputKey == "CognitoClientId") | .OutputValue' <<<"${stack_json}")"
+            appsync_url="$(jq -er '.Stacks[0].Outputs[] | select(.OutputKey == "AppSyncGraphqlUrl") | .OutputValue' <<<"${stack_json}")"
+            {
+              echo "exists=true"
+              echo "web_url=${web_url}"
+              echo "user_pool_id=${user_pool_id}"
+              echo "client_id=${client_id}"
+              echo "appsync_url=${appsync_url}"
+            } >>"${GITHUB_OUTPUT}"
+          elif grep -Fq "does not exist" stack-error.log; then
+            echo "exists=false" >>"${GITHUB_OUTPUT}"
+          else
+            sed 's/^/::error::/' stack-error.log >&2
+            exit 1
+          fi
+
+      - name: Provision the initial stack foundation
+        if: ${{ steps.existing.outputs.exists == 'false' }}
+        working-directory: infra
+        run: |
+          ../node_modules/.bin/cdk deploy "${STACK_NAME}" \
+            --ci \
+            --progress events \
+            --require-approval never \
+            --no-previous-parameters \
+            --outputs-file cdk-foundation-outputs.json \
+            --parameters "${STACK_NAME}:WebCallbackUrl=https://initial.invalid/auth/callback" \
+            --parameters "${STACK_NAME}:WebLogoutUrl=https://initial.invalid/" \
+            --parameters "${STACK_NAME}:WebOrigin=https://initial.invalid" \
+            --parameters "${STACK_NAME}:CognitoDomainPrefix=${COGNITO_DOMAIN_PREFIX}" \
+            --parameters "${STACK_NAME}:AlertEmail=${ALERT_EMAIL}" \
+            --parameters "${STACK_NAME}:MonthlyBudgetUsd=${MONTHLY_BUDGET_USD}"
+
+      - name: Resolve production Web configuration
+        id: runtime
+        env:
+          STACK_EXISTS: ${{ steps.existing.outputs.exists }}
+          EXISTING_WEB_URL: ${{ steps.existing.outputs.web_url }}
+          EXISTING_USER_POOL_ID: ${{ steps.existing.outputs.user_pool_id }}
+          EXISTING_CLIENT_ID: ${{ steps.existing.outputs.client_id }}
+          EXISTING_APPSYNC_URL: ${{ steps.existing.outputs.appsync_url }}
+        run: |
+          set -euo pipefail
+          if [[ "${STACK_EXISTS}" == "true" ]]; then
+            web_url="${EXISTING_WEB_URL}"
+            user_pool_id="${EXISTING_USER_POOL_ID}"
+            client_id="${EXISTING_CLIENT_ID}"
+            appsync_url="${EXISTING_APPSYNC_URL}"
+          else
+            web_url="$(jq -er ".${STACK_NAME}.WebUrl" infra/cdk-foundation-outputs.json)"
+            user_pool_id="$(jq -er ".${STACK_NAME}.CognitoUserPoolId" infra/cdk-foundation-outputs.json)"
+            client_id="$(jq -er ".${STACK_NAME}.CognitoClientId" infra/cdk-foundation-outputs.json)"
+            appsync_url="$(jq -er ".${STACK_NAME}.AppSyncGraphqlUrl" infra/cdk-foundation-outputs.json)"
+          fi
+          [[ "${web_url}" == https://* ]] || { echo "::error::WebUrl output must use HTTPS."; exit 1; }
+          [[ "${appsync_url}" == https://* ]] || { echo "::error::AppSyncGraphqlUrl output must use HTTPS."; exit 1; }
+          {
+            echo "web_url=${web_url}"
+            echo "user_pool_id=${user_pool_id}"
+            echo "client_id=${client_id}"
+            echo "appsync_url=${appsync_url}"
+          } >>"${GITHUB_OUTPUT}"
+
+      - name: Build the production Web asset
+        env:
+          WEB_URL: ${{ steps.runtime.outputs.web_url }}
+          USER_POOL_ID: ${{ steps.runtime.outputs.user_pool_id }}
+          CLIENT_ID: ${{ steps.runtime.outputs.client_id }}
+          APPSYNC_URL: ${{ steps.runtime.outputs.appsync_url }}
+        run: |
+          export VITE_AUTH_MODE=cognito
+          export VITE_API_BASE_URL="${WEB_URL}"
+          export VITE_COGNITO_AUTHORITY="https://cognito-idp.${AWS_REGION}.amazonaws.com/${USER_POOL_ID}"
+          export VITE_COGNITO_CLIENT_ID="${CLIENT_ID}"
+          export VITE_COGNITO_REDIRECT_URI="${WEB_URL}/auth/callback"
+          export VITE_COGNITO_LOGOUT_URI="${WEB_URL}/"
+          export VITE_APPSYNC_GRAPHQL_URL="${APPSYNC_URL}"
+          npm run build -w @rag-engineering/web
+
+      - name: Deploy the verified stack and production Web asset
+        working-directory: infra
+        env:
+          WEB_URL: ${{ steps.runtime.outputs.web_url }}
+        run: |
+          ../node_modules/.bin/cdk deploy "${STACK_NAME}" \
+            --ci \
+            --progress events \
+            --require-approval never \
+            --no-previous-parameters \
+            --outputs-file cdk-outputs.json \
+            --parameters "${STACK_NAME}:WebCallbackUrl=${WEB_URL}/auth/callback" \
+            --parameters "${STACK_NAME}:WebLogoutUrl=${WEB_URL}/" \
+            --parameters "${STACK_NAME}:WebOrigin=${WEB_URL}" \
+            --parameters "${STACK_NAME}:CognitoDomainPrefix=${COGNITO_DOMAIN_PREFIX}" \
+            --parameters "${STACK_NAME}:AlertEmail=${ALERT_EMAIL}" \
+            --parameters "${STACK_NAME}:MonthlyBudgetUsd=${MONTHLY_BUDGET_USD}"
+
+      - name: Detect identity endpoint replacement
+        id: candidate
+        env:
+          EXPECTED_WEB_URL: ${{ steps.runtime.outputs.web_url }}
+          EXPECTED_USER_POOL_ID: ${{ steps.runtime.outputs.user_pool_id }}
+          EXPECTED_CLIENT_ID: ${{ steps.runtime.outputs.client_id }}
+          EXPECTED_APPSYNC_URL: ${{ steps.runtime.outputs.appsync_url }}
+        run: |
+          set -euo pipefail
+          web_url="$(jq -er ".${STACK_NAME}.WebUrl" infra/cdk-outputs.json)"
+          user_pool_id="$(jq -er ".${STACK_NAME}.CognitoUserPoolId" infra/cdk-outputs.json)"
+          client_id="$(jq -er ".${STACK_NAME}.CognitoClientId" infra/cdk-outputs.json)"
+          appsync_url="$(jq -er ".${STACK_NAME}.AppSyncGraphqlUrl" infra/cdk-outputs.json)"
+          changed=false
+          [[ "${web_url}" == "${EXPECTED_WEB_URL}" ]] || changed=true
+          [[ "${user_pool_id}" == "${EXPECTED_USER_POOL_ID}" ]] || changed=true
+          [[ "${client_id}" == "${EXPECTED_CLIENT_ID}" ]] || changed=true
+          [[ "${appsync_url}" == "${EXPECTED_APPSYNC_URL}" ]] || changed=true
+          {
+            echo "changed=${changed}"
+            echo "web_url=${web_url}"
+            echo "user_pool_id=${user_pool_id}"
+            echo "client_id=${client_id}"
+            echo "appsync_url=${appsync_url}"
+          } >>"${GITHUB_OUTPUT}"
+
+      - name: Rebuild Web after endpoint replacement
+        if: ${{ steps.candidate.outputs.changed == 'true' }}
+        env:
+          WEB_URL: ${{ steps.candidate.outputs.web_url }}
+          USER_POOL_ID: ${{ steps.candidate.outputs.user_pool_id }}
+          CLIENT_ID: ${{ steps.candidate.outputs.client_id }}
+          APPSYNC_URL: ${{ steps.candidate.outputs.appsync_url }}
+        run: |
+          export VITE_AUTH_MODE=cognito
+          export VITE_API_BASE_URL="${WEB_URL}"
+          export VITE_COGNITO_AUTHORITY="https://cognito-idp.${AWS_REGION}.amazonaws.com/${USER_POOL_ID}"
+          export VITE_COGNITO_CLIENT_ID="${CLIENT_ID}"
+          export VITE_COGNITO_REDIRECT_URI="${WEB_URL}/auth/callback"
+          export VITE_COGNITO_LOGOUT_URI="${WEB_URL}/"
+          export VITE_APPSYNC_GRAPHQL_URL="${APPSYNC_URL}"
+          npm run build -w @rag-engineering/web
+
+      - name: Reconcile Web after endpoint replacement
+        if: ${{ steps.candidate.outputs.changed == 'true' }}
+        working-directory: infra
+        env:
+          WEB_URL: ${{ steps.candidate.outputs.web_url }}
+        run: |
+          ../node_modules/.bin/cdk deploy "${STACK_NAME}" \
+            --ci \
+            --progress events \
+            --require-approval never \
+            --no-previous-parameters \
+            --outputs-file cdk-outputs.json \
+            --parameters "${STACK_NAME}:WebCallbackUrl=${WEB_URL}/auth/callback" \
+            --parameters "${STACK_NAME}:WebLogoutUrl=${WEB_URL}/" \
+            --parameters "${STACK_NAME}:WebOrigin=${WEB_URL}" \
+            --parameters "${STACK_NAME}:CognitoDomainPrefix=${COGNITO_DOMAIN_PREFIX}" \
+            --parameters "${STACK_NAME}:AlertEmail=${ALERT_EMAIL}" \
+            --parameters "${STACK_NAME}:MonthlyBudgetUsd=${MONTHLY_BUDGET_USD}"
+
+      - name: Verify final deployment outputs
+        id: result
+        env:
+          EXPECTED_WEB_URL: ${{ steps.candidate.outputs.web_url }}
+          EXPECTED_USER_POOL_ID: ${{ steps.candidate.outputs.user_pool_id }}
+          EXPECTED_CLIENT_ID: ${{ steps.candidate.outputs.client_id }}
+          EXPECTED_APPSYNC_URL: ${{ steps.candidate.outputs.appsync_url }}
+        run: |
+          set -euo pipefail
+          web_url="$(jq -er ".${STACK_NAME}.WebUrl" infra/cdk-outputs.json)"
+          user_pool_id="$(jq -er ".${STACK_NAME}.CognitoUserPoolId" infra/cdk-outputs.json)"
+          client_id="$(jq -er ".${STACK_NAME}.CognitoClientId" infra/cdk-outputs.json)"
+          appsync_url="$(jq -er ".${STACK_NAME}.AppSyncGraphqlUrl" infra/cdk-outputs.json)"
+          [[ "${web_url}" == "${EXPECTED_WEB_URL}" ]]
+          [[ "${user_pool_id}" == "${EXPECTED_USER_POOL_ID}" ]]
+          [[ "${client_id}" == "${EXPECTED_CLIENT_ID}" ]]
+          [[ "${appsync_url}" == "${EXPECTED_APPSYNC_URL}" ]]
+          echo "web_url=${web_url}" >>"${GITHUB_OUTPUT}"
+
+      - name: Upload deployment outputs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: rag-engineering-cdk-outputs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            infra/cdk-outputs.json
+            infra/cdk.out/RagEngineeringStack.template.json
+            infra/cdk.out/manifest.json
+          if-no-files-found: error
+          retention-days: 14

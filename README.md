@@ -46,7 +46,7 @@ task e2e
 
 `task verify` はlint、format、strict typecheck、Python/contract/Web/infra tests、production build、
 自動設計drift、skill validation、CDK synthを実行します。`task e2e` はdesktop/mobile browser flowを
-実行します。TaskfileとCIにdeploy target/stepはありません。
+実行します。Taskfileと検証用 `ci.yml` にdeploy target/stepはありません。
 
 ## Runtime modes
 
@@ -58,3 +58,11 @@ task e2e
   CloudFormation outputsから設定します。設定不足時にlocalへfallbackしません。
 
 CDKの `synth` とassertionsだけがローカル検証対象です。bootstrap/deployは実行しないでください。
+
+## Continuous delivery
+
+`.github/workflows/deploy.yml` は `main` からの手動実行だけを受け付け、GitHub Environment の
+承認後に OIDC short-lived credential で AWS CDK を配備します。locked verification、Environment
+設定、初回 stack output に基づく production Web build、最終 output artifact を一つの workflow で
+扱います。Environment、OIDC trust、role、variables/secrets の事前設定と実行・復旧手順は
+`docs/4_運用_OPS/OPS-004-continuous-delivery.md` を参照してください。
