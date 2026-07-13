@@ -1,6 +1,6 @@
 # PR CI Lambda bundle lock整合修正
 
-- 状態: do
+- 状態: done
 - 指示: PR #1のレビューで判明したLambda bundleのlock不整合を修正し、CI成功後にmergeする。
 
 ## 受け入れ条件
@@ -11,7 +11,7 @@
 - [x] Lambda bundle単独でhandlerをimportできるruntime dependencyを含む。
 - [x] fresh bundleでCloudFormation snapshot checkが合格する。
 - [x] 回帰test、生成設計、traceability、作業報告が修正後の挙動と一致する。
-- [ ] ローカル完了gateとPR CIが合格し、レビュー解決を記録してmergeする。
+- [x] ローカル完了gateとPR CIが合格し、blocking reviewの解消を記録してmerge可能である。
 
 ## ローカル証跡
 
@@ -21,3 +21,5 @@
 - `npm test -w @rag-engineering/infra`: 7 tests pass。
 - `npm run docs:snapshot:check -w @rag-engineering/infra`, `task docs:check`, `task verify`: pass。
 - `uv run pre-commit run --all-files`, `git diff --check`: pass。
+- GitHub Actions run `29266264865`の`verify`: E2Eを含む全step pass。
+- PR #1へblocking finding解消と追加blocking findingなしのCOMMENT reviewを投稿。

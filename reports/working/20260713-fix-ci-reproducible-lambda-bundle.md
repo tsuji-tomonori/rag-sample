@@ -150,4 +150,17 @@
   非失敗notice。deployは実行していない。
 - 最終`uv run pre-commit run --all-files`: Ruff check/format hooks pass。
 - `git diff --check`: pass。`task e2e`はproduction UI/component/flowを変更していないためskipした。
-- 残作業はcommit/push後のPR CI確認、review follow-up、merge。AWS bootstrap/deploy/APIは未実行。
+- 修正commit `86c3c38`をbranchへpushした。残作業はPR CI確認、review follow-up、merge。
+  AWS bootstrap/deploy/APIは未実行。
+
+## 2026-07-14 PR CI・再レビュー結果
+
+- GitHub Actions run `29266264865`の`verify` job `86872210070`は1分38秒でpassした。
+  uv locked sync、npm clean install、lint、型検査、Python/Node test、build、全design drift、
+  repository skill validation、CDK synth、Playwright Chromium E2Eを含む全stepが成功した。
+- PR本文を実装と一致させ、CD workflowの起点を`main` pushではなく手動実行と明記した。
+  lock version/hash準拠、bundle単体handler import、uv versionを跨ぐ再現性の検証も追記した。
+- PR #1へCOMMENT reviewを投稿し、先のblocking findingが解消済みで追加blocking findingがないこと、
+  実AWS deployは未実行で初回手動実行は運用手順に従うことを記録した。
+- 実装・ローカルgate・外部CI・reviewの受け入れ条件が揃ったためactive taskを`tasks/done/`へ移動した。
+  残る外部操作はPR mergeとmerged stateの確認である。
