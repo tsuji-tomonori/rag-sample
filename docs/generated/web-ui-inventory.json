@@ -69,7 +69,7 @@
   "components": [
     {
       "name": "App",
-      "file": "apps/web/src/App.tsx",
+      "file": "frontend/web/src/App.tsx",
       "certainty": "confirmed"
     }
   ],

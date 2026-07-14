@@ -34,17 +34,17 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/app", "src/app_tool", "src/tools"]
+packages = ["backend/src/app", "tools/python/app_tool", "tools/python/tools"]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
-testpaths = ["tests"]
+pythonpath = ["backend/src", "tools/python"]
+testpaths = ["backend/tests"]
 addopts = "-q --strict-markers"
 
 [tool.ruff]
 target-version = "py312"
 line-length = 100
-src = ["src", "tests"]
+src = ["backend/src", "backend/tests", "tools/python"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "N", "SIM", "RUF"]
@@ -52,7 +52,7 @@ select = ["E", "F", "I", "B", "UP", "N", "SIM", "RUF"]
 [tool.pyright]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
-include = ["src"]
+include = ["backend/src", "tools/python"]
 venvPath = "."
 venv = ".venv"
 reportUnusedFunction = false

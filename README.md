@@ -4,6 +4,16 @@
 モノレポです。バックエンドは FastAPI の port/adapter 構成、フロントエンドは契約駆動、
 インフラは AWS CDK を採用します。
 
+## Repository layout
+
+- `backend/`: FastAPI runtime と backend test
+- `frontend/`: React/Vite Web と共有 TypeScript contract
+- `infra/`: AWS CDK、infra test、Lambda bundle
+- `docs/`: REQ/ARC/DES/OPS と実装由来の生成設計
+- `tools/`: Python/Node の設計生成器と repository validator
+
+ルートにはモノレポ共通 manifest、lock、Taskfile、CI と作業ガバナンス資産だけを置きます。
+
 ## 現在のローカル API
 
 ```bash

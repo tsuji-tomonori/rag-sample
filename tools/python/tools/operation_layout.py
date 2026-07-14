@@ -3,8 +3,8 @@ from pathlib import Path
 from app.apis.contract import ApiContract
 from app.apis.contracts import OPERATIONS
 
-ROOT = Path(__file__).resolve().parents[2]
-API_ROOT = ROOT / "src/app/apis"
+ROOT = Path(__file__).resolve().parents[3]
+API_ROOT = ROOT / "backend/src/app/apis"
 REQUIRED_FILES = (
     "__init__.py",
     "contract.py",

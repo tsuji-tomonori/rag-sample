@@ -102,7 +102,7 @@ jobs:
         with:
           name: rag-engineering-deploy-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            apps/web/dist
+            frontend/web/dist
             infra/lambda-dist
             infra/cdk.out/RagEngineeringStack.template.json
             infra/cdk.out/manifest.json
@@ -171,7 +171,7 @@ jobs:
           [[ "${MONTHLY_BUDGET_USD}" =~ ^[0-9]+([.][0-9]+)?$ ]] || fail "MONTHLY_BUDGET_USD must be numeric."
           node -e 'if (!(Number(process.env.MONTHLY_BUDGET_USD) >= 1)) process.exit(1)' || fail "MONTHLY_BUDGET_USD must be at least 1."
           [[ "${DEPLOY_ROLE_ARN}" == "arn:aws:iam::${AWS_ACCOUNT_ID}:role/"* ]] || fail "AWS_DEPLOY_ROLE_ARN must belong to AWS_ACCOUNT_ID."
-          [[ -f apps/web/dist/index.html ]] || fail "Verified Web artifact is missing."
+          [[ -f frontend/web/dist/index.html ]] || fail "Verified Web artifact is missing."
           [[ -f infra/lambda-dist/bundle-path.txt ]] || fail "Verified Lambda artifact is missing."
           if [[ "${BOOTSTRAP_REQUESTED}" == "true" ]]; then
             [[ "${BOOTSTRAP_ROLE_ARN}" == "arn:aws:iam::${AWS_ACCOUNT_ID}:role/"* ]] || fail "AWS_BOOTSTRAP_ROLE_ARN must belong to AWS_ACCOUNT_ID."

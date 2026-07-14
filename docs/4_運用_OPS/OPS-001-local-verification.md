@@ -11,3 +11,7 @@ loopback を拒否する環境では E2E command のみ権限委譲し、外部U
 
 生成設計を更新する変更では先に `task docs:generate`、その後 `task docs:check` を実行する。
 失敗、timeout、skip は pass として記録しない。
+
+製品資産の正規 path は `backend/`、`frontend/`、`infra/`、`docs/`、`tools/` とする。
+Python test は `backend/tests`、Web E2E は `frontend/web/e2e`、infra test は `infra/test` に置く。
+旧 `apps/`、`packages/`、`src/`、ルート `tests/` を互換 path として復元しない。

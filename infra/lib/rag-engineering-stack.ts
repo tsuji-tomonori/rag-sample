@@ -290,7 +290,7 @@ export class RagEngineeringStack extends cdk.Stack {
       }
     })
     new s3deploy.BucketDeployment(this,"WebDeployment",{
-      sources:[s3deploy.Source.asset(path.resolve(__dirname,"../../apps/web/dist"))],
+      sources:[s3deploy.Source.asset(path.resolve(__dirname,"../../frontend/web/dist"))],
       destinationBucket:webBucket,
       distribution,
       distributionPaths:["/*"],

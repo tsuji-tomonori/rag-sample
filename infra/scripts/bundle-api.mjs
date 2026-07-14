@@ -14,7 +14,7 @@ import path from "node:path"
 
 const root = path.resolve(import.meta.dirname, "../..")
 const destinationRoot = path.resolve(import.meta.dirname, "../lambda-dist")
-const sourceRoot = path.join(root, "src")
+const sourceRoot = path.join(root, "backend/src")
 const packagedSourceFiles = walk(sourceRoot).filter(isPackagedSourceFile)
 const sources = [
   "pyproject.toml",

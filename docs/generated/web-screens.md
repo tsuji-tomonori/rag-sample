@@ -19,11 +19,11 @@
 - View ID: `knowledge`
 - Permission: `admin`
 - 関連機能: [documents](web-features/documents.md)
-- 表示根拠: `apps/web/design-contract.json` / `apps/web/src/App.tsx`
+- 表示根拠: `frontend/web/design-contract.json` / `frontend/web/src/App.tsx`
 
 ### 根拠から回答する
 
 - View ID: `inquiry`
 - Permission: `authenticated`
 - 関連機能: [answers](web-features/answers.md)
-- 表示根拠: `apps/web/design-contract.json` / `apps/web/src/App.tsx`
+- 表示根拠: `frontend/web/design-contract.json` / `frontend/web/src/App.tsx`

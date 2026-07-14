@@ -9,4 +9,4 @@
 
 | Component | Source | Certainty |
 | --- | --- | --- |
-| `App` | `apps/web/src/App.tsx` | `confirmed` |
+| `App` | `frontend/web/src/App.tsx` | `confirmed` |

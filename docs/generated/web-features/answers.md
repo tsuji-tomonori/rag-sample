@@ -19,5 +19,5 @@
 
 ## 実装根拠
 
-- `apps/web/design-contract.json`
-- `apps/web/src/App.tsx`
+- `frontend/web/design-contract.json`
+- `frontend/web/src/App.tsx`

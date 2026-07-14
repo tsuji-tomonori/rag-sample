@@ -7,7 +7,7 @@ unit test factorを生成する。sequence、DB/resource線、query、条件、t
 `tools.api_analysis` がrouter/functionsのASTから導出し、contractの手書き配列では補完しない。
 operation ID、必須operationファイル、runtime message、生成物が一致しない場合は失敗する。
 
-`npm run docs:web` は `apps/web/design-contract.json` とproduction `App.tsx` labelを照合する。
+`npm run docs:web` は `frontend/web/design-contract.json` とproduction `App.tsx` labelを照合する。
 `npm run docs:infra` はCDK synth templateをsnapshot化し、Rag-assistと同じ
 `tools/infra-inventory/generate-infra-inventory.mjs` でdomain集計、resource type別概要、
 logical ID別主要設定、secret masking、IAM要約を生成する。API artifactは

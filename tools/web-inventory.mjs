@@ -4,8 +4,8 @@ import path from "node:path"
 
 const outputDir = "docs/generated"
 const featureDir = path.join(outputDir, "web-features")
-const source = await readFile("apps/web/src/App.tsx", "utf8")
-const contract = JSON.parse(await readFile("apps/web/design-contract.json", "utf8"))
+const source = await readFile("frontend/web/src/App.tsx", "utf8")
+const contract = JSON.parse(await readFile("frontend/web/design-contract.json", "utf8"))
 const checkOnly = process.argv.includes("--check")
 
 for (const item of [...contract.views, ...contract.actions]) {
@@ -14,7 +14,7 @@ for (const item of [...contract.views, ...contract.actions]) {
 
 const featureFor = id => id.toLowerCase().includes("ingest") || id === "knowledge" ? "documents" : id.toLowerCase().includes("answer") || id === "inquiry" ? "answers" : "app"
 const features = [...new Set(["app", "auth", "documents", "answers", "realtime", "shared"])]
-const components = [...source.matchAll(/(?:export\s+)?function\s+([A-Z][A-Za-z0-9_]*)\s*\(/g)].map(match => ({ name: match[1], file: "apps/web/src/App.tsx", certainty: "confirmed" }))
+const components = [...source.matchAll(/(?:export\s+)?function\s+([A-Z][A-Za-z0-9_]*)\s*\(/g)].map(match => ({ name: match[1], file: "frontend/web/src/App.tsx", certainty: "confirmed" }))
 const controls = [...source.matchAll(/<(button|input|textarea|form)\b([^>]*)>([^<]*)/g)].map((match, index) => ({ id: `UI-${String(index + 1).padStart(3, "0")}`, element: match[1], label: (match[3] || match[2].match(/placeholder="([^"]+)"/)?.[1] || "実行時ラベル").trim(), accessibleName: match[2].match(/aria-label="([^"]+)"/)?.[1] || (match[3] || "label要素または表示テキスト"), certainty: match[3] ? "confirmed" : "inferred" }))
 const commonNotice = [
   "> 自動生成: `tools/web-inventory.mjs`",
@@ -37,7 +37,7 @@ const screens = [
   "# Web 画面一覧", ...commonNotice,
   "## 画面サマリ", "", "| ID | 画面 | Permission | Feature | Certainty |", "| --- | --- | --- | --- | --- |",
   ...contract.views.map(view => `| \`${view.id}\` | ${view.label} | \`${view.permission}\` | [${featureFor(view.id)}](web-features/${featureFor(view.id)}.md) | \`confirmed\` |`), "", "## 画面ごとの説明", "",
-  ...contract.views.flatMap(view => [`### ${view.label}`, "", `- View ID: \`${view.id}\``, `- Permission: \`${view.permission}\``, `- 関連機能: [${featureFor(view.id)}](web-features/${featureFor(view.id)}.md)`, `- 表示根拠: \`apps/web/design-contract.json\` / \`apps/web/src/App.tsx\``, ""])
+  ...contract.views.flatMap(view => [`### ${view.label}`, "", `- View ID: \`${view.id}\``, `- Permission: \`${view.permission}\``, `- 関連機能: [${featureFor(view.id)}](web-features/${featureFor(view.id)}.md)`, `- 表示根拠: \`frontend/web/design-contract.json\` / \`frontend/web/src/App.tsx\``, ""])
 ].join("\n")
 
 const featureIndex = [
@@ -47,7 +47,7 @@ const featureIndex = [
 
 const componentDoc = [
   "# Web コンポーネント一覧", ...commonNotice, "## コンポーネントサマリ", "", "| Component | Source | Certainty |", "| --- | --- | --- |",
-  ...(components.length ? components.map(item => `| \`${item.name}\` | \`${item.file}\` | \`${item.certainty}\` |`) : ["| `App` | `apps/web/src/App.tsx` | `inferred` |"]), ""
+  ...(components.length ? components.map(item => `| \`${item.name}\` | \`${item.file}\` | \`${item.certainty}\` |`) : ["| `App` | `frontend/web/src/App.tsx` | `inferred` |"]), ""
 ].join("\n")
 
 const accessibility = [
@@ -91,6 +91,6 @@ function renderFeature(feature) {
     "## 概要", "", featureDescription(feature), "",
     "## 画面", "", ...(views.length ? views.map(view => `- \`${view.id}\`: ${view.label} (permission: \`${view.permission}\`)`) : ["_専用画面はありません。_"]), "",
     "## 操作", "", ...(actions.length ? actions.map(action => `- \`${action.id}\`: ${action.label} / \`${action.endpoint}\` / states: ${action.states.join(", ")}`) : ["_専用操作はありません。_"]), "",
-    "## 実装根拠", "", "- `apps/web/design-contract.json`", "- `apps/web/src/App.tsx`", ""
+    "## 実装根拠", "", "- `frontend/web/design-contract.json`", "- `frontend/web/src/App.tsx`", ""
   ].join("\n")
 }

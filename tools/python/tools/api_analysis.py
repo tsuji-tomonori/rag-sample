@@ -7,8 +7,8 @@ from pathlib import Path
 
 from app.apis.contract import ApiContract
 
-ROOT = Path(__file__).resolve().parents[2]
-API_ROOT = ROOT / "src/app/apis"
+ROOT = Path(__file__).resolve().parents[3]
+API_ROOT = ROOT / "backend/src/app/apis"
 
 
 @dataclass(frozen=True, slots=True)

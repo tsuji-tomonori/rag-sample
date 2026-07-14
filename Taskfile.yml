@@ -13,7 +13,7 @@ tasks:
   format:
     desc: Format Python source and tests.
     cmds:
-      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run ruff format src tests tools
+      - UV_CACHE_DIR={{.UV_CACHE_DIR}} uv run ruff format backend tools
 
   lint:
     desc: Run Python and TypeScript lint/format checks.
